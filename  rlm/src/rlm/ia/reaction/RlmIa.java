@@ -47,7 +47,6 @@ public class RlmIa {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
 
 		Sentinel sentinel = new Sentinel();
 		sentinel.addTrajectory(new Localization());
