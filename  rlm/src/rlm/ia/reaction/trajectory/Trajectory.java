@@ -36,6 +36,10 @@ package rlm.ia.reaction.trajectory;
 
 import rlm.ia.reaction.view.Token;
 
+/**
+ * @author flavio
+ * 
+ */
 public interface Trajectory {
 
 	void notification(Token token);

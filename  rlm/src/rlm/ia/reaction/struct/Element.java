@@ -34,6 +34,10 @@
 
 package rlm.ia.reaction.struct;
 
+/**
+ * @author flavio
+ * 
+ */
 public class Element {
 
 }

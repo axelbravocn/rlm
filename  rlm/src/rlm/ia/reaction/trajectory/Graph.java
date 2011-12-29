@@ -36,6 +36,10 @@ package rlm.ia.reaction.trajectory;
 
 import rlm.ia.reaction.view.Token;
 
+/**
+ * @author flavio
+ * 
+ */
 public class Graph implements Trajectory {
 
 	@Override

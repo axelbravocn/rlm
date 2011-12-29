@@ -34,8 +34,10 @@
 
 package rlm.ia.reaction;
 
-import rlm.ia.reaction.trajectory.Graph;
-import rlm.ia.reaction.trajectory.Localization;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
+import rlm.ia.reaction.trajectory.behavior.GoDivert;
+import rlm.ia.reaction.trajectory.behavior.GoForward;
 
 /**
  * @author flavio
@@ -47,11 +49,19 @@ public class RlmIa {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		// TODO Auto-generated method stub
+/*
 		Sentinel sentinel = new Sentinel();
 		sentinel.addTrajectory(new Localization());
 		sentinel.addTrajectory(new Graph());
-		
+	*/
+		Behavior b1 = new GoForward();// kewl,huh?
+		Behavior b2 = new GoDivert();
+		Behavior[] bArray = { b1, b2 };
+		Arbitrator arb = new Arbitrator(bArray);
+		System.out.println("b1"+b1);
+		System.out.println("b2"+b2);
+		arb.start();
 	}
 
 }

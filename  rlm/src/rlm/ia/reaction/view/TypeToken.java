@@ -34,6 +34,10 @@
 
 package rlm.ia.reaction.view;
 
+/**
+ * @author flavio
+ * 
+ */
 public enum TypeToken {
 
 }
