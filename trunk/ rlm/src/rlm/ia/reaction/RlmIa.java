@@ -36,8 +36,8 @@ package rlm.ia.reaction;
 
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
-import rlm.ia.reaction.trajectory.behavior.GoDivert;
-import rlm.ia.reaction.trajectory.behavior.GoForward;
+import rlm.ia.reaction.trajectory.behavior.DivertBehavior;
+import rlm.ia.reaction.trajectory.behavior.ForwardBehavior;
 
 /**
  * @author flavio
@@ -55,8 +55,8 @@ public class RlmIa {
 		sentinel.addTrajectory(new Localization());
 		sentinel.addTrajectory(new Graph());
 	*/
-		Behavior b1 = new GoForward();// kewl,huh?
-		Behavior b2 = new GoDivert();
+		Behavior b1 = new ForwardBehavior();// kewl,huh?
+		Behavior b2 = new DivertBehavior();
 		Behavior[] bArray = { b1, b2 };
 		Arbitrator arb = new Arbitrator(bArray);
 		System.out.println("b1"+b1);

@@ -33,8 +33,7 @@
  */
 package rlm.ia.reaction.trajectory.behavior;
 
-import rlm.ia.reaction.trajectory.motor.Console;
-import rlm.ia.reaction.trajectory.motor.Fly;
+import rlm.ia.reaction.motor.Gear;
 import rlm.ia.reaction.view.Directions;
 import rlm.ia.reaction.view.Signal;
 
@@ -44,16 +43,14 @@ import rlm.ia.reaction.view.Signal;
  */
 public class TrajectoryControl {
 
-	private Fly fly;
-	private Console console;
+	private Gear fly;
 	private Signal view;
 	
 	/**
 	 * 
 	 */
 	public TrajectoryControl() {
-		this.fly = new Fly();
-		this.console = new Console();
+		this.fly = new Gear();
 		this.view = new Directions();
 	}
 
@@ -62,7 +59,7 @@ public class TrajectoryControl {
 	/**
 	 * @return the fly
 	 */
-	public Fly getFly() {
+	public Gear getFly() {
 		return fly;
 	}
 
@@ -70,23 +67,8 @@ public class TrajectoryControl {
 	 * @param fly
 	 *            the fly to set
 	 */
-	public void setFly(Fly fly) {
+	public void setFly(Gear fly) {
 		this.fly = fly;
-	}
-
-	/**
-	 * @return the console
-	 */
-	public Console getConsole() {
-		return console;
-	}
-
-	/**
-	 * @param console
-	 *            the console to set
-	 */
-	public void setConsole(Console console) {
-		this.console = console;
 	}
 
 	/**

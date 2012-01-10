@@ -34,11 +34,6 @@
 
 package rlm.ia.reaction;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import rlm.ia.reaction.trajectory.Trajectory;
-import rlm.ia.reaction.view.Token;
 
 /**
  * @author flavio
@@ -46,34 +41,5 @@ import rlm.ia.reaction.view.Token;
  */
 public class Sentinel {
 
-	List<Trajectory> list;
-
-	public void addTrajectory(Trajectory trajectory) {
-		this.getList().add(trajectory);
-	}
-
-	public void notify(Token token) {
-		for (Trajectory trajectory : this.getList()) {
-			trajectory.notification(token);
-		}
-	}
-
-	/**
-	 * @return the list
-	 */
-	public List<Trajectory> getList() {
-		if (list == null)
-			list = new ArrayList<Trajectory>();
-
-		return list;
-	}
-
-	/**
-	 * @param list
-	 *            the list to set
-	 */
-	public void setList(List<Trajectory> list) {
-		this.list = list;
-	}
-
+	//TODO observer
 }

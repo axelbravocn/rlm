@@ -32,7 +32,7 @@
  **********************************************************************************
  */
 
-package rlm.ia.reaction.trajectory.motor;
+package rlm.ia.reaction.motor;
 
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -41,19 +41,83 @@ import lejos.robotics.navigation.DifferentialPilot;
  * @author flavio
  * 
  */
-public interface Motor {
+public class Gear implements Motor {
 
-	//Motor
-	NXTRegulatedMotor MOTOR_TRACTION_ONE = lejos.nxt.Motor.A;
-	NXTRegulatedMotor MOTOR_TRACTION_TWO = lejos.nxt.Motor.C;
-	NXTRegulatedMotor MOTOR_FRONT_ENGINE = lejos.nxt.Motor.B;
-	
-	//Wheel
-	double WHEEL_DIAMETER = 4.8;
-	double WHEEL_THICK = 2.1;
-	
-	public NXTRegulatedMotor getFlying();
-	public DifferentialPilot getMotor();
-	
-	
+	protected static final int ANGLE_DEFAULT = 45;
+
+	private static DifferentialPilot motor;
+	private static NXTRegulatedMotor flying;
+	private static int angleOld = 0;
+
+	/**
+	 * @return the motor
+	 */
+	public DifferentialPilot getMotor() {
+		if (motor == null) {
+			motor = new DifferentialPilot(WHEEL_DIAMETER, WHEEL_THICK,
+					MOTOR_TRACTION_ONE, MOTOR_TRACTION_TWO);
+		}
+
+		return motor;
+	}
+
+	/**
+	 * @return the flying
+	 */
+	public NXTRegulatedMotor getFlying() {
+
+		if (flying == null) {
+			flying = MOTOR_FRONT_ENGINE;
+		}
+
+		return flying;
+	}
+
+	/*
+	 * movement control
+	 */
+
+	public void forward() {
+		this.getMotor().backward();
+	}
+
+	public void backward() {
+		this.getMotor().forward();
+	}
+
+	public void stop() {
+		this.getMotor().stop();
+	}
+
+	/**
+	 * 
+	 */
+	public void left() {
+		this.getFlying().rotate(this.ANGLE_DEFAULT);
+		this.controlAngle(this.ANGLE_DEFAULT);
+	}
+
+	public void rigth() {
+		int angleReversed = (-1) * this.ANGLE_DEFAULT;
+		this.getFlying().rotate(angleReversed);
+		this.controlAngle(angleReversed);
+	}
+
+	public void axisStabilized() {
+		if (this.angleOld != 0) {
+			this.getFlying().rotate((-1) * this.angleOld);
+			this.angleOld = 0;
+		}
+	}
+
+	public void turn(int angle) {
+		this.getFlying().rotate(angle);
+		this.controlAngle(angle);
+	}
+
+	private void controlAngle(int angleNew) {
+		this.angleOld = +angleNew;
+		System.out.println(angleOld);
+	}
+
 }

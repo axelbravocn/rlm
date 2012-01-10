@@ -32,20 +32,28 @@
  **********************************************************************************
  */
 
-package rlm.ia.reaction.trajectory.motor;
+package rlm.ia.reaction.motor;
+
+import lejos.nxt.NXTRegulatedMotor;
+import lejos.robotics.navigation.DifferentialPilot;
 
 /**
  * @author flavio
  * 
  */
-public class Console extends Gear {
+public interface Motor {
 
-	public double getDistance(){
-		float turned = this.getMotor().getMovement().getAngleTurned();
-		float radius = this.getMotor().getMovement().getArcRadius();
-		
-		return this.getMotor().getMovement().convertAngleToDistance(turned, radius);
-		
-	}
+	//Motor
+	NXTRegulatedMotor MOTOR_TRACTION_ONE = lejos.nxt.Motor.A;
+	NXTRegulatedMotor MOTOR_TRACTION_TWO = lejos.nxt.Motor.C;
+	NXTRegulatedMotor MOTOR_FRONT_ENGINE = lejos.nxt.Motor.B;
+	
+	//Wheel
+	double WHEEL_DIAMETER = 4.8;
+	double WHEEL_THICK = 2.1;
+	
+	public NXTRegulatedMotor getFlying();
+	public DifferentialPilot getMotor();
+	
 	
 }
