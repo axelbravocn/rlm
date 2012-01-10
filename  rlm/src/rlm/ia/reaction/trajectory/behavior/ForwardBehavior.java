@@ -40,7 +40,7 @@ import lejos.robotics.subsumption.Behavior;
  * @author flavio
  * 
  */
-public class GoForward extends TrajectoryControl implements Behavior {
+public class ForwardBehavior extends TrajectoryControl implements Behavior {
 
 	/*
 	 * (non-Javadoc)
@@ -59,7 +59,7 @@ public class GoForward extends TrajectoryControl implements Behavior {
 			}
 		}
 		
-		Arbitrator go = new Arbitrator(new Behavior[] { new GoDivert() });
+		Arbitrator go = new Arbitrator(new Behavior[] { new DivertBehavior() });
 		go.start();
 
 	}

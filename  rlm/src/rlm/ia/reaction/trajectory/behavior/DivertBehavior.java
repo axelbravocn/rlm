@@ -31,63 +31,98 @@
  *	
  **********************************************************************************
  */
+package rlm.ia.reaction.trajectory.behavior;
 
-package rlm.ia.reaction.trajectory.motor;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
 
 /**
  * @author flavio
  * 
  */
-public class Fly extends Gear{
-	
-	static int angleOld = 0;
-	
+public class DivertBehavior extends TrajectoryControl implements Behavior {
+
 	/*
-	 * movement control
-	 */
-	
-	public void forward(){
-		this.getMotor().backward();
-	}
-	
-	public void backward() {
-		this.getMotor().forward();
-	}
-	
-	public void stop(){
-		this.getMotor().stop();
-	}
-
-	/**
+	 * (non-Javadoc)
 	 * 
+	 * @see lejos.robotics.subsumption.Behavior#action()
 	 */
-	public void left() {
-		this.getFlying().rotate(this.ANGLE_DEFAULT);
-		this.controlAngle(this.ANGLE_DEFAULT);
-	}
-	
-	public void rigth() {
-		int angleReversed =  (-1) * this.ANGLE_DEFAULT;
-		this.getFlying().rotate(angleReversed);
-		this.controlAngle(angleReversed);
-	}
-	
-	public void axisStabilized(){
-		if(this.angleOld != 0 ){
-			this.getFlying().rotate( (-1) * this.angleOld );
-			this.angleOld = 0;
+	@Override
+	public void action() {
+		boolean exit = true, left = false;
+
+		int count = 0;
+		try {
+
+			while (exit) {
+				this.getFly().stop();
+
+				if (count < 3 && !left) {
+
+					this.getFly().left();
+
+					this.getFly().backward();
+
+					Thread.sleep(100);
+
+					this.getFly().stop();
+
+					this.getFly().axisStabilized();
+
+					count++;
+					if (count > 2)
+						left = true;
+
+				} else {
+					this.getFly().rigth();
+
+					this.getFly().backward();
+
+					Thread.sleep(100);
+
+					this.getFly().stop();
+
+					this.getFly().axisStabilized();
+
+					count--;
+					if (count == 0)
+						left = false;
+				}
+
+				if (this.getView().distance() > 15) {
+					exit = false;
+				}
+			}
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-	}
-	
-	public void turn(int angle){
-		this.getFlying().rotate(angle);
-		this.controlAngle(angle);
-	}
-	
-	private void controlAngle(int angleNew){
-		this.angleOld =+ angleNew;
-		System.out.println(angleOld);
+
+		Arbitrator go = new Arbitrator(new Behavior[] { new ForwardBehavior() });
+		go.start();
+
 	}
 
-	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see lejos.robotics.subsumption.Behavior#suppress()
+	 */
+	@Override
+	public void suppress() {
+		this.getFly().stop();
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see lejos.robotics.subsumption.Behavior#takeControl()
+	 */
+	@Override
+	public boolean takeControl() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
 }

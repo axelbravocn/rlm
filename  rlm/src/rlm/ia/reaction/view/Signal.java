@@ -34,6 +34,7 @@
 
 package rlm.ia.reaction.view;
 
+
 /**
  * @author flavio
  * 
@@ -41,4 +42,5 @@ package rlm.ia.reaction.view;
 public interface Signal {
 
 	int distance();
+
 }
