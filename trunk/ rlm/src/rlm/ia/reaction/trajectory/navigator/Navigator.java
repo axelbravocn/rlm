@@ -31,59 +31,82 @@
  *	
  **********************************************************************************
  */
-package rlm.ia.reaction.trajectory.behavior;
+package rlm.ia.reaction.trajectory.navigator;
 
-import rlm.ia.reaction.trajectory.navigator.Navigator;
-import lejos.robotics.subsumption.Arbitrator;
-import lejos.robotics.subsumption.Behavior;
+import lejos.robotics.localization.OdometryPoseProvider;
+import lejos.robotics.navigation.ArcRotateMoveController;
+import lejos.robotics.navigation.Pose;
+import rlm.ia.reaction.motor.Gear;
+import rlm.ia.reaction.view.Directions;
+import rlm.ia.reaction.view.Signal;
 
 /**
  * @author flavio
  * 
  */
-public class ForwardBehavior extends Navigator implements Behavior {
+public class Navigator {
 
-	/*
-	 * (non-Javadoc)
+	private Gear fly;
+	private Signal view;
+	private ArcRotateMoveController pilot;
+	private OdometryPoseProvider poseProvider;
+	private Pose pose = new Pose();
+	
+	/**
 	 * 
-	 * @see lejos.robotics.subsumption.Behavior#action()
 	 */
-	@Override
-	public void action() {
-		this.getFly().forward();
+	public Navigator() {
+		this.fly = new Gear();
+		this.view = new Directions();
+
+		pilot = this.fly.getMotor();
+		poseProvider = new OdometryPoseProvider(pilot);
 		
-		boolean exit = true;
-		while (exit) {
-			
-			if(this.getView().distance() <= 15){
-				exit = false;
-			}
-		}
-		
-		Arbitrator go = new Arbitrator(new Behavior[] { new DivertBehavior() });
-		go.start();
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lejos.robotics.subsumption.Behavior#suppress()
+	// Method getting and setting
+
+	/**
+	 * @return the fly
 	 */
-	@Override
-	public void suppress() {
-		this.getFly().stop();
+	public Gear getFly() {
+		return fly;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see lejos.robotics.subsumption.Behavior#takeControl()
+	/**
+	 * @param fly
+	 *            the fly to set
 	 */
-	@Override
-	public boolean takeControl() {
-		// TODO Auto-generated method stub
-		return true;
+	public void setFly(Gear fly) {
+		this.fly = fly;
 	}
 
+	/**
+	 * @return the view
+	 */
+	public Signal getView() {
+		return view;
+	}
+
+	/**
+	 * @param view the view to set
+	 */
+	public void setView(Signal view) {
+		this.view = view;
+	}
+
+	/**
+	 * @return the poseProvider
+	 */
+	public OdometryPoseProvider getPoseProvider() {
+		return poseProvider;
+	}
+
+	/**
+	 * @return the pose
+	 */
+	public Pose getPose() {
+		return pose;
+	}
+	
 }
