@@ -33,6 +33,7 @@
  */
 package rlm.ia.reaction.trajectory.behavior;
 
+import rlm.ia.reaction.trajectory.navigator.Navigator;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
@@ -40,7 +41,7 @@ import lejos.robotics.subsumption.Behavior;
  * @author flavio
  * 
  */
-public class DivertBehavior extends TrajectoryControl implements Behavior {
+public class DivertBehavior extends Navigator implements Behavior {
 
 	/*
 	 * (non-Javadoc)

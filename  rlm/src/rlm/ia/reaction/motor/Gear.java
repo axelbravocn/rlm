@@ -74,6 +74,15 @@ public class Gear implements Motor {
 	}
 
 	/*
+	 * Configuration Motor
+	 */
+	
+	private void configurationMotor(){
+		motor.setTravelSpeed(20);
+		motor.setRotateSpeed(180);
+	}
+	
+	/*
 	 * movement control
 	 */
 
