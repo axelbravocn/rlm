@@ -44,11 +44,11 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import radar.reaction.panel.AboutPanel;
+import radar.reaction.panel.RadarPanel;
 
 /**
  * @author fsouza
@@ -92,6 +92,7 @@ public class MainFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				contentPane.removeAll();
 				contentPane.add(new AboutPanel(), BorderLayout.CENTER);
+				defaultComponent();
 				frame.setVisible(true);
 			}
 		});
@@ -99,19 +100,33 @@ public class MainFrame extends JFrame {
 		menuBar.add(mntmAbout);
 		
 		JMenuItem mntmNxt = new JMenuItem("NXT");
+		mntmNxt.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				contentPane.removeAll();
+				contentPane.add(new RadarPanel(), BorderLayout.CENTER);
+				defaultComponent();
+				frame.setVisible(true);
+			}
+		});
 		menuBar.add(mntmNxt);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		
-		JLabel lblTccIc = new JLabel("Developer by  Flavio Luiz S. Souza (TCC / IC)");
-		lblTccIc.setFont(new Font("Dialog", Font.ITALIC, 12));
-		contentPane.add(lblTccIc, BorderLayout.SOUTH);
+		defaultComponent();
 		
 		JPanel bodyPanel = new JPanel();
 		contentPane.add(bodyPanel, BorderLayout.CENTER);
 		
+	}
+	
+	private void defaultComponent(){
+		JLabel lblTccIc = new JLabel("Developer by  Flavio Luiz S. Souza (TCC / IC)");
+		lblTccIc.setFont(new Font("Dialog", Font.ITALIC, 12));
+		contentPane.add(lblTccIc, BorderLayout.SOUTH);
 	}
 
 }
