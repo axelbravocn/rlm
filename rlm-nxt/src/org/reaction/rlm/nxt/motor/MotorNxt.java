@@ -34,56 +34,33 @@
  *	
  **********************************************************************************
  */
+package org.reaction.rlm.nxt.motor;
 
-package org.reaction.rlm.nxt;
-
-import java.io.IOException;
-
-import lejos.nxt.LCD;
-
-import org.reaction.rlm.comm.CommunicationChannel;
-import org.reaction.rlm.nxt.navigator.ControlNavigator;
+import lejos.nxt.Motor;
+import lejos.robotics.localization.OdometryPoseProvider;
+import lejos.robotics.navigation.DifferentialPilot;
+import lejos.robotics.navigation.Navigator;
 
 /**
  * @author Flavio Souza
  *
  */
-public class ExplorerNXT implements Runnable {
+public class MotorNxt {
 
-	private ControlNavigator controlNavigator;
-	
-	public static void main(String[] args) {
-		ExplorerNXT nxt = new ExplorerNXT();
-		nxt.run();
-	}
+	private Navigator navigator;
+	private DifferentialPilot differentialPilot;
+	private OdometryPoseProvider odometryPoseProvider;
 	
 	/**
 	 * 
 	 */
-	public ExplorerNXT() {
-		this.controlNavigator = new ControlNavigator();
+	public MotorNxt() {
+		this.differentialPilot = new DifferentialPilot(DifferentialPilot.WHEEL_SIZE_NXT2, 15.5, Motor.B, Motor.C);
+		this.odometryPoseProvider = new OdometryPoseProvider(differentialPilot);
+		differentialPilot.addMoveListener(odometryPoseProvider);
+		
+		this.navigator = new Navigator(this.differentialPilot);
 	}
 	
-	@Override
-	public void run() {
-		try {
-			LCD.clear();
-			LCD.drawString("Explorer NXT - RLM", 1, 1);
-			LCD.drawString("Waiting for PC...", 1, 3);
-			
-			//create communication with server
-			CommunicationChannel channel = CommunicationChannel.getInstance();
-			channel.connectServer();
-			
-			LCD.clear();
-			//emitir som
-			
-			this.controlNavigator.start();
-		
-			
-		} catch (IOException e) {
-			LCD.drawString("Fail connection with PC...", 1, 3);
-		}
-	}
-
+	
 }
