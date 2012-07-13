@@ -34,56 +34,47 @@
  *	
  **********************************************************************************
  */
+package org.reaction.rlm.nxt.navigator;
 
-package org.reaction.rlm.nxt;
+import lejos.nxt.SensorPort;
+import lejos.nxt.TouchSensor;
+import lejos.nxt.UltrasonicSensor;
+import lejos.robotics.subsumption.Arbitrator;
+import lejos.robotics.subsumption.Behavior;
 
-import java.io.IOException;
-
-import lejos.nxt.LCD;
-
-import org.reaction.rlm.comm.CommunicationChannel;
-import org.reaction.rlm.nxt.navigator.ControlNavigator;
+import org.reaction.rlm.nxt.motor.MotorNxt;
 
 /**
  * @author Flavio Souza
  *
  */
-public class ExplorerNXT implements Runnable {
+public class ControlNavigator extends Thread {
 
-	private ControlNavigator controlNavigator;
+	private MotorNxt motorNxt;
+	private TouchSensor touchSensor;
+	private UltrasonicSensor ultrasonicSensor;
 	
-	public static void main(String[] args) {
-		ExplorerNXT nxt = new ExplorerNXT();
-		nxt.run();
-	}
 	
 	/**
 	 * 
 	 */
-	public ExplorerNXT() {
-		this.controlNavigator = new ControlNavigator();
+	public ControlNavigator() {
+		this.motorNxt = new MotorNxt();
+		this.touchSensor = new TouchSensor(SensorPort.S1);
+		this.ultrasonicSensor = new UltrasonicSensor(SensorPort.S2);
 	}
 	
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
 	@Override
 	public void run() {
-		try {
-			LCD.clear();
-			LCD.drawString("Explorer NXT - RLM", 1, 1);
-			LCD.drawString("Waiting for PC...", 1, 3);
-			
-			//create communication with server
-			CommunicationChannel channel = CommunicationChannel.getInstance();
-			channel.connectServer();
-			
-			LCD.clear();
-			//emitir som
-			
-			this.controlNavigator.start();
+		Behavior b1 = null;
 		
-			
-		} catch (IOException e) {
-			LCD.drawString("Fail connection with PC...", 1, 3);
-		}
-	}
+		Behavior behaviors[] = { b1 };
 
+		Arbitrator arbitrator = new Arbitrator(behaviors);
+		arbitrator.start();
+
+	}
 }
