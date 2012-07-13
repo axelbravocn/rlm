@@ -34,59 +34,12 @@
  *	
  **********************************************************************************
  */
-
-package org.reaction.rlm.nxt;
-
-import java.io.IOException;
-
-import lejos.nxt.LCD;
-
-import org.reaction.rlm.comm.CommunicationChannel;
-import org.reaction.rlm.nxt.data.DataShared;
-import org.reaction.rlm.nxt.navigator.ControlNavigator;
+package org.reaction.rlm.nxt.data;
 
 /**
  * @author Flavio Souza
  *
  */
-public class ExplorerNXT implements Runnable {
-
-	private DataShared dataShared;
-	private ControlNavigator controlNavigator;
-	
-	public static void main(String[] args) {
-		ExplorerNXT nxt = new ExplorerNXT();
-		nxt.run();
-	}
-	
-	/**
-	 * 
-	 */
-	public ExplorerNXT() {
-		this.dataShared = new DataShared();
-		this.controlNavigator = new ControlNavigator(dataShared);
-	}
-	
-	@Override
-	public void run() {
-		try {
-			LCD.clear();
-			LCD.drawString("Explorer NXT - RLM", 1, 1);
-			LCD.drawString("Waiting for PC...", 1, 3);
-			
-			//create communication with server
-			CommunicationChannel channel = CommunicationChannel.getInstance();
-			channel.connectServer();
-			
-			LCD.clear();
-			//emitir som
-			
-			this.controlNavigator.start();
-		
-			
-		} catch (IOException e) {
-			LCD.drawString("Fail connection with PC...", 1, 3);
-		}
-	}
+public class DataShared {
 
 }
