@@ -48,6 +48,28 @@ import lejos.nxt.comm.NXTConnection;
  */
 public class CommunicationChannel {
 
+	/*
+	 * NXTComm comm = null;
+		try
+		{
+			comm = NXTCommFactory.createNXTComm(conn_mode);
+			connected = comm.open(dev_info);
+			if ( !connected )
+			{
+				System.err.println("error: cannot connect to the device");
+				System.exit(1);
+			}
+			System.out.println("connected");
+			cmd.setNXTComm(comm);
+			name = dev_info.name;
+		}
+		catch (Exception e)
+		{
+			System.err.println("error: cannot create tribot");
+			System.exit(1);
+		}
+	 */
+	
 	private boolean isConnected;
 	private static CommunicationChannel channel;
 
