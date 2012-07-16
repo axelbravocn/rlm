@@ -58,6 +58,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
@@ -93,9 +94,15 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private Panel controlPanel;
 	private JTextField txtConnectToName;
 	private JTextField txtConnectToAddress;
-	private JButton btnConnectAndStart;
+	private JButton btnConnectNXT;
 	private JButton btnDisconnectAndStop;
+	
+	//MENU
 	private JMenuItem exitButton;
+	private JMenuItem contactButton;
+	private JMenuItem workButton;
+	private JMenuItem licenseButton;
+	
 	private JSlider sldMapScale;
 	private JSlider sldMapRotate;
 	
@@ -138,17 +145,26 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		JMenuBar menuBar = new JMenuBar();
 		
 		// Menus
-		JMenu mnuFileMenu = new JMenu("File");
+		JMenu fileMenu = new JMenu("File");
 		//mnuFileMenu.setIcon(APPLICATION_LOGO);
 		exitButton = new JMenuItem("Exit");
 		exitButton.addActionListener(this);
-		mnuFileMenu.add(exitButton);
+		fileMenu.add(exitButton);
 
 		// Menus
-		JMenu mnuAboutMenu = new JMenu("About");
-
-		menuBar.add(mnuFileMenu);
-		menuBar.add(mnuAboutMenu);
+		JMenu aboutMenu = new JMenu("Sobre");
+		contactButton = new JMenuItem("Contatos");
+		contactButton.addActionListener(this);
+		aboutMenu.add(contactButton);
+		workButton = new JMenuItem("Projeto");
+		workButton.addActionListener(this);
+		aboutMenu.add(workButton);
+		licenseButton = new JMenuItem("Licença");
+		licenseButton.addActionListener(this);
+		aboutMenu.add(licenseButton);
+		
+		menuBar.add(fileMenu);
+		menuBar.add(aboutMenu);
 		
 		return menuBar;
 	}
@@ -180,8 +196,8 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		controlPanel = new Panel();
 		
 		// Fonts
-		Font fntSectionHeader = new Font("Arial", Font.BOLD, 14);
-		Font fntLabelHeader = new Font("Arial", Font.BOLD, 12);
+		Font fontSectionHeader = new Font("Arial", Font.BOLD, 14);
+		Font fontLabelHeader = new Font("Arial", Font.BOLD, 12);
 		
 		JPanel logoPanel = new JPanel(new BorderLayout());
 		JLabel lblLogo = new JLabel("", RLM_LOGO_ICON_16_X_16_ICON, SwingConstants.CENTER);
@@ -192,29 +208,29 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		
 		// Connect
 		Label lblConnectionHeader = new Label("Dados de conexão");
-		lblConnectionHeader.setFont(fntSectionHeader);
+		lblConnectionHeader.setFont(fontSectionHeader);
 
 		Label lblConnectionNXTName = new Label("Nome NXT:");
-		lblConnectionNXTName.setFont(fntLabelHeader);
+		lblConnectionNXTName.setFont(fontLabelHeader);
 
 		Label lblConnectionNXTAddress = new Label("Endereço NXT:");
-		lblConnectionNXTAddress.setFont(fntLabelHeader);
+		lblConnectionNXTAddress.setFont(fontLabelHeader);
 		
 		// Map scale
 		Label lblMapScalesHeader = new Label("Escala do Mapa");
-		lblMapScalesHeader.setFont(fntSectionHeader);
+		lblMapScalesHeader.setFont(fontSectionHeader);
 		
 		Label lblMapRotateHeader = new Label("Rotação do Mapa");
-		lblMapRotateHeader.setFont(fntSectionHeader);
+		lblMapRotateHeader.setFont(fontSectionHeader);
 		
 		Panel pnlConnection = new Panel(new GridBagLayout());
 
 		txtConnectToName = new JTextField(CONNECT_TO_NAME_DEFAULT, 15);
 		txtConnectToAddress = new JTextField(CONNECT_TO_ADDRESS_DEFAULT, 15);
 		
-		btnConnectAndStart = new JButton("Iniciar");
-		btnConnectAndStart.addActionListener(this);
-		btnConnectAndStart.setEnabled(true);
+		btnConnectNXT = new JButton("Iniciar");
+		btnConnectNXT.addActionListener(this);
+		btnConnectNXT.setEnabled(true);
 
 		btnDisconnectAndStop = new JButton("Desligar");
 		btnDisconnectAndStop.addActionListener(this);
@@ -240,7 +256,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		CBC.gridx = 0;
 		CBC.gridy = 2;
 		CBC.gridwidth = 2;
-		pnlConnection.add(btnConnectAndStart, CBC);
+		pnlConnection.add(btnConnectNXT, CBC);
 		CBC.gridx = 1;
 		CBC.gridy = 2;		
 		CBC.gridwidth = 2;
@@ -307,9 +323,29 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	}
 	
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
+	public void actionPerformed(ActionEvent event) {
+		if (event.getSource() == exitButton) {
+			System.exit(0);
+		}else if (event.getSource() == contactButton){
+			this.showPane("title contact","contact text");
+		}else if(event.getSource() == workButton){
+			this.showPane("title work","title text");
+		}else if(event.getSource() == licenseButton){
+			this.showPane("text license","title license");
+		}else if(event.getSource() == btnConnectNXT){
+			this.connectNXT();
+		}
+			
 	}
 	
+	private void showPane(String title, String text){
+		JOptionPane .showMessageDialog(null, text,title,JOptionPane.INFORMATION_MESSAGE);
+	}
+	
+	private void connectNXT() {
+	
+	}
+		
 	@Override
 	public void run() {
 	}
