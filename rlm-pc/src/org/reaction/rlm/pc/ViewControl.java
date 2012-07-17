@@ -63,16 +63,18 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 
 import org.reaction.rlm.pc.util.AppConstants;
 import org.reaction.rlm.pc.util.IconsUtil;
-import org.reaction.rlm.pc.view.MapPanel;
+import org.reaction.rlm.pc.view.map.MapPanel;
 
 /**
  * @author Flavio Souza
  * 
  */
-public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runnable, WindowListener, ActionListener{
+public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runnable, WindowListener, ActionListener, ChangeListener{
 	
 	private static final long serialVersionUID = -8034828485199716108L;
 	
@@ -92,6 +94,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private final static int MAP_PANEL_BORDER_WIDTH = 2;
 	
 	private Panel controlPanel;
+	private MapPanel map;
 	private JTextField txtConnectToName;
 	private JTextField txtConnectToAddress;
 	private JButton btnConnectNXT;
@@ -173,6 +176,8 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		Panel mainPanel = new Panel();
 
 		controlPanel = createControlPanel();
+		
+		
 		
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(this.createLeftPanel(), BorderLayout.WEST);
@@ -301,7 +306,11 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	
 	private JPanel createMapPanel(){
 		JPanel mapPanel = new JPanel();
-		MapPanel map = new MapPanel(PANEL_MARGIN, VIEW_PANEL_BACKGROUND_COLOR, MAP_PANEL_BORDER_WIDTH, MAP_PANEL_BORDER_COLOR, MAP_PANEL_BACKGROUND_COLOR);
+		
+		map = new MapPanel();
+		map.getCenterChanged().add(this);
+		map.getScaleChanged().add(this);
+		
 		
 		mapPanel.setLayout(new BorderLayout());
 		mapPanel.add(map , BorderLayout.CENTER);
@@ -342,6 +351,19 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		JOptionPane .showMessageDialog(null, text,title,JOptionPane.INFORMATION_MESSAGE);
 	}
 	
+	/* (non-Javadoc)
+	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
+	 */
+	@Override
+	public void stateChanged(ChangeEvent event) {
+		if (event.getSource() == sldMapScale) {
+			if (map != null) {
+				map.setMapScale(sldMapScale.getValue(), false);
+			}
+		}
+		
+	}
+	
 	private void connectNXT() {
 	
 	}
@@ -377,6 +399,8 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	@Override
 	public void windowOpened(WindowEvent e) {
 	}
+
+	
 
 	
 }
