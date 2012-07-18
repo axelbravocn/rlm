@@ -42,7 +42,6 @@ import java.io.IOException;
 import lejos.nxt.LCD;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
-import org.reaction.rlm.nxt.data.DataShared;
 import org.reaction.rlm.nxt.navigator.ControlNavigator;
 
 /**

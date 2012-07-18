@@ -56,6 +56,7 @@ public class CommunicationChannel extends Thread{
 
 	private boolean isConnected;
 	private boolean isSendingPermission;
+	
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
 	private NXTConnection connection;
@@ -100,7 +101,14 @@ public class CommunicationChannel extends Thread{
 	@Override
 	public void run() {
 		while (this.isSendingPermission && this.getShareds() != null && this.getShareds().size() > 0) {
-			
+			try {
+				DataShared dShared = this.getShareds().get(0);
+				this.dataOut.writeChars(dShared.getTypeData().name());
+				this.dataOut.writeInt((int)dShared.getPoint().getX());
+				this.dataOut.writeInt((int)dShared.getPoint().getY());
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -174,6 +182,9 @@ public class CommunicationChannel extends Thread{
 	 */
 	public void setSendingPermission(boolean isSendingPermission) {
 		this.isSendingPermission = isSendingPermission;
+		
+		if(isSendingPermission == true)
+			this.start();
 	}
 
 	/**
