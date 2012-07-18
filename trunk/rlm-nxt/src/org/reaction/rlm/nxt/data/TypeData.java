@@ -40,6 +40,9 @@ package org.reaction.rlm.nxt.data;
  * @author Flavio Souza
  *
  */
-public enum StatusData {
+public enum TypeData {
+	
+	OBSTACLE,
+	FREEDOM
 
 }

@@ -40,11 +40,50 @@ import java.awt.Point;
 
 /**
  * @author Flavio Souza
- *
+ * 
  */
 public class DataShared {
 
 	private Point point;
-	private StatusData statusData;
-	
+	private TypeData typeData;
+
+	/**
+	 * @param position
+	 * @param obstacle
+	 */
+	public DataShared(Point position, TypeData type) {
+		this.point = position;
+		this.typeData = type;
+	}
+
+	/**
+	 * @return the point
+	 */
+	public Point getPoint() {
+		return point;
+	}
+
+	/**
+	 * @param point
+	 *            the point to set
+	 */
+	public void setPoint(Point point) {
+		this.point = point;
+	}
+
+	/**
+	 * @return the typeData
+	 */
+	public TypeData getTypeData() {
+		return typeData;
+	}
+
+	/**
+	 * @param typeData
+	 *            the typeData to set
+	 */
+	public void setTypeData(TypeData typeData) {
+		this.typeData = typeData;
+	}
+
 }

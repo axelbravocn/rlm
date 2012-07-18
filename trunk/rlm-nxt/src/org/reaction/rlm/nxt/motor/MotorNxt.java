@@ -36,6 +36,8 @@
  */
 package org.reaction.rlm.nxt.motor;
 
+import java.awt.Point;
+
 import lejos.nxt.Motor;
 import lejos.robotics.localization.OdometryPoseProvider;
 import lejos.robotics.navigation.DifferentialPilot;
@@ -61,6 +63,56 @@ public class MotorNxt {
 		
 		this.navigator = new Navigator(this.differentialPilot);
 	}
+	
+	
+	/**
+	 * 
+	 */
+	public void moveForward(){
+		
+	}
+
+	/**
+	 * 
+	 */
+	public void moveForward(int distance){
+		
+	}
+
+
+	/**
+	 * 
+	 */
+	public void stop() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	/**
+	 * 
+	 */
+	public void backward() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @param i
+	 */
+	public void rotate(int i) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	/**
+	 * @return
+	 */
+	public Point getPosition() {
+		return null;
+	}
+
+
 	
 	
 }
