@@ -42,7 +42,7 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-import org.reaction.rlm.nxt.data.DataShared;
+import org.reaction.rlm.nxt.comm.CommunicationChannel;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 
 /**
@@ -53,7 +53,7 @@ public class ControlNavigator extends Thread {
 
 	
 	private MotorNxt motorNxt;
-	private DataShared dataShared;
+	private CommunicationChannel comm;
 	private TouchSensor touchSensor;
 	private UltrasonicSensor ultrasonicSensor;
 	
@@ -62,8 +62,8 @@ public class ControlNavigator extends Thread {
 	 * @param dataShared 
 	 * 
 	 */
-	public ControlNavigator(DataShared dataShared) {
-		this.dataShared = dataShared;
+	public ControlNavigator(CommunicationChannel comm) {
+		this.comm = comm;
 		this.motorNxt = new MotorNxt();
 		this.touchSensor = new TouchSensor(SensorPort.S1);
 		this.ultrasonicSensor = new UltrasonicSensor(SensorPort.S2);
