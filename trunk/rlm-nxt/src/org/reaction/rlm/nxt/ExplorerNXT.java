@@ -41,49 +41,47 @@ import java.io.IOException;
 
 import lejos.nxt.LCD;
 
-import org.reaction.rlm.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.comm.CommunicationChannel;
 import org.reaction.rlm.nxt.data.DataShared;
 import org.reaction.rlm.nxt.navigator.ControlNavigator;
 
 /**
  * @author Flavio Souza
- *
+ * 
  */
 public class ExplorerNXT implements Runnable {
 
-	private DataShared dataShared;
+	private CommunicationChannel comm;
 	private ControlNavigator controlNavigator;
-	
+
 	public static void main(String[] args) {
 		ExplorerNXT nxt = new ExplorerNXT();
 		nxt.run();
 	}
-	
+
 	/**
 	 * 
 	 */
 	public ExplorerNXT() {
-		this.dataShared = new DataShared();
-		this.controlNavigator = new ControlNavigator(dataShared);
+		this.comm = CommunicationChannel.getInstance();
+		this.controlNavigator = new ControlNavigator(comm);
 	}
-	
+
 	@Override
 	public void run() {
 		try {
 			LCD.clear();
 			LCD.drawString("Explorer NXT - RLM", 1, 1);
 			LCD.drawString("Waiting for PC...", 1, 3);
-			
-			//create communication with server
-			CommunicationChannel channel = CommunicationChannel.getInstance();
-			channel.connectServer();
-			
-			LCD.clear();
-			//emitir som
-			
+
+			// create communication with server
+			this.comm.connectServer();
 			this.controlNavigator.start();
-		
-			
+			LCD.clear();
+
+			// emitir som
+
+
 		} catch (IOException e) {
 			LCD.drawString("Fail connection with PC...", 1, 3);
 		}

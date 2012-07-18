@@ -36,15 +36,10 @@
  */
 package org.reaction.rlm.nxt.data;
 
-import java.awt.Point;
-
 /**
  * @author Flavio Souza
  *
  */
-public class DataShared {
+public enum StatusData {
 
-	private Point point;
-	private StatusData statusData;
-	
 }
