@@ -37,9 +37,7 @@
 
 package org.reaction.rlm.nxt;
 
-import java.io.IOException;
-
-import lejos.nxt.LCD;
+import lejos.nxt.Button;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
 import org.reaction.rlm.nxt.navigator.ControlNavigator;
@@ -68,22 +66,23 @@ public class ExplorerNXT implements Runnable {
 
 	@Override
 	public void run() {
-		try {
-			LCD.clear();
-			LCD.drawString("Explorer NXT - RLM", 1, 1);
-			LCD.drawString("Waiting for PC...", 1, 3);
+		//try {
 
 			// create communication with server
-			this.comm.connectServer();
+			//this.comm.connectServer();
 			this.controlNavigator.start();
-			LCD.clear();
 
+			while(true){
+				if (Button.ESCAPE.isPressed()) {
+					System.exit(0);
+				}
+			}
 			// emitir som
 
 
-		} catch (IOException e) {
-			LCD.drawString("Fail connection with PC...", 1, 3);
-		}
+		//} catch (IOException e) {
+			//LCD.drawString("Fail connection with PC...", 1, 3);
+		//}
 	}
 
 }
