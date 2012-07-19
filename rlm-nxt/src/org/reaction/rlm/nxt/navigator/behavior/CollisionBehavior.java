@@ -54,6 +54,8 @@ public class CollisionBehavior implements Behavior {
 	private CommunicationChannel comm;
 	private TouchSensor touchSensor;
 
+	private boolean isAction = false;
+	
 	/**
 	 * @param motorNxt
 	 * @param touchSensor
@@ -73,7 +75,11 @@ public class CollisionBehavior implements Behavior {
 	 */
 	@Override
 	public boolean takeControl() {
-		return this.touchSensor.isPressed();
+		if(!this.isAction)
+			this.isAction = this.touchSensor.isPressed();
+		
+		System.out.println(this.isAction);
+		return this.isAction;
 	}
 
 	/*
@@ -83,17 +89,20 @@ public class CollisionBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		this.comm.getShareds().add(
-				new DataShared(this.motorNxt.getPosition(), TypeData.OBSTACLE));
-
+		//this.comm.getShareds().add(new DataShared(this.motorNxt.getPosition(), TypeData.OBSTACLE));
+		System.out.println("Collision action");
 		this.motorNxt.backward();
 		try {
-			Thread.sleep(250);
+			Thread.sleep(450);
 		} catch (InterruptedException e) {
 			
 		}
 		this.motorNxt.stop();
-		this.motorNxt.rotate(20);
+		this.motorNxt.rotate(30);
+		
+		System.out.println("Collision action end");
+		
+		this.isAction = false;
 	}
 
 	/*
@@ -103,6 +112,7 @@ public class CollisionBehavior implements Behavior {
 	 */
 	@Override
 	public void suppress() {
+		System.out.println("Collision suppress");
 		this.motorNxt.stop();
 	}
 

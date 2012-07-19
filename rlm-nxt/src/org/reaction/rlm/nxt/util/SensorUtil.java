@@ -42,6 +42,6 @@ package org.reaction.rlm.nxt.util;
  */
 public interface SensorUtil {
 
-	int ULTRA_DIST_MIN = 0;
+	int ULTRA_DIST_MIN = 30;
 
 }

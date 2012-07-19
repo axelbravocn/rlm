@@ -51,9 +51,7 @@ import lejos.robotics.subsumption.Behavior;
 public class WalkBehavior implements Behavior {
 
 	private MotorNxt motorNxt;
-	private TouchSensor touchSensor;
 	private CommunicationChannel comm;
-	private UltrasonicSensor ultrasonicSensor;
 	
 	private boolean suspendAction = false;
 	
@@ -63,11 +61,16 @@ public class WalkBehavior implements Behavior {
 	 * @param ultrasonicSensor
 	 * @param comm
 	 */
-	public WalkBehavior(MotorNxt motorNxt, TouchSensor touchSensor, UltrasonicSensor ultrasonicSensor, CommunicationChannel comm) {
+	/**
+	 * 
+	 */
+	public WalkBehavior() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	public WalkBehavior(MotorNxt motorNxt, CommunicationChannel comm) {
 		this.comm = comm;
 		this.motorNxt = motorNxt;
-		this.touchSensor = touchSensor;
-		this.ultrasonicSensor = ultrasonicSensor;
 	}
 	
 	/* (non-Javadoc)
@@ -84,14 +87,6 @@ public class WalkBehavior implements Behavior {
 	@Override
 	public void action() {
 		this.motorNxt.moveForward();
-		this.comm.setSendingPermission(true);
-		
-		while (!this.suspendAction) {
-			
-			if(this.suspendAction)
-				this.motorNxt.stop();
-			
-		}
 	}
 
 	/* (non-Javadoc)
@@ -99,10 +94,8 @@ public class WalkBehavior implements Behavior {
 	 */
 	@Override
 	public void suppress() {
-		this.suspendAction = this.touchSensor.isPressed();
-		
-		if((!this.suspendAction) && this.ultrasonicSensor.getDistance() <= SensorUtil.ULTRA_DIST_MIN)
-			this.suspendAction = true;
+		System.out.println("suppress");
+		this.motorNxt.stop();
 	}
 
 }

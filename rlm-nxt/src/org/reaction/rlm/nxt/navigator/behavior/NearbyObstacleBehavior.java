@@ -34,82 +34,71 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.motor;
+package org.reaction.rlm.nxt.navigator.behavior;
 
-import java.awt.Point;
+import lejos.nxt.UltrasonicSensor;
+import lejos.robotics.subsumption.Behavior;
 
-import lejos.nxt.Motor;
-import lejos.robotics.localization.OdometryPoseProvider;
-import lejos.robotics.navigation.DifferentialPilot;
-import lejos.robotics.navigation.Navigator;
+import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.motor.MotorNxt;
+import org.reaction.rlm.nxt.util.SensorUtil;
 
 /**
  * @author Flavio Souza
  *
  */
-public class MotorNxt {
+public class NearbyObstacleBehavior implements Behavior{
 
-	private Navigator navigator;
-	private DifferentialPilot differentialPilot;
-	private OdometryPoseProvider odometryPoseProvider;
+	private MotorNxt motorNxt;
+	private CommunicationChannel comm;
+	private UltrasonicSensor ultrasonicSensor;
 	
 	/**
-	 * 
+	 * @param motorNxt2
+	 * @param ultrasonicSensor2
+	 * @param comm2
 	 */
-	public MotorNxt() {
-		this.differentialPilot = new DifferentialPilot(DifferentialPilot.WHEEL_SIZE_NXT2, 15.5, Motor.A, Motor.C);
-		this.odometryPoseProvider = new OdometryPoseProvider(differentialPilot);
-		differentialPilot.addMoveListener(odometryPoseProvider);
+	public NearbyObstacleBehavior(MotorNxt motorNxt, UltrasonicSensor ultrasonicSensor, CommunicationChannel comm) {
+		this.comm = comm;
+		this.motorNxt = motorNxt;
+		this.ultrasonicSensor = ultrasonicSensor;
+	}
+
+	/* (non-Javadoc)
+	 * @see lejos.robotics.subsumption.Behavior#takeControl()
+	 */
+	@Override
+	public boolean takeControl() {
+		System.out.println(this.ultrasonicSensor.getDistance());
+		return this.ultrasonicSensor.getDistance() <= SensorUtil.ULTRA_DIST_MIN;
+	}
+
+	/* (non-Javadoc)
+	 * @see lejos.robotics.subsumption.Behavior#action()
+	 */
+	@Override
+	public void action() {
+		System.out.println("NearbyObstacle action");
+		this.motorNxt.backward();
+		try {
+			Thread.sleep(450);
+		} catch (InterruptedException e) {
+			
+		}
+		this.motorNxt.stop();
+		this.motorNxt.rotate(30);
 		
-		this.navigator = new Navigator(this.differentialPilot);
-	}
-	
-	
-	/**
-	 * 
-	 */
-	public void moveForward(){
-		this.differentialPilot.forward();
-	}
-
-	/**
-	 * 
-	 */
-	public void moveForward(int distance){
+		System.out.println("NearbyObstacle action end");
 		
 	}
 
-
-	/**
-	 * 
+	/* (non-Javadoc)
+	 * @see lejos.robotics.subsumption.Behavior#suppress()
 	 */
-	public void stop() {
-		this.differentialPilot.stop();
+	@Override
+	public void suppress() {
+		System.out.println("NearbyObstacle suppress");
+		this.motorNxt.stop();		
 	}
 
-
-	/**
-	 * 
-	 */
-	public void backward() {
-		this.differentialPilot.backward();
-	}
-
-	/**
-	 * @param i
-	 */
-	public void rotate(double angle) {
-		this.differentialPilot.rotate(angle);
-	}
-
-	/**
-	 * @return
-	 */
-	public Point getPosition() {
-		return null;
-	}
-
-
-	
-	
 }
