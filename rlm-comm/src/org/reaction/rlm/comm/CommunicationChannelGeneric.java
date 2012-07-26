@@ -41,7 +41,7 @@ package org.reaction.rlm.comm;
  * @author Flavio Souza
  * 
  */
-public abstract class CommunicationChannelGeneric extends Thread {
+public abstract class CommunicationChannelGeneric extends Thread implements ChannelGeneric {
 
 	private boolean isConnected;
 

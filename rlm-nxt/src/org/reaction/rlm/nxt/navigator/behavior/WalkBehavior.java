@@ -54,8 +54,6 @@ public class WalkBehavior implements Behavior {
 	private MotorNxt motorNxt;
 	private CommunicationChannel comm;
 	
-	private boolean suspendAction = false;
-	
 	/**
 	 * @param motorNxt
 	 * @param touchSensor
@@ -87,10 +85,7 @@ public class WalkBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		//this.comm.addPoint(TypeData.FREEDOM, this.motorNxt.getPosition());
-		//System.out.println("X="+this.motorNxt.getPosition().getX()+" y="+this.motorNxt.getPosition().getY());
 		this.motorNxt.moveForward();
-		//System.out.println("saiu");
 	}
 
 	/* (non-Javadoc)
@@ -98,7 +93,6 @@ public class WalkBehavior implements Behavior {
 	 */
 	@Override
 	public void suppress() {
-		System.out.println("suppress");
 		this.motorNxt.stop();
 	}
 

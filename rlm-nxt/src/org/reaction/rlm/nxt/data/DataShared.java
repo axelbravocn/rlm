@@ -45,13 +45,13 @@ import lejos.robotics.navigation.Pose;
 public class DataShared {
 
 	private Pose pose;
-	private TypeData typeData;
+	private int typeData;
 
 	/**
 	 * @param position
 	 * @param obstacle
 	 */
-	public DataShared(Pose pose, TypeData type) {
+	public DataShared(Pose pose, int type) {
 		this.pose = pose;
 		this.typeData = type;
 	}
@@ -74,7 +74,7 @@ public class DataShared {
 	/**
 	 * @return the typeData
 	 */
-	public TypeData getTypeData() {
+	public int getTypeData() {
 		return typeData;
 	}
 
@@ -82,7 +82,7 @@ public class DataShared {
 	 * @param typeData
 	 *            the typeData to set
 	 */
-	public void setTypeData(TypeData typeData) {
+	public void setTypeData(int typeData) {
 		this.typeData = typeData;
 	}
 

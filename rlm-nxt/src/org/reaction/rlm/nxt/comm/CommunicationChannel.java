@@ -47,7 +47,6 @@ import lejos.nxt.comm.NXTConnection;
 import lejos.robotics.navigation.Pose;
 
 import org.reaction.rlm.nxt.data.DataShared;
-import org.reaction.rlm.nxt.data.TypeData;
 
 /**
  * @author Flavio Souza
@@ -115,7 +114,7 @@ public class CommunicationChannel extends Thread{
 		
 				try {
 					dShared = this.shareds.get(0);
-					this.dataOut.writeInt(dShared.getTypeData().ordinal());
+					this.dataOut.writeInt(dShared.getTypeData());
 					this.dataOut.writeFloat(dShared.getPose().getX());
 					this.dataOut.writeFloat(dShared.getPose().getY());
 					//this.shareds.remove(dShared);
@@ -127,7 +126,7 @@ public class CommunicationChannel extends Thread{
 	}
 	
 	
-	public void addPoint(TypeData type, Pose pose){
+	public void addPoint(int type, Pose pose){
 		DataShared ds = new DataShared(pose, type);
 		this.shareds.add(ds);
 		
