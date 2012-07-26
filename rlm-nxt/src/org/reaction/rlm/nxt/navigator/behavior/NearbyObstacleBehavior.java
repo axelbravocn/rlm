@@ -40,6 +40,7 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.data.TypeData;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.util.SensorUtil;
 
@@ -69,7 +70,6 @@ public class NearbyObstacleBehavior implements Behavior{
 	 */
 	@Override
 	public boolean takeControl() {
-		System.out.println(this.ultrasonicSensor.getDistance());
 		return this.ultrasonicSensor.getDistance() <= SensorUtil.ULTRA_DIST_MIN;
 	}
 
@@ -78,7 +78,9 @@ public class NearbyObstacleBehavior implements Behavior{
 	 */
 	@Override
 	public void action() {
-		System.out.println("NearbyObstacle action");
+		this.comm.addPoint(TypeData.OBSTACLE, this.motorNxt.getPosition());
+		//this.comm.setSendingPermission(true);
+		
 		this.motorNxt.backward();
 		try {
 			Thread.sleep(450);
@@ -88,8 +90,6 @@ public class NearbyObstacleBehavior implements Behavior{
 		this.motorNxt.stop();
 		this.motorNxt.rotate(30);
 		
-		System.out.println("NearbyObstacle action end");
-		
 	}
 
 	/* (non-Javadoc)
@@ -97,7 +97,6 @@ public class NearbyObstacleBehavior implements Behavior{
 	 */
 	@Override
 	public void suppress() {
-		System.out.println("NearbyObstacle suppress");
 		this.motorNxt.stop();		
 	}
 

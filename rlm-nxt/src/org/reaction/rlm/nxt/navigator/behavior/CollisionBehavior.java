@@ -40,8 +40,6 @@ import lejos.nxt.TouchSensor;
 import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
-import org.reaction.rlm.nxt.data.DataShared;
-import org.reaction.rlm.nxt.data.TypeData;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 
 /**
@@ -78,7 +76,6 @@ public class CollisionBehavior implements Behavior {
 		if(!this.isAction)
 			this.isAction = this.touchSensor.isPressed();
 		
-		System.out.println(this.isAction);
 		return this.isAction;
 	}
 
@@ -89,8 +86,7 @@ public class CollisionBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		//this.comm.getShareds().add(new DataShared(this.motorNxt.getPosition(), TypeData.OBSTACLE));
-		System.out.println("Collision action");
+		//this.comm.addPoint(TypeData.OBSTACLE, this.motorNxt.getPosition());
 		this.motorNxt.backward();
 		try {
 			Thread.sleep(450);
@@ -99,8 +95,6 @@ public class CollisionBehavior implements Behavior {
 		}
 		this.motorNxt.stop();
 		this.motorNxt.rotate(30);
-		
-		System.out.println("Collision action end");
 		
 		this.isAction = false;
 	}
@@ -112,7 +106,6 @@ public class CollisionBehavior implements Behavior {
 	 */
 	@Override
 	public void suppress() {
-		System.out.println("Collision suppress");
 		this.motorNxt.stop();
 	}
 
