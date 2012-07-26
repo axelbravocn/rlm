@@ -37,6 +37,7 @@
 package org.reaction.rlm.nxt.navigator.behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.data.TypeData;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.util.SensorUtil;
 
@@ -86,7 +87,10 @@ public class WalkBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
+		//this.comm.addPoint(TypeData.FREEDOM, this.motorNxt.getPosition());
+		//System.out.println("X="+this.motorNxt.getPosition().getX()+" y="+this.motorNxt.getPosition().getY());
 		this.motorNxt.moveForward();
+		//System.out.println("saiu");
 	}
 
 	/* (non-Javadoc)

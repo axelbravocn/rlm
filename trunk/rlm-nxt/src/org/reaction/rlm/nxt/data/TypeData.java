@@ -42,7 +42,25 @@ package org.reaction.rlm.nxt.data;
  */
 public enum TypeData {
 	
-	OBSTACLE,
-	FREEDOM
+	OBSTACLE(0),
+	COLLISION(1),
+	FREEDOM(2);
+	
+	private int key;
 
+	/**
+	 * 
+	 */
+	private TypeData(int key) {
+		this.key = key;
+	}
+
+	/**
+	 * @return the key
+	 */
+	public int getKey() {
+		return key;
+	}
+	
+	
 }

@@ -42,26 +42,32 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.reaction.rlm.nxt.data.DataShared;
-
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.NXTConnection;
+import lejos.robotics.navigation.Pose;
+
+import org.reaction.rlm.nxt.data.DataShared;
+import org.reaction.rlm.nxt.data.TypeData;
 
 /**
  * @author Flavio Souza
  * 
  */
 public class CommunicationChannel extends Thread{
+
+	private static final int LIMIT_HISTORY_DATA = 100;
+	
 	private static CommunicationChannel channel;
 
 	private boolean isConnected;
-	private boolean isSendingPermission;
+	private boolean isSendingPermission = true;
 	
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
 	private NXTConnection connection;
 
 	private List<DataShared> shareds;
+	private List<DataShared> historyShared;
 
 	public static CommunicationChannel getInstance() {
 		if (channel == null) {
@@ -78,6 +84,7 @@ public class CommunicationChannel extends Thread{
 		this.setConnected(false);
 		this.setSendingPermission(false);
 		this.shareds = new ArrayList<DataShared>();
+		this.historyShared = new ArrayList<DataShared>();
 		this.start();
 	}
 	
@@ -86,11 +93,13 @@ public class CommunicationChannel extends Thread{
 	 * 
 	 */
 	public NXTConnection connectServer() throws IOException {
+		System.out.println("Found on server");
 		this.connection = Bluetooth.waitForConnection();
+		System.out.println("Connected on server");
 		this.dataOut = (DataOutputStream) connection.openDataOutputStream();
 		this.dataIn = (DataInputStream) connection.openDataInputStream();
 
-		channel.setConnected(true);
+		this.channel.setConnected(true);
 		
 		return connection;
 	}
@@ -100,16 +109,32 @@ public class CommunicationChannel extends Thread{
 	 */
 	@Override
 	public void run() {
-		while (this.isSendingPermission && this.getShareds() != null && this.getShareds().size() > 0) {
-			try {
-				DataShared dShared = this.getShareds().get(0);
-				this.dataOut.writeChars(dShared.getTypeData().name());
-				this.dataOut.writeInt((int)dShared.getPoint().getX());
-				this.dataOut.writeInt((int)dShared.getPoint().getY());
-			} catch (IOException e) {
-				e.printStackTrace();
+		DataShared dShared = null;
+		while (true){
+			if(this.shareds != null && this.shareds.size() > 0) {
+		
+				try {
+					dShared = this.shareds.get(0);
+					this.dataOut.writeInt(dShared.getTypeData().ordinal());
+					this.dataOut.writeFloat(dShared.getPose().getX());
+					this.dataOut.writeFloat(dShared.getPose().getY());
+					//this.shareds.remove(dShared);
+				} catch (IOException e) {
+					System.out.println(e);
+				}
 			}
 		}
+	}
+	
+	
+	public void addPoint(TypeData type, Pose pose){
+		DataShared ds = new DataShared(pose, type);
+		this.shareds.add(ds);
+		
+		if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
+			this.historyShared.remove(0);
+		
+		this.historyShared.add(ds);
 	}
 	
 	/**
@@ -187,12 +212,4 @@ public class CommunicationChannel extends Thread{
 			this.start();
 	}
 
-	/**
-	 * @return the shareds
-	 */
-	public List<DataShared> getShareds() {
-		return shareds;
-	}
-	
-	
 }

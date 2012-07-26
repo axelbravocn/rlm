@@ -12,7 +12,7 @@
  * @see        www.uniara.com.br
  * 
  * 
- * Purpose: This project was developed to obtensão the 
+ * PurPoint: This project was developed to obtensão the 
  * title of a Computer Engineer Flavio Luiz dos Santos de Souza
  * 
  * 
@@ -26,7 +26,7 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
  * INCLUDING WITHOUT LIMITATION WARRANTIES OF MERCHANTABILITY FITNESS FOR A 
- * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+ * PARTICULAR PURPoint AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
  * IN AN ACTION OF CONTRACT, OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH 
  * THE SOFTWARE OR THE USE OR OTHERS IN THE SOFTWARE.
@@ -36,7 +36,7 @@
  */
 package org.reaction.rlm.nxt.data;
 
-import java.awt.Point;
+import lejos.robotics.navigation.Pose;
 
 /**
  * @author Flavio Souza
@@ -44,31 +44,31 @@ import java.awt.Point;
  */
 public class DataShared {
 
-	private Point point;
+	private Pose pose;
 	private TypeData typeData;
 
 	/**
 	 * @param position
 	 * @param obstacle
 	 */
-	public DataShared(Point position, TypeData type) {
-		this.point = position;
+	public DataShared(Pose pose, TypeData type) {
+		this.pose = pose;
 		this.typeData = type;
 	}
 
 	/**
-	 * @return the point
+	 * @return the pose
 	 */
-	public Point getPoint() {
-		return point;
+	public Pose getPose() {
+		return pose;
 	}
 
 	/**
-	 * @param point
-	 *            the point to set
+	 * @param pose
+	 *            the pose to set
 	 */
-	public void setPoint(Point point) {
-		this.point = point;
+	public void setPose(Pose pose) {
+		this.pose = pose;
 	}
 
 	/**

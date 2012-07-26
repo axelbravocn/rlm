@@ -36,12 +36,15 @@
  */
 package org.reaction.rlm.nxt.motor;
 
-import java.awt.Point;
+import java.io.IOException;
 
 import lejos.nxt.Motor;
+import lejos.robotics.RegulatedMotor;
 import lejos.robotics.localization.OdometryPoseProvider;
 import lejos.robotics.navigation.DifferentialPilot;
 import lejos.robotics.navigation.Navigator;
+import lejos.robotics.navigation.Pose;
+import lejos.util.PilotProps;
 
 /**
  * @author Flavio Souza
@@ -57,11 +60,27 @@ public class MotorNxt {
 	 * 
 	 */
 	public MotorNxt() {
-		this.differentialPilot = new DifferentialPilot(DifferentialPilot.WHEEL_SIZE_NXT2, 15.5, Motor.A, Motor.C);
+		/*this.differentialPilot = new DifferentialPilot(DifferentialPilot.WHEEL_SIZE_NXT2, 15.5, Motor.A, Motor.C);
 		this.odometryPoseProvider = new OdometryPoseProvider(differentialPilot);
-		differentialPilot.addMoveListener(odometryPoseProvider);
+		this.differentialPilot.addMoveListener(odometryPoseProvider);
 		
 		this.navigator = new Navigator(this.differentialPilot);
+		*/
+		PilotProps pp = new PilotProps();
+    	try {
+			pp.loadPersistentValues();
+    	float wheelDiameter = Float.parseFloat(pp.getProperty(PilotProps.KEY_WHEELDIAMETER, "5.5"));
+    	float trackWidth = Float.parseFloat(pp.getProperty(PilotProps.KEY_TRACKWIDTH, "15.5"));
+    	RegulatedMotor leftMotor = PilotProps.getMotor(pp.getProperty(PilotProps.KEY_LEFTMOTOR, "A"));
+    	RegulatedMotor rightMotor = PilotProps.getMotor(pp.getProperty(PilotProps.KEY_RIGHTMOTOR, "C"));
+    	boolean reverse = Boolean.parseBoolean(pp.getProperty(PilotProps.KEY_REVERSE,"false"));
+    	
+    	differentialPilot = new DifferentialPilot(wheelDiameter, trackWidth, leftMotor, rightMotor, reverse);
+    	odometryPoseProvider = new OdometryPoseProvider(differentialPilot);
+    	} catch (IOException e) {
+    		// TODO Auto-generated catch block
+    		e.printStackTrace();
+    	}
 	}
 	
 	
@@ -84,7 +103,8 @@ public class MotorNxt {
 	 * 
 	 */
 	public void stop() {
-		this.differentialPilot.stop();
+		//this.differentialPilot.stop();
+		this.navigator.stop();
 	}
 
 
@@ -105,8 +125,8 @@ public class MotorNxt {
 	/**
 	 * @return
 	 */
-	public Point getPosition() {
-		return null;
+	public Pose getPosition() {
+		return this.odometryPoseProvider.getPose();
 	}
 
 
