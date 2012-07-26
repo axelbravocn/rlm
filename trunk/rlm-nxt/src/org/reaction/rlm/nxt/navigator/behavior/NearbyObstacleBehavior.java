@@ -78,10 +78,9 @@ public class NearbyObstacleBehavior implements Behavior{
 	 */
 	@Override
 	public void action() {
-		this.comm.addPoint(TypeData.OBSTACLE, this.motorNxt.getPosition());
-		//this.comm.setSendingPermission(true);
-		
+		this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition());
 		this.motorNxt.backward();
+		
 		try {
 			Thread.sleep(450);
 		} catch (InterruptedException e) {

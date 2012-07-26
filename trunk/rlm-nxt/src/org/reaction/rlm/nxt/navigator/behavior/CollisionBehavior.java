@@ -40,6 +40,7 @@ import lejos.nxt.TouchSensor;
 import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.data.TypeData;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 
 /**
@@ -49,8 +50,8 @@ import org.reaction.rlm.nxt.motor.MotorNxt;
 public class CollisionBehavior implements Behavior {
 
 	private MotorNxt motorNxt;
-	private CommunicationChannel comm;
 	private TouchSensor touchSensor;
+	private CommunicationChannel comm;
 
 	private boolean isAction = false;
 	
@@ -86,8 +87,11 @@ public class CollisionBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		//this.comm.addPoint(TypeData.OBSTACLE, this.motorNxt.getPosition());
+		//envia coordenadas do obstaculo
+		this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition());
+		
 		this.motorNxt.backward();
+		
 		try {
 			Thread.sleep(450);
 		} catch (InterruptedException e) {

@@ -42,4 +42,8 @@ package org.reaction.rlm.comm;
  */
 public interface ChannelGeneric {
 
+	void read();
+	
+	void write();
+	
 }
