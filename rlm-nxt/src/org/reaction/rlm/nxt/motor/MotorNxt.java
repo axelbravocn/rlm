@@ -62,7 +62,6 @@ public class MotorNxt {
 		*/
 		this.differentialPilot = new DifferentialPilot(DifferentialPilot.WHEEL_SIZE_NXT2, 15.5, Motor.A, Motor.C);
 		this.odometryPoseProvider = new OdometryPoseProvider(differentialPilot);
-			
 	}
 	
 	
