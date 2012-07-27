@@ -36,6 +36,10 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
+import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.motor.MotorNxt;
+
+import lejos.nxt.NXTRegulatedMotor;
 import lejos.robotics.subsumption.Behavior;
 
 /**
@@ -44,13 +48,28 @@ import lejos.robotics.subsumption.Behavior;
  */
 public class BootBehavior implements Behavior {
 
+	private MotorNxt motorNxt;
+	private boolean execute = false;
+	private CommunicationChannel comm;
+	private NXTRegulatedMotor observerMotor;
+	
+	/**
+	 * @param observerMotor 
+	 * 
+	 */
+	public BootBehavior(CommunicationChannel comm, MotorNxt motorNxt, NXTRegulatedMotor observerMotor) {
+		this.comm = comm;
+		this.execute = true;
+		this.motorNxt = motorNxt;
+		this.observerMotor = observerMotor;
+	}
+	
 	/* (non-Javadoc)
 	 * @see lejos.robotics.subsumption.Behavior#takeControl()
 	 */
 	@Override
 	public boolean takeControl() {
-		// TODO Auto-generated method stub
-		return false;
+		return this.execute;
 	}
 
 	/* (non-Javadoc)
@@ -58,17 +77,18 @@ public class BootBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		// TODO Auto-generated method stub
+		this.observerMotor.rotate(90);
+		this.observerMotor.rotate(-90);
 		
+		this.execute = false;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see lejos.robotics.subsumption.Behavior#suppress()
 	 */
 	@Override
 	public void suppress() {
-		// TODO Auto-generated method stub
-		
+		this.motorNxt.stop();		
 	}
 
 }
