@@ -34,7 +34,7 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.comm;
+package org.reaction.rlm.pc.comm;
 
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
@@ -42,35 +42,35 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lejos.nxt.comm.Bluetooth;
-import lejos.nxt.comm.NXTConnection;
+import lejos.pc.comm.NXTCommFactory;
+import lejos.pc.comm.NXTCommLogListener;
+import lejos.pc.comm.NXTConnector;
 import lejos.robotics.navigation.Pose;
 
-import org.reaction.rlm.nxt.data.DataShared;
+import org.reaction.rlm.pc.data.DataShared;
+import org.reaction.rlm.pc.data.TypeData;
 
 /**
  * @author Flavio Souza
  * 
  */
-public class CommunicationChannel extends Thread{
+public class CommunicationChannelPC extends Thread {
+	private static CommunicationChannelPC channel;
 
-	private static final int LIMIT_HISTORY_DATA = 100;
-	
-	private static CommunicationChannel channel;
+	private final static String ADDRESS_NXT = "00:16:53:0F:1C:97";
+	private final static String NAME_NXT = "NXT";
 
 	private boolean isConnected;
-	private boolean isSendingPermission = true;
-	
+
+	private NXTConnector conn;
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
-	private NXTConnection connection;
 
 	private List<DataShared> shareds;
-	private List<DataShared> historyShared;
 
-	public static CommunicationChannel getInstance() {
+	public static CommunicationChannelPC getInstance() {
 		if (channel == null) {
-			channel = new CommunicationChannel();
+			channel = new CommunicationChannelPC();
 		}
 
 		return channel;
@@ -79,66 +79,105 @@ public class CommunicationChannel extends Thread{
 	/**
 	 * 
 	 */
-	private CommunicationChannel() {
-		this.setConnected(false);
-		this.setSendingPermission(false);
+	private CommunicationChannelPC() {
 		this.shareds = new ArrayList<DataShared>();
-		this.historyShared = new ArrayList<DataShared>();
 	}
-	
+
 	/**
 	 * @throws IOException
 	 * 
 	 */
-	public NXTConnection connectServer() throws IOException {
-		System.out.println("Found on server");
-		this.connection = Bluetooth.waitForConnection();
-		System.out.println("Connected on server");
-		this.dataOut = (DataOutputStream) connection.openDataOutputStream();
-		this.dataIn = (DataInputStream) connection.openDataInputStream();
+	public NXTConnector connectNXT() throws IOException {
+		this.conn = new NXTConnector();
+		
+		this.conn.addLogListener(new NXTCommLogListener(){
+				public void logEvent(String message) {
+					System.out.println("BTSend Log.listener: "+message);
+				}
+	
+				public void logEvent(Throwable throwable) {
+					System.out.println("BTSend Log.listener - stack trace: ");
+					 throwable.printStackTrace();
+				}
+			} 
+		);
+		// Connect to any NXT over Bluetooth
+		boolean connected = this.conn.connectTo(NAME_NXT, ADDRESS_NXT, NXTCommFactory.BLUETOOTH);
+	
+		if (!connected) {
+			System.err.println("Failed to connect to any NXT");
+			System.exit(1);
+		}
+		
+		this.dataOut = new DataOutputStream(this.conn.getOutputStream());
+		this.dataIn = new DataInputStream(this.conn.getInputStream());
 		
 		this.channel.setConnected(true);
+
 		this.start();
-		
-		return connection;
+
+		return this.conn;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	@Override
 	public void run() {
-		DataShared dShared = null;
-		while (true){
-			synchronized (this.shareds) {
-				try {
-					if(this.shareds == null && this.shareds.size() > 0) {
-						dShared = this.shareds.get(0);
-						this.dataOut.writeInt(dShared.getTypeData());
-						this.dataOut.writeFloat(Float.valueOf(dShared.getPose().getX()));
-						this.dataOut.writeFloat(Float.valueOf(dShared.getPose().getY()));
-						this.dataOut.flush();
-						this.shareds.remove(dShared);
-						System.out.println(dShared);
-					}
-				} catch (IOException e) {
-					System.out.println(e);
-				}
-			}
+		while (this.channel.isConnected()) {
+			readData();
+		}
+	}
+
+	
+	private void readData(){
+		System.out.println("reading ");
+		int t = -1;
+		float x = 0;
+		float y = 0;
+		float h = 0;
+		try {
+			writeData(1);
+			t = dataIn.readInt();
+			x = dataIn.readFloat();
+			y = dataIn.readFloat();
+			h = dataIn.readFloat();
+			System.out.println("data  " + t + " " + x + " " + y+ " " + h);
+			this.addDataShared(t, x, y, h);
+			Thread.sleep(50);
+		} catch (IOException e) {
+			writeData(0);
+			System.out.println("error");
+		} catch (InterruptedException e) {
+			writeData(0);
+			System.out.println("error");
 		}
 	}
 	
-	
-	public void addPoint(int type, Pose pose){
-		DataShared ds = new DataShared(pose, type);
-		this.shareds.add(ds);
+	/**
+	 * @param t
+	 * @param x
+	 * @param y
+	 * @param h
+	 */
+	private void addDataShared(int t, float x, float y, float h) {
+		DataShared dShared = new DataShared();
+		dShared.setTypeData(TypeData.values()[t]);
+		dShared.setPose(new Pose(x, y, h));
 		
-		if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
-			this.historyShared.remove(0);
-		
-		this.historyShared.add(ds);
+		this.shareds.add(dShared);
 	}
-	
+
+	private void writeData(int code){
+		 try {
+			dataOut.writeInt(code);
+			dataOut.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 	/**
 	 * @return the isConnected
 	 */
@@ -157,7 +196,7 @@ public class CommunicationChannel extends Thread{
 	/**
 	 * @return the channel
 	 */
-	public CommunicationChannel getChannel() {
+	public CommunicationChannelPC getChannel() {
 		return channel;
 	}
 
@@ -165,7 +204,7 @@ public class CommunicationChannel extends Thread{
 	 * @param channel
 	 *            the channel to set
 	 */
-	public void setChannel(CommunicationChannel channel) {
+	public void setChannel(CommunicationChannelPC channel) {
 		this.channel = channel;
 	}
 
@@ -177,7 +216,8 @@ public class CommunicationChannel extends Thread{
 	}
 
 	/**
-	 * @param dataIn the dataIn to set
+	 * @param dataIn
+	 *            the dataIn to set
 	 */
 	public void setDataIn(DataInputStream dataIn) {
 		this.dataIn = dataIn;
@@ -191,24 +231,18 @@ public class CommunicationChannel extends Thread{
 	}
 
 	/**
-	 * @param dataOut the dataOut to set
+	 * @param dataOut
+	 *            the dataOut to set
 	 */
 	public void setDataOut(DataOutputStream dataOut) {
 		this.dataOut = dataOut;
 	}
 
 	/**
-	 * @return the isSendingPermission
+	 * @return the shareds
 	 */
-	public boolean isSendingPermission() {
-		return isSendingPermission;
-	}
-
-	/**
-	 * @param isSendingPermission the isSendingPermission to set
-	 */
-	public void setSendingPermission(boolean isSendingPermission) {
-		this.isSendingPermission = isSendingPermission;
+	public List<DataShared> getShareds() {
+		return shareds;
 	}
 
 }

@@ -44,9 +44,8 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
-import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
-import org.reaction.rlm.nxt.navigator.behavior.BootBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.CollisionBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.NearbyObstacleBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
@@ -59,7 +58,7 @@ public class ControlNavigator extends Thread {
 	
 	private MotorNxt motorNxt;
 	private TouchSensor touchSensor;
-	private CommunicationChannel comm;
+	private CommunicationChannelRobot comm;
 	private UltrasonicSensor ultrasonicSensor;
 	private NXTRegulatedMotor observerMotor = Motor.B;
 	
@@ -67,7 +66,7 @@ public class ControlNavigator extends Thread {
 	 * @param dataShared 
 	 * 
 	 */
-	public ControlNavigator(CommunicationChannel comm) {
+	public ControlNavigator(CommunicationChannelRobot comm) {
 		this.comm = comm;
 		this.motorNxt = new MotorNxt();
 		this.touchSensor = new TouchSensor(SensorPort.S2);
@@ -82,7 +81,7 @@ public class ControlNavigator extends Thread {
 		Behavior b1 = new WalkBehavior(this.motorNxt, this.comm);
 		Behavior b2 = new CollisionBehavior(this.motorNxt, this.touchSensor, this.comm);
 		Behavior b3 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm);
-		Behavior b4 = new BootBehavior(comm, motorNxt, observerMotor);
+		//Behavior b4 = new BootBehavior(comm, motorNxt, observerMotor);
 		
 		Behavior behaviors[] = { b1, b2, b3};
 

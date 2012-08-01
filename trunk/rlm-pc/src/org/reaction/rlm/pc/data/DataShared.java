@@ -36,7 +36,7 @@
  */
 package org.reaction.rlm.pc.data;
 
-import java.awt.Point;
+import lejos.robotics.navigation.Pose;
 
 /**
  * @author Flavio Souza
@@ -44,38 +44,38 @@ import java.awt.Point;
  */
 public class DataShared {
 
-	private Point point;
+	private Pose pose;
 	private TypeData typeData;
 
 	/**
 	 * 
 	 */
 	public DataShared() {
-		this.point = new Point();
+		this.pose = new Pose();
 	}
-	
+
 	/**
 	 * @param position
 	 * @param obstacle
 	 */
-	public DataShared(Point point, TypeData type) {
-		this.point = point;
+	public DataShared(Pose pose, TypeData type) {
+		this.pose = pose;
 		this.typeData = type;
 	}
 
 	/**
-	 * @return the Point
+	 * @return the pose
 	 */
-	public Point getPoint() {
-		return point;
+	public Pose getPose() {
+		return pose;
 	}
 
 	/**
-	 * @param Point
-	 *            the Point to set
+	 * @param pose
+	 *            the pose to set
 	 */
-	public void setPoint(Point point) {
-		this.point = point;
+	public void setPose(Pose pose) {
+		this.pose = pose;
 	}
 
 	/**

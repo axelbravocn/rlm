@@ -40,6 +40,7 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.data.TypeData;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.util.SensorUtil;
@@ -51,7 +52,7 @@ import org.reaction.rlm.nxt.util.SensorUtil;
 public class NearbyObstacleBehavior implements Behavior{
 
 	private MotorNxt motorNxt;
-	private CommunicationChannel comm;
+	private CommunicationChannelRobot comm;
 	private UltrasonicSensor ultrasonicSensor;
 	
 	/**
@@ -59,7 +60,7 @@ public class NearbyObstacleBehavior implements Behavior{
 	 * @param ultrasonicSensor2
 	 * @param comm2
 	 */
-	public NearbyObstacleBehavior(MotorNxt motorNxt, UltrasonicSensor ultrasonicSensor, CommunicationChannel comm) {
+	public NearbyObstacleBehavior(MotorNxt motorNxt, UltrasonicSensor ultrasonicSensor, CommunicationChannelRobot comm) {
 		this.comm = comm;
 		this.motorNxt = motorNxt;
 		this.ultrasonicSensor = ultrasonicSensor;

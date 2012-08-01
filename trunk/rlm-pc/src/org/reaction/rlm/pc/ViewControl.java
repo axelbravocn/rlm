@@ -67,7 +67,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.reaction.rlm.pc.comm.CommunicationChannel;
+import org.reaction.rlm.pc.comm.CommunicationChannelPC;
 import org.reaction.rlm.pc.util.AppConstants;
 import org.reaction.rlm.pc.util.IconsUtil;
 import org.reaction.rlm.pc.view.map.MapPanel;
@@ -95,7 +95,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private final static Color MAP_PANEL_BORDER_COLOR = Color.BLACK;
 	private final static int MAP_PANEL_BORDER_WIDTH = 2;
 	
-	private CommunicationChannel comm;
+	private CommunicationChannelPC comm;
 	
 	private Panel controlPanel;
 	private MapPanel map;
@@ -143,7 +143,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	public ViewControl(JFrame frame) {
 		this.setLayout(new BorderLayout());
 		this.add(getContentPanel(), BorderLayout.CENTER);
-		this.comm = CommunicationChannel.getInstance();
+		this.comm = CommunicationChannelPC.getInstance();
 		
 		Thread t = new Thread(this);
 		t.start();
@@ -378,7 +378,6 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		try {
 			this.comm.connectNXT();
 		} catch (IOException e) {
-			e.printStackTrace();
 			System.out.println(e);
 		}
 	}
@@ -410,8 +409,5 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	@Override
 	public void windowOpened(WindowEvent e) {
 	}
-
-	
-
 	
 }
