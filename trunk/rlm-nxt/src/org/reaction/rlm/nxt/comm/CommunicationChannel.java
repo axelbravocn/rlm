@@ -84,7 +84,6 @@ public class CommunicationChannel extends Thread{
 		this.setSendingPermission(false);
 		this.shareds = new ArrayList<DataShared>();
 		this.historyShared = new ArrayList<DataShared>();
-		this.start();
 	}
 	
 	/**
@@ -97,8 +96,9 @@ public class CommunicationChannel extends Thread{
 		System.out.println("Connected on server");
 		this.dataOut = (DataOutputStream) connection.openDataOutputStream();
 		this.dataIn = (DataInputStream) connection.openDataInputStream();
-
+		
 		this.channel.setConnected(true);
+		this.start();
 		
 		return connection;
 	}
@@ -110,14 +110,17 @@ public class CommunicationChannel extends Thread{
 	public void run() {
 		DataShared dShared = null;
 		while (true){
-			if(this.shareds != null && this.shareds.size() > 0) {
-		
+			synchronized (this.shareds) {
 				try {
-					dShared = this.shareds.get(0);
-					this.dataOut.writeInt(dShared.getTypeData());
-					this.dataOut.writeFloat(dShared.getPose().getX());
-					this.dataOut.writeFloat(dShared.getPose().getY());
-					//this.shareds.remove(dShared);
+					if(this.shareds == null && this.shareds.size() > 0) {
+						dShared = this.shareds.get(0);
+						this.dataOut.writeInt(dShared.getTypeData());
+						this.dataOut.writeFloat(Float.valueOf(dShared.getPose().getX()));
+						this.dataOut.writeFloat(Float.valueOf(dShared.getPose().getY()));
+						this.dataOut.flush();
+						this.shareds.remove(dShared);
+						System.out.println(dShared);
+					}
 				} catch (IOException e) {
 					System.out.println(e);
 				}
