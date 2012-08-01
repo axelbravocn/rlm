@@ -36,14 +36,11 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
-import org.reaction.rlm.nxt.comm.CommunicationChannel;
-import org.reaction.rlm.nxt.data.TypeData;
-import org.reaction.rlm.nxt.motor.MotorNxt;
-import org.reaction.rlm.nxt.util.SensorUtil;
-
-import lejos.nxt.TouchSensor;
-import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
+
+import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
+import org.reaction.rlm.nxt.motor.MotorNxt;
 
 /**
  * @author Flavio Souza
@@ -52,7 +49,7 @@ import lejos.robotics.subsumption.Behavior;
 public class WalkBehavior implements Behavior {
 
 	private MotorNxt motorNxt;
-	private CommunicationChannel comm;
+	private CommunicationChannelRobot comm;
 	
 	/**
 	 * @param motorNxt
@@ -67,7 +64,7 @@ public class WalkBehavior implements Behavior {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public WalkBehavior(MotorNxt motorNxt, CommunicationChannel comm) {
+	public WalkBehavior(MotorNxt motorNxt, CommunicationChannelRobot comm) {
 		this.comm = comm;
 		this.motorNxt = motorNxt;
 	}

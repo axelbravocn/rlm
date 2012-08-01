@@ -42,7 +42,7 @@ import java.io.IOException;
 import lejos.nxt.Button;
 import lejos.nxt.LCD;
 
-import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.navigator.ControlNavigator;
 
 /**
@@ -51,7 +51,7 @@ import org.reaction.rlm.nxt.navigator.ControlNavigator;
  */
 public class ExplorerNXT implements Runnable {
 
-	private CommunicationChannel comm;
+	private CommunicationChannelRobot comm;
 	private ControlNavigator controlNavigator;
 
 	public static void main(String[] args) {
@@ -63,7 +63,8 @@ public class ExplorerNXT implements Runnable {
 	 * 
 	 */
 	public ExplorerNXT() {
-		this.comm = CommunicationChannel.getInstance();
+		//this.comm = CommunicationChannel.getInstance();
+		this.comm = CommunicationChannelRobot.getInstance();
 		this.controlNavigator = new ControlNavigator(comm);
 	}
 
