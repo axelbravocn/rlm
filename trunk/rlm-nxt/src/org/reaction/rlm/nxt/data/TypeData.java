@@ -36,15 +36,16 @@
  */
 package org.reaction.rlm.nxt.data;
 
+
 /**
  * @author Flavio Souza
  *
  */
 public enum TypeData {
 	
-	OBSTACLE(0),
-	COLLISION(1),
-	FREEDOM(2);
+	OBSTACLE(1),
+	COLLISION(2),
+	FREEDOM(3);
 	
 	private int key;
 
@@ -61,6 +62,19 @@ public enum TypeData {
 	public int getKey() {
 		return key;
 	}
+
+	/**
+	 * @param t
+	 * @return
+	 */
+	public static TypeData find(int t) {
+		for (TypeData type : TypeData.values()) {
+			if(type.getKey() == t)
+				return type;
+		}
+		return null;
+	}
+
 	
 	
 }

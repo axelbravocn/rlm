@@ -86,4 +86,12 @@ public class DataShared {
 		this.typeData = typeData;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "x="+this.getPose().getX()+" y="+this.getPose().getY();
+	}
+	
 }
