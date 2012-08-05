@@ -37,6 +37,7 @@
 package org.reaction.rlm.pc.view.map;
 
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
 import java.awt.GraphicsEnvironment;
 import java.awt.Point;
@@ -47,12 +48,17 @@ import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import org.reaction.rlm.pc.comm.CommunicationChannelPC;
+import org.reaction.rlm.pc.data.DataShared;
+
 /**
  * @author Flavio Souza
  * 
  */
 public class MapPanel extends JPanel {
 
+	private static final long serialVersionUID = -9175215990792989321L;
+	
 	public final static int MAP_MIN_SCALE = 1;
 	public final static int MAP_MAX_SCALE = 150;
 
@@ -60,14 +66,15 @@ public class MapPanel extends JPanel {
 	private Point center;
 	private ArrayList<ChangeListener> scaleChanged;
 	private ArrayList<ChangeListener> centerChanged;
+	private CommunicationChannelPC comm;
 	
 	/**
+	 * @param comm 
 	 * 
 	 */
 	public MapPanel() {
 		this.scaleChanged = new ArrayList<ChangeListener>();
 		this.centerChanged = new ArrayList<ChangeListener>();
-
 	}
 	 
 	/* (non-Javadoc)
@@ -86,6 +93,22 @@ public class MapPanel extends JPanel {
 		OSIG.clearRect(0, 0, volatileImage.getWidth(), volatileImage.getHeight());
 
 		g.drawImage(volatileImage, 0, 0, null);
+	}
+	
+	/* (non-Javadoc)
+	 * @see javax.swing.JComponent#paint(java.awt.Graphics)
+	 */
+	@Override
+	public void paint(Graphics g) {
+		super.paintComponent (g);  
+		Graphics2D g2d = (Graphics2D)g.create(); // apesar do nome, isto é um clone ou uma cópia de g, não um objeto limpo e vazio  
+		if(this.comm != null){
+			
+			for (DataShared ds : this.comm.getShareds()) {
+				g.fillOval((int)ds.getPose().getX(), (int)ds.getPose().getY(), 10, 10);
+			}
+		}
+	    g2d.dispose();
 	}
 	
 	/**
@@ -161,7 +184,19 @@ public class MapPanel extends JPanel {
 	public void setCenter(Point center) {
 		this.center = center;
 	}
-	
-	
 
+	/**
+	 * @return the comm
+	 */
+	public CommunicationChannelPC getComm() {
+		return comm;
+	}
+
+	/**
+	 * @param comm the comm to set
+	 */
+	public void setComm(CommunicationChannelPC comm) {
+		this.comm = comm;
+	}
+	
 }

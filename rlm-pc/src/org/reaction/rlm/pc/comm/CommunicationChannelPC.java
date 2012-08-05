@@ -49,6 +49,8 @@ import lejos.robotics.navigation.Pose;
 
 import org.reaction.rlm.pc.data.DataShared;
 import org.reaction.rlm.pc.data.TypeData;
+import org.reaction.rlm.pc.listener.DataListener;
+import org.reaction.rlm.pc.view.map.MapPanel;
 
 /**
  * @author Flavio Souza
@@ -62,15 +64,17 @@ public class CommunicationChannelPC extends Thread {
 
 	private boolean isConnected;
 
+	private DataListener dataListener;
+	
 	private NXTConnector conn;
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
 
 	private List<DataShared> shareds;
-
-	public static CommunicationChannelPC getInstance() {
+	
+	public static CommunicationChannelPC getInstance(MapPanel map) {
 		if (channel == null) {
-			channel = new CommunicationChannelPC();
+			channel = new CommunicationChannelPC(map);
 		}
 
 		return channel;
@@ -79,8 +83,9 @@ public class CommunicationChannelPC extends Thread {
 	/**
 	 * 
 	 */
-	private CommunicationChannelPC() {
+	private CommunicationChannelPC(MapPanel map) {
 		this.shareds = new ArrayList<DataShared>();
+		dataListener = new DataListener(map);
 	}
 
 	/**
@@ -143,7 +148,7 @@ public class CommunicationChannelPC extends Thread {
 			t = dataIn.readInt();
 			x = dataIn.readFloat();
 			y = dataIn.readFloat();
-			h = dataIn.readFloat();
+			//h = dataIn.readFloat();
 			System.out.println("data  " + t + " " + x + " " + y+ " " + h);
 			this.addDataShared(t, x, y, h);
 			Thread.sleep(50);
@@ -162,12 +167,13 @@ public class CommunicationChannelPC extends Thread {
 	 * @param y
 	 * @param h
 	 */
-	private void addDataShared(int t, float x, float y, float h) {
+	public void addDataShared(int t, float x, float y, float h) {
 		DataShared dShared = new DataShared();
 		dShared.setTypeData(TypeData.values()[t]);
 		dShared.setPose(new Pose(x, y, h));
 		
 		this.shareds.add(dShared);
+		dataListener.actionPerformed(null);
 	}
 
 	private void writeData(int code){
