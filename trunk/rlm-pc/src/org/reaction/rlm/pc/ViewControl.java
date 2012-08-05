@@ -143,7 +143,8 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	public ViewControl(JFrame frame) {
 		this.setLayout(new BorderLayout());
 		this.add(getContentPanel(), BorderLayout.CENTER);
-		this.comm = CommunicationChannelPC.getInstance();
+		this.comm = CommunicationChannelPC.getInstance(this.map);
+		this.map.setComm(this.comm);
 		
 		Thread t = new Thread(this);
 		t.start();
@@ -181,8 +182,6 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		Panel mainPanel = new Panel();
 
 		controlPanel = createControlPanel();
-		
-		
 		
 		mainPanel.setLayout(new BorderLayout());
 		mainPanel.add(this.createLeftPanel(), BorderLayout.WEST);
@@ -316,7 +315,6 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		map.getCenterChanged().add(this);
 		map.getScaleChanged().add(this);
 		
-		
 		mapPanel.setLayout(new BorderLayout());
 		mapPanel.add(map , BorderLayout.CENTER);
 		
@@ -378,7 +376,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		try {
 			this.comm.connectNXT();
 		} catch (IOException e) {
-			System.out.println(e);
+			e.printStackTrace();
 		}
 	}
 
