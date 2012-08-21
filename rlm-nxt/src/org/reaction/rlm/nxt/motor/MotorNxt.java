@@ -96,7 +96,7 @@ public class MotorNxt {
 	}
 
 	/**
-	 * @param i
+	 * @param angle
 	 */
 	public void rotate(double angle) {
 		this.differentialPilot.rotate(angle);

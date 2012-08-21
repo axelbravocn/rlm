@@ -48,6 +48,7 @@ import lejos.nxt.comm.NXTConnection;
 import lejos.robotics.navigation.Pose;
 
 import org.reaction.rlm.nxt.data.DataShared;
+import org.reaction.rlm.nxt.data.TypeData;
 
 /**
  * @author Flavio Souza
@@ -140,16 +141,36 @@ public class CommunicationChannelRobot extends Thread{
 			dataOut.writeFloat(Float.valueOf(dShared.getPose().getX()));
 			dataOut.writeFloat(Float.valueOf(dShared.getPose().getY()));
 			dataOut.writeFloat(Float.valueOf(dShared.getPose().getHeading()));
+			
+			if(TypeData.OBSTACLE.ordinal() == dShared.getTypeData())
+				dataOut.writeFloat(Float.valueOf(dShared.getData()));
+			
 			dataOut.flush();
-			//LCD.drawInt(Math.round(1), 4, 0, 1);
-			//LCD.drawInt(Math.round(2.5F), 4, 5, 1);
-			//LCD.drawInt(Math.round(4.7F), 4, 10, 1);
 		} catch (IOException e) {
 		}
 	}
-	
+
+	/**
+	 * @param ordinal
+	 * @param position
+	 */
 	public void addPoint(int type, Pose pose){
 		DataShared ds = new DataShared(pose, type);
+		this.shareds.add(ds);
+		
+		if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
+			this.historyShared.remove(0);
+		
+		this.historyShared.add(ds);
+	}
+	
+	/**
+	 * @param type
+	 * @param pose
+	 * @param data
+	 */
+	public void addPoint(int type, Pose pose, int data) {
+		DataShared ds = new DataShared(pose, type, data);
 		this.shareds.add(ds);
 		
 		if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
