@@ -46,6 +46,7 @@ public class DataShared {
 
 	private Pose pose;
 	private int typeData;
+	private int data;
 
 	/**
 	 * @param position
@@ -54,6 +55,17 @@ public class DataShared {
 	public DataShared(Pose pose, int type) {
 		this.pose = pose;
 		this.typeData = type;
+	}
+
+	/**
+	 * @param pose
+	 * @param type
+	 * @param data
+	 */
+	public DataShared(Pose pose, int type, int data) {
+		this.pose = pose;
+		this.typeData = type;
+		this.data = data;
 	}
 
 	/**
@@ -85,13 +97,27 @@ public class DataShared {
 	public void setTypeData(int typeData) {
 		this.typeData = typeData;
 	}
+	
+	/**
+	 * @return the data
+	 */
+	public int getData() {
+		return data;
+	}
+
+	/**
+	 * @param data the data to set
+	 */
+	public void setData(int data) {
+		this.data = data;
+	}
 
 	/* (non-Javadoc)
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "x="+this.getPose().getX()+" y="+this.getPose().getY();
+		return "x="+this.getPose().getX()+" y="+this.getPose().getY()+" heading="+this.getPose().getHeading()+" data="+this.getData();
 	}
 	
 }

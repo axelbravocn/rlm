@@ -39,7 +39,6 @@ package org.reaction.rlm.nxt.navigator.behavior;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
-import org.reaction.rlm.nxt.comm.CommunicationChannel;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.data.TypeData;
 import org.reaction.rlm.nxt.motor.MotorNxt;
@@ -79,7 +78,7 @@ public class NearbyObstacleBehavior implements Behavior{
 	 */
 	@Override
 	public void action() {
-		this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition());
+		this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance());
 		this.motorNxt.backward();
 		
 		try {

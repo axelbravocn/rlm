@@ -46,6 +46,7 @@ import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
+import org.reaction.rlm.nxt.navigator.behavior.BootBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.CollisionBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.NearbyObstacleBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
@@ -78,12 +79,12 @@ public class ControlNavigator extends Thread {
 	 */
 	@Override
 	public void run() {
+		//Behavior b0 = new BootBehavior(this.comm, this.motorNxt, this.observerMotor);
 		Behavior b1 = new WalkBehavior(this.motorNxt, this.comm);
 		Behavior b2 = new CollisionBehavior(this.motorNxt, this.touchSensor, this.comm);
 		Behavior b3 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm);
-		//Behavior b4 = new BootBehavior(comm, motorNxt, observerMotor);
 		
-		Behavior behaviors[] = { b1, b2, b3};
+		Behavior behaviors[] = {b1, b2, b3};
 
 		Arbitrator arbitrator = new Arbitrator(behaviors);
 		arbitrator.start();

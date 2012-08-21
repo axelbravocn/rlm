@@ -37,6 +37,7 @@
 package org.reaction.rlm.nxt.navigator.behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannel;
+import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 
 import lejos.nxt.NXTRegulatedMotor;
@@ -50,14 +51,14 @@ public class BootBehavior implements Behavior {
 
 	private MotorNxt motorNxt;
 	private boolean execute = false;
-	private CommunicationChannel comm;
+	private CommunicationChannelRobot comm;
 	private NXTRegulatedMotor observerMotor;
 	
 	/**
 	 * @param observerMotor 
 	 * 
 	 */
-	public BootBehavior(CommunicationChannel comm, MotorNxt motorNxt, NXTRegulatedMotor observerMotor) {
+	public BootBehavior(CommunicationChannelRobot comm, MotorNxt motorNxt, NXTRegulatedMotor observerMotor) {
 		this.comm = comm;
 		this.execute = true;
 		this.motorNxt = motorNxt;
@@ -78,7 +79,8 @@ public class BootBehavior implements Behavior {
 	@Override
 	public void action() {
 		this.observerMotor.rotate(90);
-		this.observerMotor.rotate(-90);
+		this.observerMotor.rotate(-180);
+		this.observerMotor.rotate(90);
 		
 		this.execute = false;
 	}
