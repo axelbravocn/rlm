@@ -46,6 +46,7 @@ public class DataShared {
 
 	private Pose pose;
 	private TypeData typeData;
+	private float data;
 
 	/**
 	 * 
@@ -55,12 +56,23 @@ public class DataShared {
 	}
 
 	/**
-	 * @param position
-	 * @param obstacle
+	 * @param pose
+	 * @param type
 	 */
 	public DataShared(Pose pose, TypeData type) {
 		this.pose = pose;
 		this.typeData = type;
+	}
+
+	/**
+	 * @param pose
+	 * @param type
+	 * @param data
+	 */
+	public DataShared(Pose pose, TypeData type, int data) {
+		this.pose = pose;
+		this.typeData = type;
+		this.data = data;
 	}
 
 	/**
@@ -91,6 +103,21 @@ public class DataShared {
 	 */
 	public void setTypeData(TypeData typeData) {
 		this.typeData = typeData;
+	}
+
+	/**
+	 * @return the data
+	 */
+	public float getData() {
+		return data;
+	}
+
+	/**
+	 * @param data
+	 *            the data to set
+	 */
+	public void setData(float data) {
+		this.data = data;
 	}
 
 }

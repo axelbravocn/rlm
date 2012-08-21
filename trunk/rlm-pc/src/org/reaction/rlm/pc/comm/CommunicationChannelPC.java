@@ -143,14 +143,23 @@ public class CommunicationChannelPC extends Thread {
 		float x = 0;
 		float y = 0;
 		float h = 0;
+		float d = 0;
 		try {
 			writeData(1);
 			t = dataIn.readInt();
 			x = dataIn.readFloat();
 			y = dataIn.readFloat();
-			//h = dataIn.readFloat();
-			System.out.println("data  " + t + " " + x + " " + y+ " " + h);
-			this.addDataShared(t, x, y, h);
+			h = dataIn.readFloat();
+			
+			if(TypeData.OBSTACLE.ordinal() == t){
+				d = dataIn.readFloat();
+				System.out.println("data  " + t + " " + x + " " + y+ " " + h + 	" " + d);
+				this.addDataShared(t, x, y, h, d);
+			}else{
+				System.out.println("data  " + t + " " + x + " " + y+ " " + h);
+				this.addDataShared(t, x, y, h);
+			}
+			
 			Thread.sleep(50);
 		} catch (IOException e) {
 			writeData(0);
@@ -161,6 +170,23 @@ public class CommunicationChannelPC extends Thread {
 		}
 	}
 	
+	/**
+	 * @param t
+	 * @param x
+	 * @param y
+	 * @param h
+	 * @param d
+	 */
+	private void addDataShared(int t, float x, float y, float h, float d) {
+		DataShared dShared = new DataShared();
+		dShared.setTypeData(TypeData.values()[t]);
+		dShared.setPose(new Pose(x, y, h));
+		dShared.setData(d);
+		
+		this.shareds.add(dShared);
+		dataListener.actionPerformed(null);		
+	}
+
 	/**
 	 * @param t
 	 * @param x
