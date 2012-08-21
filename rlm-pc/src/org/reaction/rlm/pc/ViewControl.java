@@ -38,6 +38,7 @@ package org.reaction.rlm.pc;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -201,6 +202,16 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		return leftPanel;
 	}
 	
+	private JPanel createRigthPanel(){
+		JPanel leftPanel = new JPanel();
+		
+		leftPanel.setBorder(BorderFactory.createEmptyBorder(PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN, 0));
+		leftPanel.setBackground(LEFT_PANEL_BACKGROUND_COLOR);
+		leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
+		
+		return leftPanel;
+	}
+	
 	private Panel createControlPanel(){
 		controlPanel = new Panel();
 		
@@ -302,7 +313,9 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		JPanel rightPanel = new JPanel();
 		
 		rightPanel.setLayout(new BorderLayout());
+		rightPanel.add(this.createHeadPanel(), BorderLayout.NORTH);
 		rightPanel.add(this.createMapPanel(), BorderLayout.CENTER);
+		rightPanel.add(this.createRigthPanel(), BorderLayout.EAST);
 		rightPanel.add(this.createBottonPanel(), BorderLayout.SOUTH);
 		
 		return rightPanel;
@@ -328,6 +341,19 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		bottomPanel.setBackground(BOTTOM_PANEL_BACKGROUND_COLOR);
 		bottomPanel.setLayout(new BorderLayout());
 		Label lblMapScalesHeader = new Label("TCC-IC: FLAVIO LUIZ S. SOUZA --- 2012");
+		lblMapScalesHeader.setFont(new Font("Arial", Font.BOLD, 12));
+		bottomPanel.add(lblMapScalesHeader, BorderLayout.CENTER);
+		
+		return bottomPanel;
+	}
+	
+	private JPanel createHeadPanel(){
+		JPanel bottomPanel = new JPanel();
+		
+		bottomPanel.setBorder(BorderFactory.createEmptyBorder(0, PANEL_MARGIN, PANEL_MARGIN, PANEL_MARGIN));
+		bottomPanel.setBackground(BOTTOM_PANEL_BACKGROUND_COLOR);
+		bottomPanel.setLayout(new BorderLayout());
+		Label lblMapScalesHeader = new Label("");
 		lblMapScalesHeader.setFont(new Font("Arial", Font.BOLD, 12));
 		bottomPanel.add(lblMapScalesHeader, BorderLayout.CENTER);
 		

@@ -36,6 +36,7 @@
  */
 package org.reaction.rlm.pc.view.map;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.GraphicsConfiguration;
@@ -58,7 +59,7 @@ import org.reaction.rlm.pc.data.DataShared;
 public class MapPanel extends JPanel {
 
 	private static final long serialVersionUID = -9175215990792989321L;
-	
+	private final static int SIZE_IMAGE = 10;
 	public final static int MAP_MIN_SCALE = 1;
 	public final static int MAP_MAX_SCALE = 150;
 
@@ -100,12 +101,33 @@ public class MapPanel extends JPanel {
 	 */
 	@Override
 	public void paint(Graphics g) {
+		double nx;
+		double ny;
+		
+		double nnx;
+		double nny;
+		
+		float widthCenter = this.getWidth()/2;
+		float heightCenter = this.getHeight()/2;
+		
 		super.paintComponent (g);  
 		Graphics2D g2d = (Graphics2D)g.create(); // apesar do nome, isto é um clone ou uma cópia de g, não um objeto limpo e vazio  
 		if(this.comm != null){
-			
+
 			for (DataShared ds : this.comm.getShareds()) {
-				g.fillOval((int)ds.getPose().getX(), (int)ds.getPose().getY(), 10, 10);
+				nx = (Math.cos(ds.getPose().getHeading() * Math.PI / 180)) + ds.getPose().getX();
+				ny = (Math.sin(ds.getPose().getHeading() * Math.PI / 180)) + ds.getPose().getY();
+				
+				nnx = ((Math.cos(ds.getPose().getHeading() * Math.PI / 180)) * ds.getData()) + ds.getPose().getX();
+				nny = ((Math.sin(ds.getPose().getHeading() * Math.PI / 180)) * ds.getData()) + ds.getPose().getY();
+				
+				//System.out.println("nX= "+nx+" nY= "+ny+" X= "+ds.getPose().getX()+" Y= "+ds.getPose().getY());
+				g.setColor(Color.BLACK);
+				g.fillRect((int)((nx * SIZE_IMAGE) + widthCenter), (int)((ny * SIZE_IMAGE) + heightCenter), SIZE_IMAGE, SIZE_IMAGE);
+				g.setColor(Color.BLUE);
+				g.fillRect((int)((nnx * SIZE_IMAGE) + widthCenter), (int)((nny * SIZE_IMAGE) + heightCenter), SIZE_IMAGE, SIZE_IMAGE);
+				//g.setColor(Color.GREEN);
+				//g.fillRect((int)((ds.getPose().getX() * SIZE_IMAGE) + widthCenter), (int)((ds.getPose().getY()) + heightCenter), SIZE_IMAGE, SIZE_IMAGE);
 			}
 		}
 	    g2d.dispose();
