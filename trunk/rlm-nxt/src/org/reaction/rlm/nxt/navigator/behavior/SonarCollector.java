@@ -38,90 +38,108 @@ package org.reaction.rlm.nxt.navigator.behavior;
 
 import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.UltrasonicSensor;
-import lejos.robotics.subsumption.Behavior;
-
-import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
-import org.reaction.rlm.nxt.data.TypeData;
-import org.reaction.rlm.nxt.motor.MotorNxt;
-import org.reaction.rlm.nxt.util.SensorUtil;
 
 /**
  * @author Flavio Souza
- *
+ * 
  */
-public class NearbyObstacleBehavior implements Behavior{
+public class SonarCollector extends Thread {
 
-	private MotorNxt motorNxt;
-	private CommunicationChannelRobot comm;
+	private int maxDistance;
+	private int minDistance;
+	private int maxAngle;
+	private int minAngle;
+
 	private NXTRegulatedMotor observerMotor;
 	private UltrasonicSensor ultrasonicSensor;
-	
+
 	/**
-	 * @param observerMotor 
-	 * @param motorNxt
+	 * @param observerMotor
 	 * @param ultrasonicSensor
-	 * @param comm
 	 */
-	public NearbyObstacleBehavior(MotorNxt motorNxt, UltrasonicSensor ultrasonicSensor, CommunicationChannelRobot comm, NXTRegulatedMotor observerMotor) {
-		this.comm = comm;
-		this.motorNxt = motorNxt;
-		this.ultrasonicSensor = ultrasonicSensor;
+	public SonarCollector(NXTRegulatedMotor observerMotor, UltrasonicSensor ultrasonicSensor) {
 		this.observerMotor = observerMotor;
+		this.ultrasonicSensor = ultrasonicSensor;
 	}
 
-	/* (non-Javadoc)
-	 * @see lejos.robotics.subsumption.Behavior#takeControl()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Thread#run()
 	 */
 	@Override
-	public boolean takeControl() {
-		return this.ultrasonicSensor.getDistance() <= SensorUtil.ULTRA_DIST_MIN;
-	}
+	public void run() {
+		while (observerMotor.isMoving()) {
+			if (this.ultrasonicSensor.getDistance() > this.maxDistance) {
+				this.maxDistance = this.ultrasonicSensor.getDistance();
+				this.maxAngle = this.observerMotor.getTachoCount();
+			}
 
-	/* (non-Javadoc)
-	 * @see lejos.robotics.subsumption.Behavior#action()
-	 */
-	@Override
-	public void action() {
-		this.motorNxt.stop();
-		this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance());
-		
-		ObserverMotorMoving observerMotorMoving = new ObserverMotorMoving(observerMotor);
-		SonarCollector sonarCollector = new SonarCollector(observerMotor, ultrasonicSensor);
-		
-		observerMotorMoving.zeroDegree();
-		
-		observerMotorMoving.start();
-		sonarCollector.start();
-		
-		try {
-			Thread.sleep(1500);
-		} catch (InterruptedException e) {
-			
+			if (this.ultrasonicSensor.getDistance() < this.minDistance) {
+				this.minDistance = this.ultrasonicSensor.getDistance();
+				this.minAngle = this.observerMotor.getTachoCount();
+			}
 		}
-
-		observerMotorMoving.zeroDegree();
-		this.motorNxt.backward();
-		
-		try {
-			Thread.sleep(450);
-		} catch (InterruptedException e) {
-			
-		}
-		
-		this.motorNxt.stop();
-		
-		System.out.println(sonarCollector.getMaxAngle());
-		
-		this.motorNxt.rotate(-1 * sonarCollector.getMaxAngle());
-		
 	}
 
-	/* (non-Javadoc)
-	 * @see lejos.robotics.subsumption.Behavior#suppress()
+	/**
+	 * @return the maxDistance
 	 */
-	@Override
-	public void suppress() {
-		this.motorNxt.stop();		
+	public int getMaxDistance() {
+		return maxDistance;
+	}
+
+	/**
+	 * @param maxDistance
+	 *            the maxDistance to set
+	 */
+	public void setMaxDistance(int maxDistance) {
+		this.maxDistance = maxDistance;
+	}
+
+	/**
+	 * @return the minDistance
+	 */
+	public int getMinDistance() {
+		return minDistance;
+	}
+
+	/**
+	 * @param minDistance
+	 *            the minDistance to set
+	 */
+	public void setMinDistance(int minDistance) {
+		this.minDistance = minDistance;
+	}
+
+	/**
+	 * @return the maxAngle
+	 */
+	public int getMaxAngle() {
+		return maxAngle;
+	}
+
+	/**
+	 * @param maxAngle
+	 *            the maxAngle to set
+	 */
+	public void setMaxAngle(int maxAngle) {
+		this.maxAngle = maxAngle;
+	}
+
+	/**
+	 * @return the minAngle
+	 */
+	public int getMinAngle() {
+		return minAngle;
+	}
+
+	/**
+	 * @param minAngle
+	 *            the minAngle to set
+	 */
+	public void setMinAngle(int minAngle) {
+		this.minAngle = minAngle;
 	}
 
 }
