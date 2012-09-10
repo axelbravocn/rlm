@@ -38,7 +38,6 @@ package org.reaction.rlm.pc;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Frame;
@@ -71,7 +70,8 @@ import javax.swing.event.ChangeListener;
 import org.reaction.rlm.pc.comm.CommunicationChannelPC;
 import org.reaction.rlm.pc.util.AppConstants;
 import org.reaction.rlm.pc.util.IconsUtil;
-import org.reaction.rlm.pc.view.map.MapPanel;
+import org.reaction.rlm.pc.view.map.Map;
+import org.reaction.rlm.pc.view.map.MapScreen;
 
 /**
  * @author Flavio Souza
@@ -80,7 +80,6 @@ import org.reaction.rlm.pc.view.map.MapPanel;
 public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runnable, WindowListener, ActionListener, ChangeListener{
 	
 	private static final long serialVersionUID = -8034828485199716108L;
-	
 	private final static String CONNECT_TO_NAME_DEFAULT = "NXT";
 	private final static String CONNECT_TO_ADDRESS_DEFAULT = "0016530A9000";
 	
@@ -99,7 +98,8 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private CommunicationChannelPC comm;
 	
 	private Panel controlPanel;
-	private MapPanel map;
+	//private MapPanel map;
+	private Map map;
 	private JTextField txtConnectToName;
 	private JTextField txtConnectToAddress;
 	private JButton btnConnectNXT;
@@ -145,7 +145,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		this.setLayout(new BorderLayout());
 		this.add(getContentPanel(), BorderLayout.CENTER);
 		this.comm = CommunicationChannelPC.getInstance(this.map);
-		this.map.setComm(this.comm);
+		this.map.setCommunicationChannel(this.comm);
 		
 		Thread t = new Thread(this);
 		t.start();
@@ -324,9 +324,10 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private JPanel createMapPanel(){
 		JPanel mapPanel = new JPanel();
 		
-		map = new MapPanel();
-		map.getCenterChanged().add(this);
-		map.getScaleChanged().add(this);
+		//map = new MapPanel();
+		map = new MapScreen();
+		//map.getCenterChanged().add(this);
+		//map.getScaleChanged().add(this);
 		
 		mapPanel.setLayout(new BorderLayout());
 		mapPanel.add(map , BorderLayout.CENTER);
@@ -387,7 +388,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	public void stateChanged(ChangeEvent event) {
 		if (event.getSource() == sldMapScale) {
 			if (map != null) {
-				map.setMapScale(sldMapScale.getValue(), false);
+				//map.setMapScale(sldMapScale.getValue(), false);
 			}
 		}
 		

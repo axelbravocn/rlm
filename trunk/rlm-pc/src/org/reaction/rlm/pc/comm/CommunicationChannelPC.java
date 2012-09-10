@@ -50,7 +50,9 @@ import lejos.robotics.navigation.Pose;
 import org.reaction.rlm.pc.data.DataShared;
 import org.reaction.rlm.pc.data.TypeData;
 import org.reaction.rlm.pc.listener.DataListener;
+import org.reaction.rlm.pc.view.map.Map;
 import org.reaction.rlm.pc.view.map.MapPanel;
+import org.reaction.rlm.pc.view.map.MapScreen;
 
 /**
  * @author Flavio Souza
@@ -72,22 +74,22 @@ public class CommunicationChannelPC extends Thread {
 
 	private List<DataShared> shareds;
 	
-	public static CommunicationChannelPC getInstance(MapPanel map) {
+	public static CommunicationChannelPC getInstance(Map map) {
 		if (channel == null) {
 			channel = new CommunicationChannelPC(map);
 		}
 
 		return channel;
 	}
-
+	
 	/**
 	 * 
 	 */
-	private CommunicationChannelPC(MapPanel map) {
+	private CommunicationChannelPC(Map map) {
 		this.shareds = new ArrayList<DataShared>();
 		dataListener = new DataListener(map);
 	}
-
+	
 	/**
 	 * @throws IOException
 	 * 
@@ -153,10 +155,10 @@ public class CommunicationChannelPC extends Thread {
 			
 			if(TypeData.OBSTACLE.ordinal() == t){
 				d = dataIn.readFloat();
-				System.out.println("data  " + t + " " + x + " " + y+ " " + h + 	" " + d);
+				System.out.println("data  t" + t + " x" + x + " y" + y+ " h" + h + 	" d" + d);
 				this.addDataShared(t, x, y, h, d);
 			}else{
-				System.out.println("data  " + t + " " + x + " " + y+ " " + h);
+				System.out.println("data t " + t + " x" + x + " y" + y+ " h" + h);
 				this.addDataShared(t, x, y, h);
 			}
 			

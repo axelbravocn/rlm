@@ -34,34 +34,40 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.pc.listener;
+package org.reaction.rlm.pc.view.map;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import javax.swing.JPanel;
 
-import org.reaction.rlm.pc.view.map.Map;
+import org.reaction.rlm.pc.comm.CommunicationChannelPC;
 
 /**
  * @author Flavio Souza
- *
+ * 
  */
-public class DataListener implements ActionListener {
+public abstract class Map extends JPanel {
 
-	private Map map;
 	/**
 	 * 
 	 */
-	public DataListener(Map map) {
-		this.map = map;
-	}
+	private static final long serialVersionUID = 4854165711445473627L;
+
+	private CommunicationChannelPC communicationChannel;
+
+	public abstract void builder();
 	
-	/* (non-Javadoc)
-	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	/**
+	 * @return the communicationChannel
 	 */
-	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		map.builder();
-		//JOptionPane.showMessageDialog(null, "You clicked me!");
+	public CommunicationChannelPC getCommunicationChannel() {
+		return communicationChannel;
+	}
+
+	/**
+	 * @param communicationChannel
+	 *            the communicationChannel to set
+	 */
+	public void setCommunicationChannel(CommunicationChannelPC communicationChannel) {
+		this.communicationChannel = communicationChannel;
 	}
 
 }
