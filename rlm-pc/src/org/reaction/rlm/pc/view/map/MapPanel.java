@@ -45,21 +45,19 @@ import java.awt.Point;
 import java.awt.image.VolatileImage;
 import java.util.ArrayList;
 
-import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import org.reaction.rlm.pc.comm.CommunicationChannelPC;
 import org.reaction.rlm.pc.data.DataShared;
 
 /**
  * @author Flavio Souza
  * 
  */
-public class MapPanel extends JPanel {
+public class MapPanel extends Map {
 
 	private static final long serialVersionUID = -9175215990792989321L;
-	private final static int SIZE_IMAGE = 10;
+	private final static int SIZE_IMAGE = 3;
 	public final static int MAP_MIN_SCALE = 1;
 	public final static int MAP_MAX_SCALE = 150;
 
@@ -67,7 +65,6 @@ public class MapPanel extends JPanel {
 	private Point center;
 	private ArrayList<ChangeListener> scaleChanged;
 	private ArrayList<ChangeListener> centerChanged;
-	private CommunicationChannelPC comm;
 	
 	/**
 	 * @param comm 
@@ -112,9 +109,9 @@ public class MapPanel extends JPanel {
 		
 		super.paintComponent (g);  
 		Graphics2D g2d = (Graphics2D)g.create(); // apesar do nome, isto é um clone ou uma cópia de g, não um objeto limpo e vazio  
-		if(this.comm != null){
+		if(this.getCommunicationChannel() != null){
 
-			for (DataShared ds : this.comm.getShareds()) {
+			for (DataShared ds : this.getCommunicationChannel().getShareds()) {
 				nx = (Math.cos(ds.getPose().getHeading() * Math.PI / 180)) + ds.getPose().getX();
 				ny = (Math.sin(ds.getPose().getHeading() * Math.PI / 180)) + ds.getPose().getY();
 				
@@ -207,18 +204,13 @@ public class MapPanel extends JPanel {
 		this.center = center;
 	}
 
-	/**
-	 * @return the comm
+	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#builder()
 	 */
-	public CommunicationChannelPC getComm() {
-		return comm;
+	@Override
+	public void builder() {
+		// TODO Auto-generated method stub
+		
 	}
 
-	/**
-	 * @param comm the comm to set
-	 */
-	public void setComm(CommunicationChannelPC comm) {
-		this.comm = comm;
-	}
-	
 }
