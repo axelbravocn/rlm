@@ -38,7 +38,6 @@ package org.reaction.rlm.nxt.navigator.behavior;
 
 import lejos.robotics.subsumption.Behavior;
 
-import org.reaction.rlm.nxt.comm.CommunicationChannel;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 
