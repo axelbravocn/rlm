@@ -54,16 +54,17 @@ public class MotorNxt {
 	 * 
 	 */
 	public MotorNxt() {
-		/*this.differentialPilot = new DifferentialPilot(DifferentialPilot.WHEEL_SIZE_NXT2, 15.5, Motor.A, Motor.C);
-		this.odometryPoseProvider = new OdometryPoseProvider(differentialPilot);
-		this.differentialPilot.addMoveListener(odometryPoseProvider);
-		
-		this.navigator = new Navigator(this.differentialPilot);
-		*/
 		this.differentialPilot = new DifferentialPilot(DifferentialPilot.WHEEL_SIZE_NXT2, 12.7, Motor.A, Motor.C);
 		this.odometryPoseProvider = new OdometryPoseProvider(differentialPilot);
+		
+		this.configureMotor();
 	}
 	
+	
+	private void configureMotor(){
+		this.differentialPilot.setTravelSpeed(20);
+		this.differentialPilot.setRotateSpeed(180);
+	}
 	
 	/**
 	 * 

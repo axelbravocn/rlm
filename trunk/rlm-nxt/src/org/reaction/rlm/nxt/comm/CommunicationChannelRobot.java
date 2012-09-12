@@ -42,29 +42,31 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import lejos.nxt.LCD;
 import lejos.nxt.comm.Bluetooth;
 import lejos.nxt.comm.NXTConnection;
 import lejos.robotics.navigation.Pose;
 
-import org.reaction.rlm.nxt.data.DataShared;
-import org.reaction.rlm.nxt.data.TypeData;
+import org.reaction.rlm.comm.CommunicationChannelGeneric;
+import org.reaction.rlm.comm.data.DataShared;
+import org.reaction.rlm.comm.data.TypeData;
 
 /**
  * @author Flavio Souza
  * 
  */
-public class CommunicationChannelRobot extends Thread{
+public class CommunicationChannelRobot extends CommunicationChannelGeneric{
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3489165594225270817L;
 
 	private static final int LIMIT_HISTORY_DATA = 100;
 	
 	private static CommunicationChannelRobot channel;
 
-	private boolean isConnected;
 	private boolean isSendingPermission = true;
 	
-	private DataInputStream dataIn;
-	private DataOutputStream dataOut;
 	private NXTConnection connection;
 
 	private List<DataShared> shareds;
@@ -96,10 +98,10 @@ public class CommunicationChannelRobot extends Thread{
 		System.out.println("Found on server");
 		this.connection = Bluetooth.waitForConnection();
 		System.out.println("Connected on server");
-		this.dataOut = (DataOutputStream) connection.openDataOutputStream();
-		this.dataIn = (DataInputStream) connection.openDataInputStream();
+		this.setDataOut((DataOutputStream) connection.openDataOutputStream());
+		this.setDataIn((DataInputStream) connection.openDataInputStream());
 		
-		this.channel.setConnected(true);
+		this.getChannel().setConnected(true);
 		this.start();
 		
 		return connection;
@@ -114,10 +116,10 @@ public class CommunicationChannelRobot extends Thread{
 	}
 	
 	
-	private void readData(){
+	public void readData(){
 		int code = -1;
 		try {
-			code = dataIn.readInt();
+			code = this.getDataIn().readInt();
 			System.out.println("code " + code);
 
 			boolean haveSend = true;
@@ -135,17 +137,17 @@ public class CommunicationChannelRobot extends Thread{
 		
 	}
 	
-	private void writeData(DataShared dShared){
+	public void writeData(DataShared dShared){
 		try {
-			dataOut.writeInt(dShared.getTypeData());
-			dataOut.writeFloat(Float.valueOf(dShared.getPose().getX()));
-			dataOut.writeFloat(Float.valueOf(dShared.getPose().getY()));
-			dataOut.writeFloat(Float.valueOf(dShared.getPose().getHeading()));
+			this.getDataOut().writeInt(dShared.getTypeData());
+			this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getX()));
+			this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getY()));
+			this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getHeading()));
 			
 			if(TypeData.OBSTACLE.ordinal() == dShared.getTypeData())
-				dataOut.writeFloat(Float.valueOf(dShared.getData()));
+				this.getDataOut().writeFloat(Float.valueOf(dShared.getData()));
 			
-			dataOut.flush();
+			this.getDataOut().flush();
 		} catch (IOException e) {
 		}
 	}
@@ -180,61 +182,10 @@ public class CommunicationChannelRobot extends Thread{
 	}
 	
 	/**
-	 * @return the isConnected
-	 */
-	public boolean isConnected() {
-		return isConnected;
-	}
-
-	/**
-	 * @param isConnected
-	 *            the isConnected to set
-	 */
-	public void setConnected(boolean isConnected) {
-		this.isConnected = isConnected;
-	}
-
-	/**
 	 * @return the channel
 	 */
 	public CommunicationChannelRobot getChannel() {
 		return channel;
-	}
-
-	/**
-	 * @param channel
-	 *            the channel to set
-	 */
-	public void setChannel(CommunicationChannelRobot channel) {
-		this.channel = channel;
-	}
-
-	/**
-	 * @return the dataIn
-	 */
-	public DataInputStream getDataIn() {
-		return dataIn;
-	}
-
-	/**
-	 * @param dataIn the dataIn to set
-	 */
-	public void setDataIn(DataInputStream dataIn) {
-		this.dataIn = dataIn;
-	}
-
-	/**
-	 * @return the dataOut
-	 */
-	public DataOutputStream getDataOut() {
-		return dataOut;
-	}
-
-	/**
-	 * @param dataOut the dataOut to set
-	 */
-	public void setDataOut(DataOutputStream dataOut) {
-		this.dataOut = dataOut;
 	}
 
 	/**

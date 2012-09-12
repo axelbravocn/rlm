@@ -40,8 +40,8 @@ import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
+import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
-import org.reaction.rlm.nxt.data.TypeData;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.util.SensorUtil;
 
