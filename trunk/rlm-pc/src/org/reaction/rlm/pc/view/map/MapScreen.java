@@ -42,7 +42,7 @@ import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.TextField;
 
-import org.reaction.rlm.pc.data.DataShared;
+import org.reaction.rlm.comm.data.DataShared;
 
 /**
  * @author Flavio Souza
@@ -234,12 +234,14 @@ public class MapScreen extends Map {
 	public void builder() {
 		float x;
 		float y;
-		double degree;
+		double angle;
 		
 		for (DataShared ds : this.getCommunicationChannel().getShareds()) {
-			degree = Math.toDegrees(ds.getPose().getHeading());
-			x = (float) ((Math.cos(degree)) * ds.getData()) + ds.getPose().getX();
-			y = (float) ((Math.sin(degree)) * ds.getData()) + ds.getPose().getY();
+			angle = Math.toRadians(ds.getPose().getHeading());
+			x = (float) (Math.cos(angle) * ds.getData()) + ds.getPose().getX();
+			y = (float) (Math.sin(angle) * ds.getData()) + ds.getPose().getY();
+			System.out.println("x="+x+" y="+y);
+			System.out.println("x/30="+x/30+" y/30="+y/30);
 			this.drawObstacle(x/30, y/30);
 		}
 	}
