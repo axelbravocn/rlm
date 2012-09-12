@@ -39,41 +39,34 @@ package org.reaction.rlm.pc.comm;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTCommLogListener;
 import lejos.pc.comm.NXTConnector;
 import lejos.robotics.navigation.Pose;
 
-import org.reaction.rlm.pc.data.DataShared;
-import org.reaction.rlm.pc.data.TypeData;
+import org.reaction.rlm.comm.CommunicationChannelGeneric;
+import org.reaction.rlm.comm.data.DataShared;
+import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.pc.listener.DataListener;
 import org.reaction.rlm.pc.view.map.Map;
-import org.reaction.rlm.pc.view.map.MapPanel;
-import org.reaction.rlm.pc.view.map.MapScreen;
 
 /**
  * @author Flavio Souza
  * 
  */
-public class CommunicationChannelPC extends Thread {
+public class CommunicationChannelPC extends CommunicationChannelGeneric {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -287339477038043637L;
+
 	private static CommunicationChannelPC channel;
-
-	private final static String ADDRESS_NXT = "00:16:53:0F:1C:97";
-	private final static String NAME_NXT = "NXT";
-
-	private boolean isConnected;
 
 	private DataListener dataListener;
 	
 	private NXTConnector conn;
-	private DataInputStream dataIn;
-	private DataOutputStream dataOut;
 
-	private List<DataShared> shareds;
-	
 	public static CommunicationChannelPC getInstance(Map map) {
 		if (channel == null) {
 			channel = new CommunicationChannelPC(map);
@@ -86,7 +79,6 @@ public class CommunicationChannelPC extends Thread {
 	 * 
 	 */
 	private CommunicationChannelPC(Map map) {
-		this.shareds = new ArrayList<DataShared>();
 		dataListener = new DataListener(map);
 	}
 	
@@ -116,10 +108,10 @@ public class CommunicationChannelPC extends Thread {
 			System.exit(1);
 		}
 		
-		this.dataOut = new DataOutputStream(this.conn.getOutputStream());
-		this.dataIn = new DataInputStream(this.conn.getInputStream());
+		this.setDataOut(new DataOutputStream(this.conn.getOutputStream()));
+		this.setDataIn(new DataInputStream(this.conn.getInputStream()));
 		
-		this.channel.setConnected(true);
+		CommunicationChannelPC.getChannel().setConnected(true);
 
 		this.start();
 
@@ -133,13 +125,13 @@ public class CommunicationChannelPC extends Thread {
 	 */
 	@Override
 	public void run() {
-		while (this.channel.isConnected()) {
+		while (CommunicationChannelPC.getChannel().isConnected()) {
 			readData();
 		}
 	}
 
 	
-	private void readData(){
+	public void readData(){
 		System.out.println("reading ");
 		int t = -1;
 		float x = 0;
@@ -148,13 +140,13 @@ public class CommunicationChannelPC extends Thread {
 		float d = 0;
 		try {
 			writeData(1);
-			t = dataIn.readInt();
-			x = dataIn.readFloat();
-			y = dataIn.readFloat();
-			h = dataIn.readFloat();
+			t = this.getDataIn().readInt();
+			x = this.getDataIn().readFloat();
+			y = this.getDataIn().readFloat();
+			h = this.getDataIn().readFloat();
 			
 			if(TypeData.OBSTACLE.ordinal() == t){
-				d = dataIn.readFloat();
+				d = this.getDataIn().readFloat();
 				System.out.println("data  t" + t + " x" + x + " y" + y+ " h" + h + 	" d" + d);
 				this.addDataShared(t, x, y, h, d);
 			}else{
@@ -181,11 +173,11 @@ public class CommunicationChannelPC extends Thread {
 	 */
 	private void addDataShared(int t, float x, float y, float h, float d) {
 		DataShared dShared = new DataShared();
-		dShared.setTypeData(TypeData.values()[t]);
+		dShared.setTypeData(TypeData.values()[t].ordinal());
 		dShared.setPose(new Pose(x, y, h));
 		dShared.setData(d);
 		
-		this.shareds.add(dShared);
+		this.getShareds().add(dShared);
 		dataListener.actionPerformed(null);		
 	}
 
@@ -197,86 +189,36 @@ public class CommunicationChannelPC extends Thread {
 	 */
 	public void addDataShared(int t, float x, float y, float h) {
 		DataShared dShared = new DataShared();
-		dShared.setTypeData(TypeData.values()[t]);
+		dShared.setTypeData(TypeData.values()[t].ordinal());
 		dShared.setPose(new Pose(x, y, h));
 		
-		this.shareds.add(dShared);
+		this.getShareds().add(dShared);
 		dataListener.actionPerformed(null);
 	}
 
 	private void writeData(int code){
 		 try {
-			dataOut.writeInt(code);
-			dataOut.flush();
+			this.getDataOut().writeInt(code);
+			this.getDataOut().flush();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-	}
-	/**
-	 * @return the isConnected
-	 */
-	public boolean isConnected() {
-		return isConnected;
-	}
-
-	/**
-	 * @param isConnected
-	 *            the isConnected to set
-	 */
-	public void setConnected(boolean isConnected) {
-		this.isConnected = isConnected;
 	}
 
 	/**
 	 * @return the channel
 	 */
-	public CommunicationChannelPC getChannel() {
+	public static CommunicationChannelPC getChannel() {
 		return channel;
 	}
 
-	/**
-	 * @param channel
-	 *            the channel to set
+	/* (non-Javadoc)
+	 * @see org.reaction.rlm.comm.CommunicationChannel#writeData(org.reaction.rlm.comm.data.DataShared)
 	 */
-	public void setChannel(CommunicationChannelPC channel) {
-		this.channel = channel;
-	}
-
-	/**
-	 * @return the dataIn
-	 */
-	public DataInputStream getDataIn() {
-		return dataIn;
-	}
-
-	/**
-	 * @param dataIn
-	 *            the dataIn to set
-	 */
-	public void setDataIn(DataInputStream dataIn) {
-		this.dataIn = dataIn;
-	}
-
-	/**
-	 * @return the dataOut
-	 */
-	public DataOutputStream getDataOut() {
-		return dataOut;
-	}
-
-	/**
-	 * @param dataOut
-	 *            the dataOut to set
-	 */
-	public void setDataOut(DataOutputStream dataOut) {
-		this.dataOut = dataOut;
-	}
-
-	/**
-	 * @return the shareds
-	 */
-	public List<DataShared> getShareds() {
-		return shareds;
+	@Override
+	public void writeData(DataShared dShared) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
