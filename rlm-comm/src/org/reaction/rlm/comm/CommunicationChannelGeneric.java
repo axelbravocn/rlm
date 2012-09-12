@@ -36,15 +36,45 @@
  */
 package org.reaction.rlm.comm;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.reaction.rlm.comm.data.DataShared;
+
 
 /**
  * @author Flavio Souza
  * 
  */
-public abstract class CommunicationChannelGeneric extends Thread implements ChannelGeneric {
+public abstract class CommunicationChannelGeneric extends Thread implements CommunicationChannel, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4380123518631103307L;
 
 	private boolean isConnected;
-
+	private DataInputStream dataIn;
+	private DataOutputStream dataOut;
+	
+	private List<DataShared> shareds;
+	
+	/**
+	 * 
+	 */
+	public CommunicationChannelGeneric() {
+		this.shareds = new ArrayList<DataShared>();
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Thread#run()
+	 */
+	@Override
+	public abstract void run();
+	
 	/**
 	 * @return the isConnected
 	 */
@@ -60,10 +90,46 @@ public abstract class CommunicationChannelGeneric extends Thread implements Chan
 		this.isConnected = isConnected;
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Thread#run()
+	/**
+	 * @return the dataIn
 	 */
-	@Override
-	public abstract void run();
+	public DataInputStream getDataIn() {
+		return dataIn;
+	}
+
+	/**
+	 * @param dataIn the dataIn to set
+	 */
+	public void setDataIn(DataInputStream dataIn) {
+		this.dataIn = dataIn;
+	}
+
+	/**
+	 * @return the dataOut
+	 */
+	public DataOutputStream getDataOut() {
+		return dataOut;
+	}
+
+	/**
+	 * @param dataOut the dataOut to set
+	 */
+	public void setDataOut(DataOutputStream dataOut) {
+		this.dataOut = dataOut;
+	}
+
+	/**
+	 * @return the shareds
+	 */
+	public List<DataShared> getShareds() {
+		return shareds;
+	}
+
+	/**
+	 * @param shareds the shareds to set
+	 */
+	public void setShareds(List<DataShared> shareds) {
+		this.shareds = shareds;
+	}
 
 }
