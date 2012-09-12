@@ -36,93 +36,21 @@
  */
 package org.reaction.rlm.comm;
 
-import java.io.DataOutputStream;
-import java.io.IOException;
-
-import lejos.nxt.comm.Bluetooth;
-import lejos.nxt.comm.NXTConnection;
+import org.reaction.rlm.comm.data.DataShared;
 
 /**
  * @author Flavio Souza
- * 
+ *
  */
-public class CommunicationChannel {
+public interface CommunicationChannel {
 
-	/*
-	 * NXTComm comm = null;
-		try
-		{
-			comm = NXTCommFactory.createNXTComm(conn_mode);
-			connected = comm.open(dev_info);
-			if ( !connected )
-			{
-				System.err.println("error: cannot connect to the device");
-				System.exit(1);
-			}
-			System.out.println("connected");
-			cmd.setNXTComm(comm);
-			name = dev_info.name;
-		}
-		catch (Exception e)
-		{
-			System.err.println("error: cannot create tribot");
-			System.exit(1);
-		}
-	 */
+	String ADDRESS_NXT = "00:16:53:0F:1C:97";
+	String NAME_NXT = "NXT";
 	
-	private boolean isConnected;
-	private static CommunicationChannel channel;
-
-	public static CommunicationChannel getInstance() {
-		if(channel == null){
-			channel = new CommunicationChannel();
-			channel.setConnected(false);
-		}
-		
-		return channel;
-	}
-
-	/**
-	 * @throws IOException 
-	 * 
-	 */
-	public void connectServer() throws IOException {
-	    NXTConnection connection = Bluetooth.waitForConnection();
-	    DataOutputStream dataOut = connection.openDataOutputStream();
-	    
-	    dataOut.writeInt(1234);
-	}
+	void readData();
 	
-	/**
-	 * @return the isConnected
-	 */
-	public boolean isConnected() {
-		return isConnected;
-	}
-
-	/**
-	 * @param isConnected
-	 *            the isConnected to set
-	 */
-	public void setConnected(boolean isConnected) {
-		this.isConnected = isConnected;
-	}
-
-	/**
-	 * @return the channel
-	 */
-	public CommunicationChannel getChannel() {
-		return channel;
-	}
-
-	/**
-	 * @param channel
-	 *            the channel to set
-	 */
-	public void setChannel(CommunicationChannel channel) {
-		this.channel = channel;
-	}
-
+	void writeData(DataShared dShared);
 	
-
+	boolean isConnected();
+	
 }

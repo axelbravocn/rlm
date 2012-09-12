@@ -45,25 +45,34 @@ import lejos.robotics.navigation.Pose;
 public class DataShared {
 
 	private Pose pose;
-	private TypeData typeData;
+	private int typeData;
+	private float data;
 
 	/**
-	 * @param position
-	 * @param obstacle
+	 * 
 	 */
-	public DataShared(Pose pose, TypeData type) {
+	public DataShared() {
+		this.pose = new Pose();
+	}
+
+	/**
+	 * @param pose
+	 * @param type
+	 */
+	public DataShared(Pose pose, int type) {
 		this.pose = pose;
 		this.typeData = type;
 	}
 
 	/**
-	 * @param x
-	 * @param y
+	 * @param pose
 	 * @param type
+	 * @param data
 	 */
-	public DataShared(int x, int y, TypeData type) {
-		this.pose = new Pose(x, y, 0);
+	public DataShared(Pose pose, int type, int data) {
+		this.pose = pose;
 		this.typeData = type;
+		this.data = data;
 	}
 
 	/**
@@ -74,7 +83,8 @@ public class DataShared {
 	}
 
 	/**
-	 * @param pose the pose to set
+	 * @param pose
+	 *            the pose to set
 	 */
 	public void setPose(Pose pose) {
 		this.pose = pose;
@@ -83,7 +93,7 @@ public class DataShared {
 	/**
 	 * @return the typeData
 	 */
-	public TypeData getTypeData() {
+	public int getTypeData() {
 		return typeData;
 	}
 
@@ -91,8 +101,23 @@ public class DataShared {
 	 * @param typeData
 	 *            the typeData to set
 	 */
-	public void setTypeData(TypeData typeData) {
+	public void setTypeData(int typeData) {
 		this.typeData = typeData;
+	}
+
+	/**
+	 * @return the data
+	 */
+	public float getData() {
+		return data;
+	}
+
+	/**
+	 * @param data
+	 *            the data to set
+	 */
+	public void setData(float data) {
+		this.data = data;
 	}
 
 }
