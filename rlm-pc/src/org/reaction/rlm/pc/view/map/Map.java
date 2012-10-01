@@ -53,7 +53,16 @@ public abstract class Map extends JPanel {
 
 	private CommunicationChannelPC communicationChannel;
 
+	protected MapSimulator simulator;
+	
 	public abstract void builder();
+	
+	/**
+	 * @param x
+	 * @param y
+	 */
+	public abstract void setPointSimulate(double x, double y); 
+
 	
 	/**
 	 * @return the communicationChannel
@@ -68,6 +77,20 @@ public abstract class Map extends JPanel {
 	 */
 	public void setCommunicationChannel(CommunicationChannelPC communicationChannel) {
 		this.communicationChannel = communicationChannel;
+	}
+
+	/**
+	 * @return the simulator
+	 */
+	public MapSimulator getSimulator() {
+		return simulator;
+	}
+
+	/**
+	 * @param simulator the simulator to set
+	 */
+	public void setSimulator(MapSimulator simulator) {
+		this.simulator = simulator;
 	}
 
 }

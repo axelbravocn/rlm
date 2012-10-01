@@ -48,6 +48,7 @@ import lejos.robotics.navigation.Pose;
 import org.reaction.rlm.comm.CommunicationChannelGeneric;
 import org.reaction.rlm.comm.data.DataShared;
 import org.reaction.rlm.comm.data.TypeData;
+import org.reaction.rlm.comm.data.TypeOrientation;
 import org.reaction.rlm.pc.listener.DataListener;
 import org.reaction.rlm.pc.view.map.Map;
 
@@ -126,7 +127,7 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	@Override
 	public void run() {
 		while (CommunicationChannelPC.getChannel().isConnected()) {
-			readData();
+			this.readData();
 		}
 	}
 
@@ -134,24 +135,26 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	public void readData(){
 		System.out.println("reading ");
 		int t = -1;
+		int o = 0;
 		float x = 0;
 		float y = 0;
 		float h = 0;
 		float d = 0;
+		
 		try {
-			writeData(1);
+			this.writeData(1);
 			t = this.getDataIn().readInt();
-			x = this.getDataIn().readFloat();
-			y = this.getDataIn().readFloat();
-			h = this.getDataIn().readFloat();
 			
 			if(TypeData.OBSTACLE.ordinal() == t){
+				x = this.getDataIn().readFloat();
+				y = this.getDataIn().readFloat();
+				h = this.getDataIn().readFloat();
 				d = this.getDataIn().readFloat();
-				System.out.println("data  t" + t + " x" + x + " y" + y+ " h" + h + 	" d" + d);
 				this.addDataShared(t, x, y, h, d);
 			}else{
-				System.out.println("data t " + t + " x" + x + " y" + y+ " h" + h);
-				this.addDataShared(t, x, y, h);
+				o = this.getDataIn().readInt();
+				d = this.getDataIn().readFloat();
+				this.addDataShared(t, o, d);
 			}
 			
 			Thread.sleep(50);
@@ -173,12 +176,12 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	 */
 	private void addDataShared(int t, float x, float y, float h, float d) {
 		DataShared dShared = new DataShared();
+		
 		dShared.setTypeData(TypeData.values()[t].ordinal());
 		dShared.setPose(new Pose(x, y, h));
 		dShared.setData(d);
 		
-		this.getShareds().add(dShared);
-		dataListener.actionPerformed(null);		
+		this.addDataShared(dShared);		
 	}
 
 	/**
@@ -187,15 +190,28 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	 * @param y
 	 * @param h
 	 */
-	public void addDataShared(int t, float x, float y, float h) {
+	public void addDataShared(int t, int o, float d) {
 		DataShared dShared = new DataShared();
-		dShared.setTypeData(TypeData.values()[t].ordinal());
-		dShared.setPose(new Pose(x, y, h));
 		
-		this.getShareds().add(dShared);
-		dataListener.actionPerformed(null);
+		dShared.setTypeData(TypeData.values()[t].ordinal());
+		dShared.setOrientation(TypeOrientation.values()[o].ordinal());
+		dShared.setData(d);
+		
+		this.addDataShared(dShared);
 	}
 
+	private void addDataShared(DataShared dShared){
+		
+		System.out.println(dShared);
+		
+		if(TypeData.MCL.equals(dShared.getTypeData()))
+			this.getSharedsMCL().add(dShared);
+		else 
+			this.getShareds().add(dShared);
+		
+		this.dataListener.actionPerformed(null);
+	}
+	
 	private void writeData(int code){
 		 try {
 			this.getDataOut().writeInt(code);
