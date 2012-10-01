@@ -60,8 +60,10 @@ public class DataListener implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
+		
 		map.builder();
-		//JOptionPane.showMessageDialog(null, "You clicked me!");
+		
+		map.repaint();
 	}
 
 }
