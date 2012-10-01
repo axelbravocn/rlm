@@ -49,6 +49,7 @@ import lejos.robotics.navigation.Pose;
 import org.reaction.rlm.comm.CommunicationChannelGeneric;
 import org.reaction.rlm.comm.data.DataShared;
 import org.reaction.rlm.comm.data.TypeData;
+import org.reaction.rlm.nxt.motor.observer.TypeGearMotor;
 
 /**
  * @author Flavio Souza
@@ -139,13 +140,18 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 	
 	public void writeData(DataShared dShared){
 		try {
-			this.getDataOut().writeInt(dShared.getTypeData());
-			this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getX()));
-			this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getY()));
-			this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getHeading()));
 			
-			if(TypeData.OBSTACLE.ordinal() == dShared.getTypeData())
+			this.getDataOut().writeInt(dShared.getTypeData());
+
+			if(TypeData.OBSTACLE.ordinal() == dShared.getTypeData()){
+				this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getX()));
+				this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getY()));
+				this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getHeading()));
 				this.getDataOut().writeFloat(Float.valueOf(dShared.getData()));
+			}else if(TypeData.MCL.ordinal() == dShared.getTypeData()){
+				this.getDataOut().writeFloat(Float.valueOf(dShared.getOrientation()));
+				this.getDataOut().writeFloat(Float.valueOf(dShared.getData()));
+			}
 			
 			this.getDataOut().flush();
 		} catch (IOException e) {
@@ -160,10 +166,10 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 		DataShared ds = new DataShared(pose, type);
 		this.shareds.add(ds);
 		
-		if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
-			this.historyShared.remove(0);
+		//if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
+			//this.historyShared.remove(0);
 		
-		this.historyShared.add(ds);
+		//this.historyShared.add(ds);
 	}
 	
 	/**
@@ -175,10 +181,32 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 		DataShared ds = new DataShared(pose, type, data);
 		this.shareds.add(ds);
 		
-		if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
-			this.historyShared.remove(0);
+		//if(this.historyShared.size() >= LIMIT_HISTORY_DATA)
+			//this.historyShared.remove(0);
 		
-		this.historyShared.add(ds);
+		//this.historyShared.add(ds);
+	}
+	
+	/**
+	 * @param type
+	 * @param data
+	 * @param orientation
+	 */
+	public void addPoint(int type, int data, int orientation) {
+		DataShared ds = new DataShared(type, data, orientation);
+		this.shareds.add(ds);
+	}
+	
+	/**
+	 * @param ordinal
+	 * @param position
+	 * @param data
+	 * @param rotateBack
+	 */
+	public void addPoint(int ordinal, Pose position, int data, TypeGearMotor rotate) {
+		DataShared ds = new DataShared(position, ordinal, data);
+		ds.setRotate(rotate.ordinal());
+		this.shareds.add(ds);		
 	}
 	
 	/**

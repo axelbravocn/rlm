@@ -12,7 +12,7 @@
  * @see        www.uniara.com.br
  * 
  * 
- * PurPoint: This project was developed to obtensão the 
+ * Purpose: This project was developed to obtensão the 
  * title of a Computer Engineer Flavio Luiz dos Santos de Souza
  * 
  * 
@@ -26,7 +26,7 @@
  * 
  * THE SOFTWARE IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, 
  * INCLUDING WITHOUT LIMITATION WARRANTIES OF MERCHANTABILITY FITNESS FOR A 
- * PARTICULAR PURPoint AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
+ * PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR 
  * COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER 
  * IN AN ACTION OF CONTRACT, OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH 
  * THE SOFTWARE OR THE USE OR OTHERS IN THE SOFTWARE.
@@ -34,90 +34,37 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.data;
+package org.reaction.rlm.nxt.navigator.behavior.realtime;
 
-import lejos.robotics.navigation.Pose;
+import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
 
 /**
  * @author Flavio Souza
- * 
+ *
  */
-public class DataShared {
+public class ObserverMotorRealTime extends Thread{
 
-	private Pose pose;
-	private int typeData;
-	private int data;
-
-	/**
-	 * @param position
-	 * @param obstacle
-	 */
-	public DataShared(Pose pose, int type) {
-		this.pose = pose;
-		this.typeData = type;
-	}
-
-	/**
-	 * @param pose
-	 * @param type
-	 * @param data
-	 */
-	public DataShared(Pose pose, int type, int data) {
-		this.pose = pose;
-		this.typeData = type;
-		this.data = data;
-	}
-
-	/**
-	 * @return the pose
-	 */
-	public Pose getPose() {
-		return pose;
-	}
-
-	/**
-	 * @param pose
-	 *            the pose to set
-	 */
-	public void setPose(Pose pose) {
-		this.pose = pose;
-	}
-
-	/**
-	 * @return the typeData
-	 */
-	public int getTypeData() {
-		return typeData;
-	}
-
-	/**
-	 * @param typeData
-	 *            the typeData to set
-	 */
-	public void setTypeData(int typeData) {
-		this.typeData = typeData;
-	}
+	private ObserverMotor observerMotor;
 	
 	/**
-	 * @return the data
+	 * @param observerMotor
 	 */
-	public int getData() {
-		return data;
-	}
-
-	/**
-	 * @param data the data to set
-	 */
-	public void setData(int data) {
-		this.data = data;
+	public ObserverMotorRealTime(ObserverMotor observerMotor) {
+		this.observerMotor = observerMotor;
 	}
 
 	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
+	 * @see java.lang.Thread#run()
 	 */
 	@Override
-	public String toString() {
-		return "x="+this.getPose().getX()+" y="+this.getPose().getY()+" heading="+this.getPose().getHeading()+" data="+this.getData();
+	public void run() {
+		this.observerMotor.rotate(-180);
 	}
+	
+	public void zeroDegree(){
+		this.observerMotor.rotate(90);
+	}
+	
+	
 	
 }

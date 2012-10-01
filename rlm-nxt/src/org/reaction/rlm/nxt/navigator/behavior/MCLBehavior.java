@@ -34,60 +34,78 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.navigator;
+package org.reaction.rlm.nxt.navigator.behavior;
 
-import lejos.nxt.SensorPort;
-import lejos.nxt.TouchSensor;
 import lejos.nxt.UltrasonicSensor;
-import lejos.robotics.subsumption.Arbitrator;
 import lejos.robotics.subsumption.Behavior;
 
+import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
-import org.reaction.rlm.nxt.navigator.behavior.CollisionBehavior;
-import org.reaction.rlm.nxt.navigator.behavior.NearbyObstacleBehavior;
-import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
+import org.reaction.rlm.nxt.motor.observer.TypeGearMotor;
+import org.reaction.rlm.nxt.util.SensorUtil;
 
 /**
  * @author Flavio Souza
  *
  */
-public class ControlNavigator extends Thread {
+public class MCLBehavior implements Behavior {
 	
 	private MotorNxt motorNxt;
-	private TouchSensor touchSensor;
 	private CommunicationChannelRobot comm;
-	private UltrasonicSensor ultrasonicSensor;
 	private ObserverMotor observerMotor;
+	private UltrasonicSensor ultrasonicSensor;
 	
 	/**
-	 * @param dataShared 
-	 * 
+	 * @param observerMotor 
+	 * @param motorNxt
+	 * @param ultrasonicSensor
+	 * @param comm
 	 */
-	public ControlNavigator(CommunicationChannelRobot comm) {
+	public MCLBehavior(CommunicationChannelRobot comm, MotorNxt motorNxt, ObserverMotor observerMotor, UltrasonicSensor ultrasonicSensor) {
 		this.comm = comm;
-		this.motorNxt = new MotorNxt();
-		this.touchSensor = new TouchSensor(SensorPort.S2);
-		this.ultrasonicSensor = new UltrasonicSensor(SensorPort.S1);
-		this.observerMotor = new ObserverMotor();
+		this.motorNxt = motorNxt;
+		this.observerMotor = observerMotor;
+		this.ultrasonicSensor = ultrasonicSensor;
 	}
-	
 	
 	/* (non-Javadoc)
-	 * @see java.lang.Thread#run()
+	 * @see lejos.robotics.subsumption.Behavior#takeControl()
 	 */
 	@Override
-	public void run() {
-		//Behavior b0 = new BootBehavior(this.comm, this.motorNxt, this.observerMotor);
-		Behavior b1 = new WalkBehavior(this.motorNxt, this.comm);
-		//Behavior b2 = new MCLBehavior(this.comm, this.motorNxt, this.observerMotor, this.ultrasonicSensor);
-		Behavior b2 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm, this.observerMotor);
-		Behavior b3 = new CollisionBehavior(this.motorNxt, this.touchSensor, this.comm);
-		
-		Behavior behaviors[] = {b1, b2, b3};
-
-		Arbitrator arbitrator = new Arbitrator(behaviors);
-		arbitrator.start();
+	public boolean takeControl() {
+		return this.ultrasonicSensor.getDistance() > SensorUtil.ULTRA_DIST_MIN && this.ultrasonicSensor.getDistance() < SensorUtil.ULTRA_DIST_MAX;
 	}
+
+	/* (non-Javadoc)
+	 * @see lejos.robotics.subsumption.Behavior#action()
+	 */
+	@Override
+	public void action() {
+		this.motorNxt.stop();
+		
+		this.observerMotor.rotate(TypeGearMotor.ROTATE_LEFT);
+		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_LEFT);
+		
+		this.observerMotor.rotate(TypeGearMotor.ROTATE_RIGHT);
+		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_RIGHT);
+		
+		this.observerMotor.rotate(TypeGearMotor.ROTATE_BACK);
+		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_BACK);
+		
+		this.observerMotor.rotate(TypeGearMotor.ROTATE_FRONT);
+		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_FRONT);
+		
+		this.motorNxt.moveForward();
+	}
+
+	/* (non-Javadoc)
+	 * @see lejos.robotics.subsumption.Behavior#suppress()
+	 */
+	@Override
+	public void suppress() {
+		this.motorNxt.stop();		
+	}
+
 }

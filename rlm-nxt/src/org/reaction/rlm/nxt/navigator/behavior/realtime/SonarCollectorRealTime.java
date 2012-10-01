@@ -34,30 +34,31 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.navigator.behavior;
+package org.reaction.rlm.nxt.navigator.behavior.realtime;
 
-import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.UltrasonicSensor;
+
+import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
 
 /**
  * @author Flavio Souza
  * 
  */
-public class SonarCollector extends Thread {
+public class SonarCollectorRealTime extends Thread {
 
 	private int maxDistance;
 	private int minDistance;
 	private int maxAngle;
 	private int minAngle;
 
-	private NXTRegulatedMotor observerMotor;
+	private ObserverMotor observerMotor;
 	private UltrasonicSensor ultrasonicSensor;
 
 	/**
 	 * @param observerMotor
 	 * @param ultrasonicSensor
 	 */
-	public SonarCollector(NXTRegulatedMotor observerMotor, UltrasonicSensor ultrasonicSensor) {
+	public SonarCollectorRealTime(ObserverMotor observerMotor, UltrasonicSensor ultrasonicSensor) {
 		this.observerMotor = observerMotor;
 		this.ultrasonicSensor = ultrasonicSensor;
 	}
