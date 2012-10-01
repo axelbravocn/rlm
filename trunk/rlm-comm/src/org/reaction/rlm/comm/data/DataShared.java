@@ -47,6 +47,8 @@ public class DataShared {
 	private Pose pose;
 	private int typeData;
 	private float data;
+	private int rotate;
+	private int orientation;
 
 	/**
 	 * 
@@ -71,6 +73,17 @@ public class DataShared {
 	 */
 	public DataShared(Pose pose, int type, int data) {
 		this.pose = pose;
+		this.typeData = type;
+		this.data = data;
+	}
+
+	/**
+	 * @param type
+	 * @param data2
+	 * @param orientation
+	 */
+	public DataShared(int type, int data, int orientation) {
+		this.orientation = orientation;
 		this.typeData = type;
 		this.data = data;
 	}
@@ -120,4 +133,52 @@ public class DataShared {
 		this.data = data;
 	}
 
+	/**
+	 * @return the rotate
+	 */
+	public int getRotate() {
+		return rotate;
+	}
+
+	/**
+	 * @param rotate
+	 *            the rotate to set
+	 */
+	public void setRotate(int rotate) {
+		this.rotate = rotate;
+	}
+
+	/**
+	 * @return the orientation
+	 */
+	public int getOrientation() {
+		return orientation;
+	}
+
+	/**
+	 * @param orientation
+	 *            the orientation to set
+	 */
+	public void setOrientation(int orientation) {
+		this.orientation = orientation;
+	}
+	
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String toString = "Type Data "+TypeData.values()[this.getTypeData()].name();
+		
+		if(TypeData.OBSTACLE.equals(TypeData.values()[this.getTypeData()])){
+			toString += " X = " + this.getPose().getX() + " Y = " + this.getPose().getY() + " Heading = " + this.getPose().getHeading();
+		}else if(TypeData.MCL.equals(TypeData.values()[this.getTypeData()])){
+			toString += " Orientation = "+ TypeOrientation.values()[this.getOrientation()].name();
+		}
+		
+		return toString += " Data = "+ this.getData();
+	}
+
+	
+	
 }

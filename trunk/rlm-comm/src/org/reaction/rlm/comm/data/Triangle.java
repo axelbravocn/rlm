@@ -36,15 +36,34 @@
  */
 package org.reaction.rlm.comm.data;
 
+import java.awt.Graphics;
+
 /**
  * @author Flavio Souza
  *
  */
-public enum TypeData {
-	
-	COLLISION,
-	OBSTACLE,
-	WALKING,
-	MCL;
+public class Triangle {
 
+	int height = 0;
+	int base = 0;
+	int x = 0;
+	int y = 0;
+	
+	/**
+	 * 
+	 */
+	public Triangle(int x, int y, int height, int base) {
+		this.base = base;
+		this.height = height;
+	}
+	
+	public void pint(Graphics g) {
+		if(this.base != 0 && height != 0){
+			g.drawLine(this.x, this.y, this.x + (this.base/2), this.y + this.height);
+			g.drawLine(this.x + (this.base/2), this.y + this.height, this.x - (this.base/2), y + height);
+			g.drawLine(this.x, this.y, this.x - (this.base/2), this.y + this.height);
+		}
+		
+	}
+	
 }
