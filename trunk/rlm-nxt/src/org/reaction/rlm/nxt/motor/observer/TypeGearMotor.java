@@ -34,47 +34,16 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.data;
-
+package org.reaction.rlm.nxt.motor.observer;
 
 /**
  * @author Flavio Souza
  *
  */
-public enum TypeData {
-	
-	OBSTACLE(1),
-	COLLISION(2),
-	FREEDOM(3);
-	
-	private int key;
+public enum TypeGearMotor {
 
-	/**
-	 * 
-	 */
-	private TypeData(int key) {
-		this.key = key;
-	}
-
-	/**
-	 * @return the key
-	 */
-	public int getKey() {
-		return key;
-	}
-
-	/**
-	 * @param t
-	 * @return
-	 */
-	public static TypeData find(int t) {
-		for (TypeData type : TypeData.values()) {
-			if(type.getKey() == t)
-				return type;
-		}
-		return null;
-	}
-
-	
-	
+	ROTATE_LEFT,
+	ROTATE_RIGHT,
+	ROTATE_FRONT,
+	ROTATE_BACK;
 }

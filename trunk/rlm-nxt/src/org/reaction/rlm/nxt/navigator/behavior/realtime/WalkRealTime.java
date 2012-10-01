@@ -34,37 +34,33 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.navigator.behavior;
+package org.reaction.rlm.nxt.navigator.behavior.realtime;
 
-import lejos.nxt.NXTRegulatedMotor;
+import org.reaction.rlm.nxt.motor.MotorNxt;
 
 /**
  * @author Flavio Souza
  *
  */
-public class ObserverMotorMoving extends Thread{
+public class WalkRealTime extends Thread{
 
-	private NXTRegulatedMotor observerMotor;
+	private MotorNxt motorNxt;
 	
 	/**
-	 * @param observerMotor
+	 * @param motorNxt
 	 */
-	public ObserverMotorMoving(NXTRegulatedMotor observerMotor) {
-		this.observerMotor = observerMotor;
+	public WalkRealTime(MotorNxt motorNxt) {
+		this.motorNxt = motorNxt;
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see java.lang.Thread#run()
 	 */
 	@Override
 	public void run() {
-		this.observerMotor.rotate(-180);
-	}
-	
-	public void zeroDegree(){
-		this.observerMotor.rotate(90);
+		this.motorNxt.moveForward();
 	}
 	
 	
-	
+
 }

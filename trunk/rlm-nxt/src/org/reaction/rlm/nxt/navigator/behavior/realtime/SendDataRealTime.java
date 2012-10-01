@@ -34,60 +34,62 @@
  *	
  **********************************************************************************
  */
-package org.reaction.rlm.nxt.navigator;
+package org.reaction.rlm.nxt.navigator.behavior.realtime;
 
-import lejos.nxt.SensorPort;
-import lejos.nxt.TouchSensor;
-import lejos.nxt.UltrasonicSensor;
-import lejos.robotics.subsumption.Arbitrator;
-import lejos.robotics.subsumption.Behavior;
-
+import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
-import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
-import org.reaction.rlm.nxt.navigator.behavior.CollisionBehavior;
-import org.reaction.rlm.nxt.navigator.behavior.NearbyObstacleBehavior;
-import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
 
 /**
  * @author Flavio Souza
- *
+ * 
  */
-public class ControlNavigator extends Thread {
-	
+public class SendDataRealTime extends Thread {
+
 	private MotorNxt motorNxt;
-	private TouchSensor touchSensor;
 	private CommunicationChannelRobot comm;
-	private UltrasonicSensor ultrasonicSensor;
-	private ObserverMotor observerMotor;
-	
+	private boolean isWalking;
+
 	/**
-	 * @param dataShared 
-	 * 
+	 * @param comm
 	 */
-	public ControlNavigator(CommunicationChannelRobot comm) {
+	public SendDataRealTime(CommunicationChannelRobot comm, MotorNxt motorNxt) {
 		this.comm = comm;
-		this.motorNxt = new MotorNxt();
-		this.touchSensor = new TouchSensor(SensorPort.S2);
-		this.ultrasonicSensor = new UltrasonicSensor(SensorPort.S1);
-		this.observerMotor = new ObserverMotor();
+		this.motorNxt = motorNxt;
+		this.isWalking = true;
 	}
-	
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	@Override
 	public void run() {
-		//Behavior b0 = new BootBehavior(this.comm, this.motorNxt, this.observerMotor);
-		Behavior b1 = new WalkBehavior(this.motorNxt, this.comm);
-		//Behavior b2 = new MCLBehavior(this.comm, this.motorNxt, this.observerMotor, this.ultrasonicSensor);
-		Behavior b2 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm, this.observerMotor);
-		Behavior b3 = new CollisionBehavior(this.motorNxt, this.touchSensor, this.comm);
-		
-		Behavior behaviors[] = {b1, b2, b3};
-
-		Arbitrator arbitrator = new Arbitrator(behaviors);
-		arbitrator.start();
+		try {
+			while (this.isWalking) {
+				Thread.sleep(40000);
+				this.comm.addPoint(TypeData.WALKING.ordinal(), this.motorNxt.getPosition());
+				System.out.println("send data s");
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
+
+	/**
+	 * @return the isWalking
+	 */
+	public boolean isWalking() {
+		return isWalking;
+	}
+
+	/**
+	 * @param isWalking
+	 *            the isWalking to set
+	 */
+	public void setWalking(boolean isWalking) {
+		this.isWalking = isWalking;
+	}
+
 }

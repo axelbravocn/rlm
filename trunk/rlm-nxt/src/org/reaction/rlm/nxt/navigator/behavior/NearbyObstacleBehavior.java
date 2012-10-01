@@ -36,13 +36,16 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
-import lejos.nxt.NXTRegulatedMotor;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.comm.data.TypeData;
+import org.reaction.rlm.comm.data.TypeOrientation;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
+import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
+import org.reaction.rlm.nxt.navigator.behavior.realtime.ObserverMotorRealTime;
+import org.reaction.rlm.nxt.navigator.behavior.realtime.SonarCollectorRealTime;
 import org.reaction.rlm.nxt.util.SensorUtil;
 
 /**
@@ -51,9 +54,10 @@ import org.reaction.rlm.nxt.util.SensorUtil;
  */
 public class NearbyObstacleBehavior implements Behavior{
 
+	private boolean mclCollectior;
 	private MotorNxt motorNxt;
+	private ObserverMotor observerMotor;
 	private CommunicationChannelRobot comm;
-	private NXTRegulatedMotor observerMotor;
 	private UltrasonicSensor ultrasonicSensor;
 	
 	/**
@@ -62,11 +66,12 @@ public class NearbyObstacleBehavior implements Behavior{
 	 * @param ultrasonicSensor
 	 * @param comm
 	 */
-	public NearbyObstacleBehavior(MotorNxt motorNxt, UltrasonicSensor ultrasonicSensor, CommunicationChannelRobot comm, NXTRegulatedMotor observerMotor) {
+	public NearbyObstacleBehavior(MotorNxt motorNxt, UltrasonicSensor ultrasonicSensor, CommunicationChannelRobot comm, ObserverMotor observerMotor) {
 		this.comm = comm;
 		this.motorNxt = motorNxt;
-		this.ultrasonicSensor = ultrasonicSensor;
+		this.mclCollectior = true;
 		this.observerMotor = observerMotor;
+		this.ultrasonicSensor = ultrasonicSensor;
 	}
 
 	/* (non-Javadoc)
@@ -85,10 +90,14 @@ public class NearbyObstacleBehavior implements Behavior{
 		this.motorNxt.stop();
 		this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance());
 		
-		ObserverMotorMoving observerMotorMoving = new ObserverMotorMoving(observerMotor);
-		SonarCollector sonarCollector = new SonarCollector(observerMotor, ultrasonicSensor);
+		ObserverMotorRealTime observerMotorMoving = new ObserverMotorRealTime(observerMotor);
+		SonarCollectorRealTime sonarCollector = new SonarCollectorRealTime(observerMotor, ultrasonicSensor);
+		
+		this.collectorDistanceToMCL(TypeOrientation.FRONT);
 		
 		observerMotorMoving.zeroDegree();
+		
+		this.collectorDistanceToMCL(TypeOrientation.RIGHT);
 		
 		observerMotorMoving.start();
 		sonarCollector.start();
@@ -99,6 +108,8 @@ public class NearbyObstacleBehavior implements Behavior{
 			
 		}
 
+		this.collectorDistanceToMCL(TypeOrientation.LEFT);
+		
 		observerMotorMoving.zeroDegree();
 		this.motorNxt.backward();
 		
@@ -122,6 +133,12 @@ public class NearbyObstacleBehavior implements Behavior{
 	@Override
 	public void suppress() {
 		this.motorNxt.stop();		
+	}
+	
+	private void collectorDistanceToMCL(TypeOrientation orientation){
+		if(this.mclCollectior){
+			this.comm.addPoint(TypeData.MCL.ordinal(), this.ultrasonicSensor.getDistance(), orientation.ordinal());
+		}
 	}
 
 }

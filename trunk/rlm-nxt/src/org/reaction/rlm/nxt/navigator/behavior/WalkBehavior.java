@@ -40,6 +40,8 @@ import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
+import org.reaction.rlm.nxt.navigator.behavior.realtime.SendDataRealTime;
+import org.reaction.rlm.nxt.navigator.behavior.realtime.WalkRealTime;
 
 /**
  * @author Flavio Souza
@@ -49,20 +51,14 @@ public class WalkBehavior implements Behavior {
 
 	private MotorNxt motorNxt;
 	private CommunicationChannelRobot comm;
-	
+	private WalkRealTime walking;
+	private SendDataRealTime sendData;
 	/**
 	 * @param motorNxt
 	 * @param touchSensor
 	 * @param ultrasonicSensor
 	 * @param comm
 	 */
-	/**
-	 * 
-	 */
-	public WalkBehavior() {
-		// TODO Auto-generated constructor stub
-	}
-	
 	public WalkBehavior(MotorNxt motorNxt, CommunicationChannelRobot comm) {
 		this.comm = comm;
 		this.motorNxt = motorNxt;
@@ -81,7 +77,11 @@ public class WalkBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		this.motorNxt.moveForward();
+		this.walking = new WalkRealTime(this.motorNxt);
+		//this.sendData = new SendDataRealTime(this.comm, this.motorNxt);
+		
+		this.walking.start();
+		//this.sendData.start();
 	}
 
 	/* (non-Javadoc)
@@ -90,6 +90,9 @@ public class WalkBehavior implements Behavior {
 	@Override
 	public void suppress() {
 		this.motorNxt.stop();
+		this.sendData.setWalking(false);
+		this.sendData = null;
+		this.walking = null;
 	}
 
 }
