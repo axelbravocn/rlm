@@ -40,11 +40,11 @@ package org.reaction.rlm.comm.data;
  * @author Flavio Souza
  *
  */
-public enum TypeData {
+public enum TypeOrientation {
 	
-	COLLISION,
-	OBSTACLE,
-	WALKING,
-	MCL;
-
+	FRONT,
+	LEFT,
+	RIGHT;
+	
+	
 }

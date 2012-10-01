@@ -44,12 +44,12 @@ import java.util.List;
 
 import org.reaction.rlm.comm.data.DataShared;
 
-
 /**
  * @author Flavio Souza
  * 
  */
-public abstract class CommunicationChannelGeneric extends Thread implements CommunicationChannel, Serializable {
+public abstract class CommunicationChannelGeneric extends Thread implements
+		CommunicationChannel, Serializable {
 
 	/**
 	 * 
@@ -59,22 +59,26 @@ public abstract class CommunicationChannelGeneric extends Thread implements Comm
 	private boolean isConnected;
 	private DataInputStream dataIn;
 	private DataOutputStream dataOut;
-	
+
 	private List<DataShared> shareds;
-	
+	private List<DataShared> sharedsMCL;
+
 	/**
 	 * 
 	 */
 	public CommunicationChannelGeneric() {
 		this.shareds = new ArrayList<DataShared>();
+		this.sharedsMCL = new ArrayList<DataShared>();
 	}
-	
-	/* (non-Javadoc)
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Thread#run()
 	 */
 	@Override
 	public abstract void run();
-	
+
 	/**
 	 * @return the isConnected
 	 */
@@ -98,7 +102,8 @@ public abstract class CommunicationChannelGeneric extends Thread implements Comm
 	}
 
 	/**
-	 * @param dataIn the dataIn to set
+	 * @param dataIn
+	 *            the dataIn to set
 	 */
 	public void setDataIn(DataInputStream dataIn) {
 		this.dataIn = dataIn;
@@ -112,7 +117,8 @@ public abstract class CommunicationChannelGeneric extends Thread implements Comm
 	}
 
 	/**
-	 * @param dataOut the dataOut to set
+	 * @param dataOut
+	 *            the dataOut to set
 	 */
 	public void setDataOut(DataOutputStream dataOut) {
 		this.dataOut = dataOut;
@@ -126,10 +132,26 @@ public abstract class CommunicationChannelGeneric extends Thread implements Comm
 	}
 
 	/**
-	 * @param shareds the shareds to set
+	 * @param shareds
+	 *            the shareds to set
 	 */
 	public void setShareds(List<DataShared> shareds) {
 		this.shareds = shareds;
+	}
+
+	/**
+	 * @return the sharedsMCL
+	 */
+	public List<DataShared> getSharedsMCL() {
+		return sharedsMCL;
+	}
+
+	/**
+	 * @param sharedsMCL
+	 *            the sharedsMCL to set
+	 */
+	public void setSharedsMCL(List<DataShared> sharedsMCL) {
+		this.sharedsMCL = sharedsMCL;
 	}
 
 }

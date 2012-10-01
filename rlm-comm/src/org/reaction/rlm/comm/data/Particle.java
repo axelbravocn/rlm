@@ -38,13 +38,58 @@ package org.reaction.rlm.comm.data;
 
 /**
  * @author Flavio Souza
- *
+ * 
  */
-public enum TypeData {
+public class Particle extends Point {
+
+	private double pont;
+	private double heading;
+
+	/**
+	 * 
+	 */
+	public Particle(float x, float y, double pont, double heading) {
+		super(x, y);
+		this.pont = pont;
+		this.heading = heading;
+	}
+
+	/**
+	 * @return the pont
+	 */
+	public double getPont() {
+		return pont;
+	}
+
+	/**
+	 * @param pont
+	 *            the pont to set
+	 */
+	public void setPont(double pont) {
+		this.pont = pont;
+	}
+
+	/**
+	 * @return the heading
+	 */
+	public double getHeading() {
+		return heading;
+	}
+
+	/**
+	 * @param heading
+	 *            the heading to set
+	 */
+	public void setHeading(double heading) {
+		this.heading = heading;
+	}
 	
-	COLLISION,
-	OBSTACLE,
-	WALKING,
-	MCL;
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return super.toString() + " Head="+this.heading+ " Point="+this.pont;
+	}
 
 }
