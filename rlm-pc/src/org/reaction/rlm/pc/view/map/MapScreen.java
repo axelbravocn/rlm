@@ -94,8 +94,10 @@ public class MapScreen extends Map {
 	int gridSpacing = 25;
 	int orig = 75;
 	int xOrig;
-	double xOrigSimulate;
-	double yOrigSimulate;
+	boolean isSetPoint;
+	float xOrigSimulate;
+	float yOrigSimulate;
+	float hOrigSimulate;
 	
 	/**
 	 * y origin in pixels
@@ -115,6 +117,7 @@ public class MapScreen extends Map {
 	 */
 	public MapScreen() {
 		setBackground(Color.white);
+		this.isSetPoint = false;
 		System.out.println(" Mars map constructor ");
 	}
 
@@ -122,9 +125,27 @@ public class MapScreen extends Map {
 	 * @see org.reaction.rlm.pc.view.map.Map#setPointSimulate(double, double)
 	 */
 	@Override
-	public void setPointSimulate(double x, double y) {
+	public void setPointSimulate(float x, float y, float h) {
 		this.xOrigSimulate = x;
 		this.yOrigSimulate = y;
+		this.hOrigSimulate = h;
+		this.isSetPoint = true;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#getIsPoint()
+	 */
+	@Override
+	public boolean getIsPoint() {
+		return this.isSetPoint;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#getDistancesOrigin()
+	 */
+	@Override
+	public double[] getDistancesOrigin() {
+		return this.getSimulator().getM().getDistancePointOrig(this.xOrigSimulate, this.yOrigSimulate, this.hOrigSimulate);
 	}
 	
 	/* (non-Javadoc)
@@ -248,7 +269,7 @@ public class MapScreen extends Map {
 	private void printParticles(Graphics g){
 		g.setColor(Color.red);
 		for (Particle p : simulator.getM().getParticles()) {
-			g.drawOval(xpixel(p.getX()), ypixel(p.getY(), false), 10, 10);
+			g.drawOval(xpixel(p.getX()), ypixel(p.getY(), false), 5, 5);
 		}
 	}
 
@@ -261,7 +282,7 @@ public class MapScreen extends Map {
 			// osGraphics.fillOval(xpixel(p.getX()), ypixel(p.getY(), false), 5, 5);
 			osGraphics.drawLine(xpixel(p.getStartPoint().getX()),ypixel(p.getStartPoint().getY(), false), xpixel(p.getEndPoint().getX()),ypixel(p.getEndPoint().getY(), false));
 		}
-
+		
 		/*
 		 * 
 		 * int xp = 3 ; int yp = 10; // y + 6
@@ -339,14 +360,14 @@ public class MapScreen extends Map {
 	 * convert grid coordinates to pixels
 	 */
 	public int xpixel(double d) {
-		return xOrig + (int) (d * 2 * gridSpacing);
+		return (int) (xOrig + (d * 2 * gridSpacing));
 	}
 
 	public int ypixel(double d, boolean coordinates) {
 		if (coordinates)
-			return (imageHeight / 2) - (int) (d * 2 * gridSpacing);
+			return (int) ((imageHeight / 2) - (d * 2 * gridSpacing));
 		else
-			return y0 - (int) (d * 2 * gridSpacing);
+			return (int) (y0 - (d * 2 * gridSpacing));
 	}
 
 	/*
@@ -375,6 +396,30 @@ public class MapScreen extends Map {
 			}
 
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#getHOrig()
+	 */
+	@Override
+	public float getHOrig() {
+		return this.hOrigSimulate;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#getYOrig()
+	 */
+	@Override
+	public double getYOrig() {
+		return this.yOrigSimulate;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#getXOrig()
+	 */
+	@Override
+	public double getXOrig() {
+		return this.xOrigSimulate;
 	}
 
 

@@ -80,8 +80,6 @@ import org.reaction.rlm.pc.view.map.MapScreen;
 public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runnable, WindowListener, ActionListener, ChangeListener{
 	
 	private static final long serialVersionUID = -8034828485199716108L;
-	private final static String CONNECT_TO_NAME_DEFAULT = "NXT";
-	private final static String CONNECT_TO_ADDRESS_DEFAULT = "0016530A9000";
 	
 	private final static int PANEL_MARGIN = 15;
 	private final static int LOGO_MARGIN_BOTTOM = 15;
@@ -100,10 +98,11 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private Panel controlPanel;
 	//private MapPanel map;
 	private Map map;
-	private JTextField txtConnectToName;
-	private JTextField txtConnectToAddress;
-	private JButton btnConnectNXT;
-	private JButton btnDisconnectAndStop;
+	private JTextField txtX;
+	private JTextField txtY;
+	private JTextField txtDistance;
+	private JTextField txtHeading;
+	private JButton btnSimuleMCL;
 	
 	//MENU
 	private JMenuItem exitButton;
@@ -230,32 +229,28 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		Label lblConnectionHeader = new Label("Dados de conexão");
 		lblConnectionHeader.setFont(fontSectionHeader);
 
-		Label lblConnectionNXTName = new Label("Nome NXT:");
-		lblConnectionNXTName.setFont(fontLabelHeader);
+		Label lblX = new Label("X:");
+		lblX.setFont(fontLabelHeader);
 
-		Label lblConnectionNXTAddress = new Label("Endereço NXT:");
-		lblConnectionNXTAddress.setFont(fontLabelHeader);
+		Label lblY = new Label("Y:");
+		lblY.setFont(fontLabelHeader);
 		
-		// Map scale
-		Label lblMapScalesHeader = new Label("Escala do Mapa");
-		lblMapScalesHeader.setFont(fontSectionHeader);
+		Label lblDistance = new Label("Distance:");
+		lblDistance.setFont(fontLabelHeader);
 		
-		Label lblMapRotateHeader = new Label("Rotação do Mapa");
-		lblMapRotateHeader.setFont(fontSectionHeader);
+		Label lblHeading = new Label("Heading:");
+		lblHeading.setFont(fontLabelHeader);
 		
 		Panel pnlConnection = new Panel(new GridBagLayout());
 
-		txtConnectToName = new JTextField(CONNECT_TO_NAME_DEFAULT, 15);
-		txtConnectToAddress = new JTextField(CONNECT_TO_ADDRESS_DEFAULT, 15);
-		
-		btnConnectNXT = new JButton("Iniciar");
-		btnConnectNXT.addActionListener(this);
-		btnConnectNXT.setEnabled(true);
+		txtX = new JTextField(3);
+		txtY = new JTextField(3);
+		txtDistance = new JTextField(3);
+		txtHeading = new JTextField(3);
+		btnSimuleMCL = new JButton("Start Simule Monte Carlo Localization");
+		btnSimuleMCL.addActionListener(this);
+		btnSimuleMCL.setEnabled(true);
 
-		btnDisconnectAndStop = new JButton("Desligar");
-		btnDisconnectAndStop.addActionListener(this);
-		btnDisconnectAndStop.setEnabled(true);
-		
 		GridBagConstraints CBC = new GridBagConstraints();
 		CBC.fill = GridBagConstraints.HORIZONTAL;
 		CBC.weightx = 0.0;
@@ -263,24 +258,32 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 
 		CBC.gridx = 0;
 		CBC.gridy = 0;
-		pnlConnection.add(lblConnectionNXTName, CBC);
+		pnlConnection.add(lblX, CBC);
 		CBC.gridx = 1;
 		CBC.gridy = 0;
-		pnlConnection.add(txtConnectToName, CBC);
+		pnlConnection.add(txtX, CBC);
 		CBC.gridx = 0;
 		CBC.gridy = 1;
-		pnlConnection.add(lblConnectionNXTAddress, CBC);
+		pnlConnection.add(lblY, CBC);
 		CBC.gridx = 1;
 		CBC.gridy = 1;
-		pnlConnection.add(txtConnectToAddress, CBC);
+		pnlConnection.add(txtY, CBC);
 		CBC.gridx = 0;
 		CBC.gridy = 2;
-		CBC.gridwidth = 2;
-		pnlConnection.add(btnConnectNXT, CBC);
+		pnlConnection.add(lblDistance, CBC);
 		CBC.gridx = 1;
-		CBC.gridy = 2;		
+		CBC.gridy = 2;
+		pnlConnection.add(txtDistance, CBC);
+		CBC.gridx = 0;
+		CBC.gridy = 3;
+		pnlConnection.add(lblHeading, CBC);
+		CBC.gridx = 1;
+		CBC.gridy = 3;
+		pnlConnection.add(txtHeading, CBC);
+		CBC.gridx = 0;
+		CBC.gridy = 4;		
 		CBC.gridwidth = 2;
-		pnlConnection.add(btnDisconnectAndStop, CBC);
+		pnlConnection.add(btnSimuleMCL, CBC);
 
 		sldMapScale = new JSlider(SwingConstants.HORIZONTAL, 1, 150, 35);
 		sldMapScale.setMajorTickSpacing(10);
@@ -299,12 +302,6 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 
 		controlPanel.add(lblConnectionHeader);
 		controlPanel.add(pnlConnection);
-
-		controlPanel.add(lblMapScalesHeader);
-		controlPanel.add(sldMapScale);
-
-		controlPanel.add(lblMapRotateHeader);
-		controlPanel.add(sldMapRotate);
 
 		return controlPanel;
 	}
@@ -371,14 +368,20 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 			this.showPane("title work","title text");
 		}else if(event.getSource() == licenseButton){
 			this.showPane("text license","title license");
-		}else if(event.getSource() == btnConnectNXT){
-			this.connectNXT();
+		}else if(event.getSource() == btnSimuleMCL){
+
+			if(!this.map.getIsPoint()){
+				this.map.setPointSimulate(Float.valueOf(this.txtX.getText()), Float.valueOf(this.txtY.getText()), Float.valueOf(this.txtHeading.getText()));
+			}
+			
+			double distances[] = this.map.getDistancesOrigin();
+			this.map.getSimulator().getM().startMCL(Double.valueOf(txtDistance.getText()), distances);
 		}
 			
 	}
 	
 	private void showPane(String title, String text){
-		JOptionPane .showMessageDialog(null, text,title,JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, text,title,JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/* (non-Javadoc)
@@ -394,17 +397,15 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		
 	}
 	
-	private void connectNXT() {
-	
-	}
-		
 	@Override
 	public void run() {
+		/*
 		try {
 			this.comm.connectNXT();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		*/
 	}
 
 	@Override

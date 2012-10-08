@@ -45,22 +45,21 @@ import org.reaction.rlm.pc.view.map.Map;
  * @author Flavio Souza
  *
  */
-public class DataListener implements ActionListener {
-
+public class MCLListaner implements ActionListener{
+	
 	private Map map;
 	/**
 	 * 
 	 */
-	public DataListener(Map map) {
+	public MCLListaner(Map map) {
 		this.map = map;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-		map.builder();
+	public void actionPerformed(ActionEvent e) {
 		map.repaint();
 	}
 

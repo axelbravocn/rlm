@@ -47,9 +47,11 @@ import lejos.robotics.navigation.Pose;
 
 import org.reaction.rlm.comm.CommunicationChannelGeneric;
 import org.reaction.rlm.comm.data.DataShared;
+import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.comm.data.TypeOrientation;
 import org.reaction.rlm.pc.listener.DataListener;
+import org.reaction.rlm.pc.listener.MCLListaner;
 import org.reaction.rlm.pc.view.map.Map;
 
 /**
@@ -65,6 +67,8 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	private static CommunicationChannelPC channel;
 
 	private DataListener dataListener;
+	
+	private MCLListaner mclListaner;
 	
 	private NXTConnector conn;
 
@@ -134,6 +138,8 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	
 	public void readData(){
 		System.out.println("reading ");
+		DistanceScanner dScanner;
+		
 		int t = -1;
 		int o = 0;
 		float x = 0;
@@ -151,6 +157,18 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 				h = this.getDataIn().readFloat();
 				d = this.getDataIn().readFloat();
 				this.addDataShared(t, x, y, h, d);
+			}else if(TypeData.SCANNER.ordinal() == t){
+				dScanner = new DistanceScanner();
+				
+				dScanner.setDegreeScanner(this.getDataIn().readInt());
+				dScanner.setX(this.getDataIn().readFloat());
+				dScanner.setY(this.getDataIn().readFloat());
+				
+				for (int i = 0; i < 360/dScanner.getDegreeScanner(); i++) {
+					dScanner.getDistances().add(this.getDataIn().readInt());
+				}
+				
+				this.addScanner(dScanner);
 			}else{
 				o = this.getDataIn().readInt();
 				d = this.getDataIn().readFloat();
@@ -167,6 +185,13 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 		}
 	}
 	
+	/**
+	 * @param dScanner
+	 */
+	private void addScanner(DistanceScanner dScanner) {
+		this.dataListener.actionPerformed(null);
+	}
+
 	/**
 	 * @param t
 	 * @param x
