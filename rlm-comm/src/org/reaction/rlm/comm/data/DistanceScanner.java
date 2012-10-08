@@ -36,16 +36,74 @@
  */
 package org.reaction.rlm.comm.data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * @author Flavio Souza
- *
+ * 
  */
-public enum TypeData {
-	
-	COLLISION,
-	OBSTACLE,
-	SCANNER,
-	WALKING,
-	MCL;
+public class DistanceScanner extends Point{
+
+	private List<Integer> distances;
+	private int degreeScanner;
+
+	/**
+	 * 
+	 */
+	public DistanceScanner() {
+		this.distances = new ArrayList<Integer>();
+	}
+
+	public DistanceScanner(int degreeScanner) {
+		this();
+		this.degreeScanner = degreeScanner;
+	}
+
+	/**
+	 * @return the degreeScanner
+	 */
+	public int getDegreeScanner() {
+		return degreeScanner;
+	}
+
+	/**
+	 * @param degreeScanner
+	 *            the degreeScanner to set
+	 */
+	public void setDegreeScanner(int degreeScanner) {
+		this.degreeScanner = degreeScanner;
+	}
+
+	/**
+	 * @return the distances
+	 */
+	public List<Integer> getDistances() {
+		return distances;
+	}
+
+	/**
+	 * @param distances
+	 *            the distances to set
+	 */
+	public void setDistances(List<Integer> distances) {
+		this.distances = distances;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		String toString = "Degree Scanner = " + this.degreeScanner;
+
+		for (int i = 0; i < 360 / this.degreeScanner; i++) {
+			toString += "Dist. in " + (this.degreeScanner * (i + 1)) + " = " + this.distances.get(i);
+		}
+
+		return toString;
+	}
 
 }
