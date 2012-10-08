@@ -36,32 +36,34 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
-import lejos.nxt.NXTRegulatedMotor;
+import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
+import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
-import org.reaction.rlm.nxt.motor.MotorNxt;
+import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
+import org.reaction.rlm.nxt.util.SensorUtil;
 
 /**
  * @author Flavio Souza
  *
  */
-public class BootBehavior implements Behavior {
+public class ScannerBehavior implements Behavior {
 
-	private MotorNxt motorNxt;
-	private boolean execute = false;
+	private boolean isExecute;
+	private ObserverMotor observerMotor;
 	private CommunicationChannelRobot comm;
-	private NXTRegulatedMotor observerMotor;
+	private UltrasonicSensor ultrasonicSensor;
 	
 	/**
-	 * @param observerMotor 
+	 * @param ultrasonicSensor 
 	 * 
 	 */
-	public BootBehavior(CommunicationChannelRobot comm, MotorNxt motorNxt, NXTRegulatedMotor observerMotor) {
+	public ScannerBehavior(CommunicationChannelRobot comm, ObserverMotor observerMotor, UltrasonicSensor ultrasonicSensor) {
+		this.isExecute = true;
 		this.comm = comm;
-		this.execute = true;
-		this.motorNxt = motorNxt;
 		this.observerMotor = observerMotor;
+		this.ultrasonicSensor = ultrasonicSensor;
 	}
 	
 	/* (non-Javadoc)
@@ -69,7 +71,7 @@ public class BootBehavior implements Behavior {
 	 */
 	@Override
 	public boolean takeControl() {
-		return this.execute;
+		return this.isExecute;
 	}
 
 	/* (non-Javadoc)
@@ -77,11 +79,19 @@ public class BootBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		this.observerMotor.rotate(90);
-		this.observerMotor.rotate(-180);
-		this.observerMotor.rotate(90);
 		
-		this.execute = false;
+		DistanceScanner dScanner = new DistanceScanner();
+		
+		for (int i = 0; i < 360/SensorUtil.DEGREE_SCANNER; i++) {
+			this.observerMotor.rotate(SensorUtil.DEGREE_SCANNER);
+			dScanner.getDistances().add(this.ultrasonicSensor.getDistance());
+			System.out.println(this.ultrasonicSensor.getDistance());
+		}
+		
+		this.comm.addScanner(dScanner);
+		
+		this.observerMotor.rotate(-360);
+		this.isExecute = false;
 	}
 	
 	/* (non-Javadoc)
@@ -89,7 +99,6 @@ public class BootBehavior implements Behavior {
 	 */
 	@Override
 	public void suppress() {
-		this.motorNxt.stop();		
 	}
 
 }

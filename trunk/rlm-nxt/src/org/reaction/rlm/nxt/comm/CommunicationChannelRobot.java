@@ -48,6 +48,7 @@ import lejos.robotics.navigation.Pose;
 
 import org.reaction.rlm.comm.CommunicationChannelGeneric;
 import org.reaction.rlm.comm.data.DataShared;
+import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.motor.observer.TypeGearMotor;
 
@@ -158,6 +159,14 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 		}
 	}
 
+	/**
+	 * @param dScanner
+	 */
+	public void addScanner(DistanceScanner dScanner) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 	/**
 	 * @param ordinal
 	 * @param position
