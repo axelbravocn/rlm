@@ -47,6 +47,7 @@ import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
 import org.reaction.rlm.nxt.navigator.behavior.CollisionBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.NearbyObstacleBehavior;
+import org.reaction.rlm.nxt.navigator.behavior.ScannerBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
 
 /**
@@ -79,14 +80,19 @@ public class ControlNavigator extends Thread {
 	 */
 	@Override
 	public void run() {
-		//Behavior b0 = new BootBehavior(this.comm, this.motorNxt, this.observerMotor);
+		// 
+		/*
 		Behavior b1 = new WalkBehavior(this.motorNxt, this.comm);
-		//Behavior b2 = new MCLBehavior(this.comm, this.motorNxt, this.observerMotor, this.ultrasonicSensor);
 		Behavior b2 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm, this.observerMotor);
 		Behavior b3 = new CollisionBehavior(this.motorNxt, this.touchSensor, this.comm);
 		
 		Behavior behaviors[] = {b1, b2, b3};
-
+		*/
+		
+		Behavior b1 = new ScannerBehavior(this.comm, this.observerMotor, this.ultrasonicSensor);
+		
+		Behavior behaviors[] = {b1};
+		
 		Arbitrator arbitrator = new Arbitrator(behaviors);
 		arbitrator.start();
 	}

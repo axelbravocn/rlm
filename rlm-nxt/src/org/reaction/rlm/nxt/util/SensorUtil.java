@@ -44,5 +44,7 @@ public interface SensorUtil {
 
 	int ULTRA_DIST_MIN = 25;
 	int ULTRA_DIST_MAX = 30;
+	
+	int DEGREE_SCANNER = 45;
 
 }

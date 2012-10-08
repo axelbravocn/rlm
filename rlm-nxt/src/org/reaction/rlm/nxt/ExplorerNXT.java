@@ -70,10 +70,9 @@ public class ExplorerNXT implements Runnable {
 
 	@Override
 	public void run() {
-		try {
 
 			// create communication with server
-			this.comm.connectServer();
+			//this.comm.connectServer();
 			this.controlNavigator.start();
 
 			while(true){
@@ -84,9 +83,6 @@ public class ExplorerNXT implements Runnable {
 			// emitir som
 
 
-		} catch (IOException e) {
-			LCD.drawString("Fail connection with PC...", 1, 3);
-		}
 	}
 
 }
