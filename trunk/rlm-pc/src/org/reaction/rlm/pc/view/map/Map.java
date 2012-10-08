@@ -60,9 +60,25 @@ public abstract class Map extends JPanel {
 	/**
 	 * @param x
 	 * @param y
+	 * @param d 
 	 */
-	public abstract void setPointSimulate(double x, double y); 
+	public abstract void setPointSimulate(float x, float y, float h); 
 
+	/**
+	 * @return
+	 */
+	public abstract boolean getIsPoint();
+
+	/**
+	 * @return
+	 */
+	public abstract double[] getDistancesOrigin();
+
+	public abstract float getHOrig();
+	
+	public abstract double getYOrig();
+	
+	public abstract double getXOrig();
 	
 	/**
 	 * @return the communicationChannel
@@ -92,5 +108,6 @@ public abstract class Map extends JPanel {
 	public void setSimulator(MapSimulator simulator) {
 		this.simulator = simulator;
 	}
+
 
 }

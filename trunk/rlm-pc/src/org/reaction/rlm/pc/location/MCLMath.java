@@ -69,8 +69,10 @@ public class MCLMath {
 		slope = slopeDegree(slope);
 
 		// y = mx + (y0 - mx0)
-		float y = (float) ((slope * x) + (p.getY() - (slope * p.getX())));
-
+		//float y = (float) ((slope * x) + (p.getY() - (slope * p.getX())));
+		// y = m (x – x0) + y0 
+		float y = (float) (slope * (x - p.getX())) + p.getY();
+		
 		pointLine.setY(y);
 
 		return pointLine;
@@ -87,8 +89,10 @@ public class MCLMath {
 		slope = slopeDegree(slope);
 
 		// y = mx + (y0 - mx0)
-		float x = (float) ((p.getY() - (slope * p.getX()) - y) / slope);
-
+		//float x = (float) ((p.getY() - (slope * p.getX()) - y) / slope);
+		// x = ((y – y0) / m) + x0  
+		float x = (float) ((y - p.getY()) / slope) + p.getX();
+		
 		pointLine.setX(x);
 
 		return pointLine;
@@ -137,6 +141,43 @@ public class MCLMath {
 	}
 	
 	public static Point intersectionPointOfTwoLine(float x1, float y1, float x2, float y2, float x3, float y3, float x4, float y4) {
+		/*
+		double dyline1, dxline1;
+	    double dyline2, dxline2, e, f;
+	    
+	    if ((x1==x3) && (y1==y3))
+	    {
+	      return (new Point( (int) x1, (int) y1));
+	    }
+	    if ((x1==x4) && (y1==y4))
+	    {
+	      return (new Point( (int) x1, (int) y1));
+	    }
+	    if ((x2==x3) && (y2==y3))
+	    {
+	      return (new Point( (int) x2, (int) y2));
+	    }
+	    if ((x2==x4) && (y2==y4))
+	    {
+	      return (new Point( (int) x2, (int) y2));
+	    }
+
+	    dyline1 = -( y2 - y1 );
+	    dxline1 = x2 - x1;
+
+	    dyline2 = -( y4 - y3 );
+	    dxline2 = x4 - x3;
+
+	    e = -(dyline1 * x1) - (dxline1 * y1);
+	    f = -(dyline2 * x3) - (dxline2 * y3);
+
+
+	    if( (dyline1 * dxline2 - dyline2 * dxline1) == 0 )
+	    	return null;
+	    
+	    return (new Point((int) (-(e * dxline2 - dxline1 * f)/(dyline1 * dxline2 - dyline2 * dxline1)), 
+	    				(int) (-(dyline1 * f - dyline2 * e)/(dyline1 * dxline2 - dyline2 * dxline1))));
+	      */
 		double d = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
 		if (d == 0)
 			return null;
