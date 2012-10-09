@@ -321,10 +321,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private JPanel createMapPanel(){
 		JPanel mapPanel = new JPanel();
 		
-		//map = new MapPanel();
 		map = new MapScreen();
-		//map.getCenterChanged().add(this);
-		//map.getScaleChanged().add(this);
 		
 		mapPanel.setLayout(new BorderLayout());
 		mapPanel.add(map , BorderLayout.CENTER);
@@ -381,7 +378,7 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	}
 	
 	private void showPane(String title, String text){
-		JOptionPane.showMessageDialog(null, text,title,JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, text, title,JOptionPane.INFORMATION_MESSAGE);
 	}
 	
 	/* (non-Javadoc)

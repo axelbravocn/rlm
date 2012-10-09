@@ -52,11 +52,11 @@ import org.reaction.rlm.pc.view.map.Map;
  */
 public class MCLEngine {
 
-	private static final int RADIUS_SONAR = 90;
-	private static final float DISTANCE_MAX = 5;
-	
+	private static final int RADIUS_SONAR = 15;
+	private static final float DISTANCE_MAX = 15;
+
 	private Map map;
-	
+
 	private List<Particle> particles;
 	private List<Line> environment;
 
@@ -64,7 +64,7 @@ public class MCLEngine {
 	private float xMin;
 	private float yMax;
 	private float yMin;
-	
+
 	/**
 	 * 
 	 */
@@ -73,238 +73,239 @@ public class MCLEngine {
 		this.environment = lines;
 		this.generatesParticles(500);
 	}
-	
-	public void startMCL(double move, double distanceOrigin[]){
+
+	public void startMCL(double move, double distanceOrigin[]) {
 		Thread t;
-		int iterator = 5;
-		
+		int iterator = 10;
+
 		for (int i = 0; i < iterator; i++) {
 			t = new Thread() {
 				public void run() {
 					map.repaint();
 				}
 			};
-			
+
 			this.compareDistanceParticle(distanceOrigin);
 			this.moveParticles(move);
 			t.start();
 			distanceOrigin = this.map.getDistancesOrigin();
 		}
-		
+
+		this.normalizeWeights();
 		int qtdParticleRemove = this.removeTrashParticle();
 		this.generatesParticles(qtdParticleRemove);
 	}
-	
+
+	private void normalizeWeights() {
+		double totalWeight = 0;
+		for (Particle p : this.particles) {
+			totalWeight += p.getPont();
+		}
+
+		for (Particle p : this.particles) {
+			p.setPont(p.getPont() / totalWeight);
+		}
+	}
+
 	/*
 	 * Remove particles with lowest score
 	 */
-	private int removeTrashParticle(){
+	private int removeTrashParticle() {
 		int qtdParticleRemove = (int) (this.particles.size() * 0.3);
-		
-		Collections.sort(this.particles, new Comparator<Particle>() {
 
+		Collections.sort(this.particles, new Comparator<Particle>() {
 			@Override
 			public int compare(Particle o1, Particle o2) {
-				if(o1.getPont() < o2.getPont())
+				if (o1.getPont() < o2.getPont())
 					return -1;
-				else if(o1.getPont() > o2.getPont())
+				else if (o1.getPont() > o2.getPont())
 					return +1;
 				else
 					return 0;
 			}
 		});
-		
+
 		for (int i = 0; i < qtdParticleRemove; i++) {
 			this.particles.remove(0);
 		}
+
+		List<Particle> indexies = new ArrayList<Particle>();
+
+		for (Particle p : this.particles) {
+			if (p.getX() > this.xMax)
+				indexies.add(p);
+			else if (p.getX() < this.xMin)
+				indexies.add(p);
+			else if (p.getY() < this.yMin)
+				indexies.add(p);
+			else if (p.getY() > this.yMax)
+				indexies.add(p);
+		}
 		
+		qtdParticleRemove += indexies.size();
+
+		for (Particle p : indexies) {
+			this.particles.remove(p);
+		}
+
 		for (Particle p : this.particles) {
 			p.setPont(0.0);
 		}
+
 		return qtdParticleRemove;
 	}
-	
-	private void compareDistanceParticle(double[] distanceOrigin){
+
+	private void compareDistanceParticle(double[] distanceOrigin) {
 		double degree;
 		float valueRef;
 		double angleCount = 0;
 		Point pointEnd = null;
 		double percentageCloseness;
-		double angleScanner = 360 /RADIUS_SONAR; //radius of aperture sonar
+		double angleScanner = 360 / RADIUS_SONAR; // radius of aperture sonar
 
 		for (Particle particle : this.particles) {
 			angleCount = 0;
 			percentageCloseness = 0;
 			degree = particle.getHeading();
-		
+
 			for (int i = 0; i < angleScanner; i++) {
-			
-				if(degree <= 45 || (degree >= 135 && degree <= 225) || degree >= 315){
+
+				if (degree <= 45 || (degree >= 135 && degree <= 225) || degree >= 315) {
 					valueRef = (float) (Math.cos(Math.toRadians(degree)) * DISTANCE_MAX) + particle.getX();
 					pointEnd = MCLMath.equationLineX(particle.getX(), particle.getY(), degree, valueRef);
-				}else{
+				} else {
 					valueRef = (float) (Math.sin(Math.toRadians(degree)) * DISTANCE_MAX) + particle.getY();
 					pointEnd = MCLMath.equationLineY(particle.getX(), particle.getY(), degree, valueRef);
 				}
-				
-				Double distanceParticleAtObstacle = this.getDistanceParticleAtObstacle(particle, pointEnd, degree);
-				
-				if(distanceParticleAtObstacle != null){
+
+				Double distanceParticleAtObstacle = this.getDistanceParticleAtObstacle(particle, pointEnd,degree);
+
+				if (distanceParticleAtObstacle != null) {
 					double qtdRotate = angleCount / RADIUS_SONAR;
 					percentageCloseness += this.computesScoresDistance(distanceOrigin[(int) (qtdRotate)], distanceParticleAtObstacle);
 				}
-				
+
 				degree += RADIUS_SONAR;
 				angleCount += RADIUS_SONAR;
-				
-				if(degree > 360)
+
+				if (degree > 360)
 					degree -= 360;
-				
+
 			}
-			
+
 			particle.setPont(percentageCloseness);
 		}
 	}
-	
-	
-	public double[] getDistancePointOrig(float xOrigSimulate, float yOrigSimulate, float hOrigSimulate){
+
+	public double[] getDistancePointOrig(float xOrigSimulate, float yOrigSimulate, float hOrigSimulate) {
 		float valueRef;
 		Point pointEnd;
 		double degree = hOrigSimulate;
-		double angleScanner = 360 /RADIUS_SONAR;
-		
+		double angleScanner = 360 / RADIUS_SONAR;
+
 		double distances[] = new double[(int) angleScanner];
-		
+
 		Particle p = new Particle(xOrigSimulate, yOrigSimulate, 0.0, hOrigSimulate);
-		
+
 		for (int i = 0; i < angleScanner; i++) {
-			if(degree <= 45 || (degree >= 135 && degree <= 225) || degree >= 315){
+			if (degree <= 45 || (degree >= 135 && degree <= 225) || degree >= 315) {
 				valueRef = (float) (Math.cos(Math.toRadians(degree)) * DISTANCE_MAX) + p.getX();
 				pointEnd = MCLMath.equationLineX(p.getX(), p.getY(), degree, valueRef);
-			}else{
+			} else {
 				valueRef = (float) (Math.sin(Math.toRadians(degree)) * DISTANCE_MAX) + p.getY();
 				pointEnd = MCLMath.equationLineY(p.getX(), p.getY(), degree, valueRef);
 			}
 
 			distances[i] = this.getDistanceParticleAtObstacle(p, pointEnd, degree);
-			
+
 			degree += RADIUS_SONAR;
-			
-			if(degree > 360)
+
+			if (degree > 360)
 				degree -= 360;
 		}
-		
+
 		return distances;
 	}
-	
-	private Double getDistanceParticleAtObstacle(Particle particle, Point pointEnd, double degree){
+
+	private Double getDistanceParticleAtObstacle(Particle particle, Point pointEnd, double degree) {
 		boolean valid = false;
-		
+
 		for (Line l : this.environment) {
 			valid = false;
 			Point intersectionPoint = MCLMath.intersectionPointOfTwoLine(l.getStartPoint(), l.getEndPoint(), particle, pointEnd);
-			
-			if(intersectionPoint != null){
-				
-				if((degree <= 45 || degree >= 315) && intersectionPoint.getX() >= particle.getX()){
+
+			if (intersectionPoint != null) {
+
+				if ((degree <= 45 || degree >= 315) && intersectionPoint.getX() >= particle.getX()) {
 					valid = true;
-				}else if((degree >= 135 && degree <= 225) && intersectionPoint.getX() <= particle.getX()){
+				} else if ((degree >= 135 && degree <= 225) && intersectionPoint.getX() <= particle.getX()) {
 					valid = true;
-				}else if((degree >= 45 && degree <= 135) && intersectionPoint.getY() > particle.getY()){
+				} else if ((degree >= 45 && degree <= 135) && intersectionPoint.getY() > particle.getY()) {
 					valid = true;
-				}else if((degree >= 225 && degree <= 315) && intersectionPoint.getY() < particle.getY()){
+				} else if ((degree >= 225 && degree <= 315) && intersectionPoint.getY() < particle.getY()) {
 					valid = true;
-				}	
-				
-				if(valid){
+				}
+
+				if (valid) {
 					return MCLMath.distanceBetweenTwoPoints(particle, intersectionPoint);
 				}
 			}
 		}
-		
+
 		return null;
 	}
-	
-	private void moveParticles(double distance){
+
+	private void moveParticles(double distance) {
 		float x, y;
-		
+
 		this.moveOrig(distance);
-		
+
 		for (Particle particle : this.particles) {
 			x = (float) ((Math.cos(Math.toRadians(particle.getHeading())) * distance) + particle.getX());
 			y = (float) ((Math.sin(Math.toRadians(particle.getHeading())) * distance) + particle.getY());
-			
+
 			particle.setX(x);
 			particle.setY(y);
 		}
 	}
-	
-	private void moveOrig(double distance){
+
+	private void moveOrig(double distance) {
 		float x = (float) ((Math.cos(Math.toRadians(this.map.getHOrig())) * distance) + this.map.getXOrig());
 		float y = (float) ((Math.sin(Math.toRadians(this.map.getHOrig())) * distance) + this.map.getYOrig());
-		
+
 		this.map.setPointSimulate(x, y, this.map.getHOrig());
 	}
-	
-	/*
-	private double computesDistanceParticle(Particle particle, double angle){
-		return 0.0;
-	}
-	*/
-	private Point computesDistanceParticle(Particle particle, double angle){
-		return MCLMath.equationLineX(particle, angle, particle.getX()+1);
-	}
-	
-	private Point computesDistanceParticle(Particle particle, double angle, float x){
-		return MCLMath.equationLineX(particle, angle, x);
-	}
-	
-	private Point computesDistanceParticle(Particle particle, double angle, float x, boolean useX){
-		if(useX)
-			return MCLMath.equationLineX(particle, angle, x);
-		else 
-			return MCLMath.equationLineY(particle, angle, x);
-	}
-	
-	private double computesScoreProbabilistic(double percentageCloseness){
-		return (100 * percentageCloseness / 12);
-	}
-	
-	private double computesScoresDistance(double expectedDistance, double realDistance){
-		double point = 0 ;
-		double percent = 1 / (360/RADIUS_SONAR);
+
+
+	private double computesScoresDistance(double expectedDistance, double realDistance) {
+
+		double constant = 1;
+		double exponent = (-1 * (expectedDistance - realDistance) * (expectedDistance - realDistance)) / 2 ;
 		
-		if(expectedDistance >= realDistance)
-			point = realDistance / expectedDistance;
-		else {
-			int division = (int) (realDistance / expectedDistance);
-			point = ((realDistance / expectedDistance) - division) * (2/division);
-		}
-		
-		return point;
+		return constant * Math.exp(exponent);
+
 	}
-	
-	
+
 	private void generatesParticles(int quantity) {
 		float x, y, angle;
 		Particle p;
-		
-		if(this.particles == null)
+
+		if (this.particles == null)
 			this.particles = new ArrayList<Particle>();
-		
+
 		this.findMaxAndMin();
 
 		for (int i = 0; i < quantity; i++) {
 			x = randInRangeInc(xMin, xMax);
 			y = randInRangeInc(yMin, yMax);
 			angle = randInRangeInc(0, 360);
-			
+
 			p = new Particle(x, y, 0, angle);
-			
-			//if (!this.particles.contains(p))
-				this.particles.add(p);
-			//else
-				//i--;
+
+			// if (!this.particles.contains(p))
+			this.particles.add(p);
+			// else
+			// i--;
 		}
 	}
 
@@ -314,15 +315,15 @@ public class MCLEngine {
 		this.yMax = this.environment.get(0).getStartPoint().getY();
 		this.yMin = this.environment.get(0).getStartPoint().getY();
 
-		int qtyPoints = this.environment.size()*2;
+		int qtyPoints = this.environment.size() * 2;
 		Point[] points = new Point[qtyPoints];
-		
-		int q =0;
+
+		int q = 0;
 		for (int i = 0; i < this.environment.size(); i++) {
 			points[q++] = this.environment.get(i).toArray()[0];
 			points[q++] = this.environment.get(i).toArray()[1];
 		}
-		
+
 		for (Point p : points) {
 			if (this.xMax < p.getX())
 				this.xMax = p.getX();
