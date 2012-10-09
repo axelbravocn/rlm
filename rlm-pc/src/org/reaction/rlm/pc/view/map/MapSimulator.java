@@ -63,12 +63,23 @@ public class MapSimulator {
 	private void createLines() {
 		this.lines = new ArrayList<Line>();
 
-		this.lines.add(new Line(new Point(-3, 2), new Point(-3, 8)));
+		this.lines.add(new Line(new Point(-6, 2), new Point(-6, 12)));
+		this.lines.add(new Line(new Point(-4, 2), new Point(-4, 3)));
+		this.lines.add(new Line(new Point(-4, 3), new Point(-3, 3)));
+		this.lines.add(new Line(new Point(-3, 2), new Point(-3, 3)));
+		
+		this.lines.add(new Line(new Point(-6, 2), new Point(-4, 2)));
 		this.lines.add(new Line(new Point(-3, 2), new Point(6, 2)));
 		this.lines.add(new Line(new Point(6, 2), new Point(6, 5)));
-		this.lines.add(new Line(new Point(4, 8), new Point(4, 5)));
+		
+		this.lines.add(new Line(new Point(4, 9), new Point(4, 5)));
+		this.lines.add(new Line(new Point(4, 9), new Point(5, 9)));
+		this.lines.add(new Line(new Point(4, 10), new Point(5, 10)));
+		this.lines.add(new Line(new Point(5, 10), new Point(5, 9)));
+		this.lines.add(new Line(new Point(4, 10), new Point(4, 12)));
+		
 		this.lines.add(new Line(new Point(6, 5), new Point(4, 5)));
-		this.lines.add(new Line(new Point(4, 8), new Point(-3, 8)));
+		this.lines.add(new Line(new Point(4, 12), new Point(-6, 12)));
 		
 	}
 

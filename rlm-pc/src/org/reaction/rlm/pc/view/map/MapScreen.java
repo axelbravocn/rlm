@@ -155,7 +155,7 @@ public class MapScreen extends Map {
 	public void paint(Graphics g) {
 		super.paint(g);
 		if(g != null){
-			g.drawOval(xpixel((int)this.xOrigSimulate), ypixel((int)this.yOrigSimulate, false), 20, 20);
+			g.fillOval(xpixel((int)this.xOrigSimulate), ypixel((int)this.yOrigSimulate, false), 10, 10);
 			
 			if(this.getSimulator().getM().getParticles() != null && this.getSimulator().getM().getParticles().size() > 0){
 				this.printParticles(g);
@@ -190,28 +190,11 @@ public class MapScreen extends Map {
 	 **/
 	public void paintComponent(Graphics g) {
 		super.paintComponent(g);
+		
 		if (offScreenImage == null)
 			makeImage();
-		g.drawImage(offScreenImage, 0, 0, this); // Writes the Image to
-													// thescreen
-		/*
-		 * float x; float y; double angle; float distance;
-		 * 
-		 * for (DataShared dsMCL :
-		 * this.getCommunicationChannel().getSharedsMCL()) {
-		 * 
-		 * for (DataShared ds : this.getCommunicationChannel().getShareds()) {
-		 * 
-		 * distance = ds.getData() - dsMCL.getData();
-		 * 
-		 * if(TypeData.OBSTACLE.equals(ds.getTypeData())){ angle =
-		 * Math.toRadians(ds.getPose().getHeading()); x = (float)
-		 * (Math.cos(angle) * distance) + ds.getPose().getX(); y = (float)
-		 * (Math.sin(angle) * distance) + ds.getPose().getY();
-		 * this.drawMCL(x/REDUCTION, y/REDUCTION); }
-		 * 
-		 * } }
-		 */
+		
+		g.drawImage(offScreenImage, 0, 0, this);
 	}
 
 	/**
@@ -224,28 +207,26 @@ public class MapScreen extends Map {
 		for (float y = 0; y < 13; y += 0.5f) {
 			if (y == 6)
 				osGraphics.setColor(Color.blue);
-			osGraphics.drawLine(xpixel(-8), ypixel(y, false), xpixel(8),
-					ypixel(y, false));
+			
+			osGraphics.drawLine(xpixel(-8), ypixel(y, false), xpixel(8), ypixel(y, false));
 			osGraphics.setColor(Color.green);
 		}
 		// x axis
 		for (float x = -8; x < 8.1; x += 0.5f) {
 			if (x == 0)
 				osGraphics.setColor(Color.blue);
-			osGraphics.drawLine(xpixel(x), ypixel(0, false), xpixel(x),
-					ypixel(12.5f, false));
+			
+			osGraphics.drawLine(xpixel(x), ypixel(0, false), xpixel(x), ypixel(12.5f, false));
 			osGraphics.setColor(Color.green);
 		}
 
 		osGraphics.setColor(Color.black); // set number color
 		// for y axis
 		for (int y = 0; y < 13; y++)
-			osGraphics.drawString(y - 6 + "", xpixel(-8.3f),
-					ypixel(y - 0.1f, false));
+			osGraphics.drawString(y - 6 + "", xpixel(-8.3f), ypixel(y - 0.1f, false));
 		// x axis
 		for (int x = -8; x < 9; x++)
-			osGraphics.drawString(x + "", xpixel(x - 0.1f),
-					ypixel(-0.4f, false));
+			osGraphics.drawString(x + "", xpixel(x - 0.1f), ypixel(-0.4f, false));
 
 		robotPrevX = xpixel(0);
 		robotPrevY = ypixel(9, true);
@@ -259,15 +240,9 @@ public class MapScreen extends Map {
 	}
 
 	
-	private void printParticles(){
-		osGraphics.setColor(Color.red);
-		for (Particle p : simulator.getM().getParticles()) {
-			osGraphics.drawOval(xpixel(p.getX()), ypixel(p.getY(), false), 10, 10);
-		}
-	}
-	
 	private void printParticles(Graphics g){
 		g.setColor(Color.red);
+		
 		for (Particle p : simulator.getM().getParticles()) {
 			g.drawOval(xpixel(p.getX()), ypixel(p.getY(), false), 5, 5);
 		}
@@ -279,45 +254,8 @@ public class MapScreen extends Map {
 
 		osGraphics.setColor(Color.black);
 		for (Line p : simulator.getLines()) {
-			// osGraphics.fillOval(xpixel(p.getX()), ypixel(p.getY(), false), 5, 5);
 			osGraphics.drawLine(xpixel(p.getStartPoint().getX()),ypixel(p.getStartPoint().getY(), false), xpixel(p.getEndPoint().getX()),ypixel(p.getEndPoint().getY(), false));
 		}
-		
-		/*
-		 * 
-		 * int xp = 3 ; int yp = 10; // y + 6
-		 * 
-		 * int x = xpixel(xp); int y = ypixel(yp, false); int cx = xpixel(xp +
-		 * 2); int cy = ypixel(yp + 2, false);
-		 * 
-		 * int xPoints[] = {x, x, cx}; int yPoints[] = {y, cy, y};
-		 * osGraphics.drawPolygon(xPoints, yPoints, 3); System.out.println("x");
-		 * System.out.println(xPoints[0]); System.out.println(xPoints[1]);
-		 * System.out.println(xPoints[2]); System.out.println("y");
-		 * System.out.println(yPoints[0]); System.out.println(yPoints[1]);
-		 * System.out.println(yPoints[2]); int angle = 90; double radians =
-		 * Math.toRadians(angle); double radians2 = Math.toRadians(angle+90);
-		 * 
-		 * x = xpixel(xp); y = ypixel(yp, false);
-		 * 
-		 * int nxa = (int) (xp + (xp* Math.cos(radians))); int nya = (int) (yp +
-		 * (yp* Math.sin(radians2)));
-		 * 
-		 * int xa = xpixel(nxa); int ya = ypixel(nya, false);
-		 * 
-		 * int ncx = (int) ((xp +2) + ((xp +2) * Math.cos(radians2))); int ncy =
-		 * (int) ((yp +2) + ((yp +2) * Math.sin(radians2))); cx = xpixel(ncx);
-		 * cy = ypixel(ncy, false);
-		 * 
-		 * int xPoints2[] = {x, xa, cx}; int yPoints2[] = {y, cy, ya};
-		 * System.out.println("x"); System.out.println(xPoints2[0]);
-		 * System.out.println(xPoints2[1]); System.out.println(xPoints2[2]);
-		 * System.out.println("y"); System.out.println(yPoints2[0]);
-		 * System.out.println(yPoints2[1]); System.out.println(yPoints2[2]);
-		 * osGraphics.setColor(Color.red); osGraphics.drawPolygon(xPoints2,
-		 * yPoints2, 3);
-		 */
-
 	}
 
 	/**
@@ -327,7 +265,9 @@ public class MapScreen extends Map {
 		int x = xpixel(xx); // coordinates of intersection
 		int y = ypixel(yy, true);
 		block = true;
+		
 		System.out.print("Point x=" + x + " y=" + y);
+		
 		if (x > 0 && y > 0) {
 			osGraphics.setColor(Color.magenta);
 			osGraphics.fillOval(x - 2, y - 2, 5, 5);// bounding rectangle is 10
@@ -384,14 +324,11 @@ public class MapScreen extends Map {
 		for (DataShared ds : this.getCommunicationChannel().getShareds()) {
 
 			if (TypeData.WALKING.ordinal() == ds.getTypeData()) {
-				this.drawRobotPath(ds.getPose().getX() / REDUCTION, ds
-						.getPose().getY() / REDUCTION);
+				this.drawRobotPath(ds.getPose().getX() / REDUCTION, ds.getPose().getY() / REDUCTION);
 			} else if (TypeData.OBSTACLE.ordinal() == ds.getTypeData()) {
 				angle = Math.toRadians(ds.getPose().getHeading());
-				x = (float) (Math.cos(angle) * ds.getData())
-						+ ds.getPose().getX();
-				y = (float) (Math.sin(angle) * ds.getData())
-						+ ds.getPose().getY();
+				x = (float) (Math.cos(angle) * ds.getData()) + ds.getPose().getX();
+				y = (float) (Math.sin(angle) * ds.getData()) + ds.getPose().getY();
 				this.drawObstacle(x / REDUCTION, y / REDUCTION);
 			}
 
@@ -421,6 +358,5 @@ public class MapScreen extends Map {
 	public double getXOrig() {
 		return this.xOrigSimulate;
 	}
-
 
 }
