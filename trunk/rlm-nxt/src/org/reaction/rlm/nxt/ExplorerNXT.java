@@ -37,10 +37,7 @@
 
 package org.reaction.rlm.nxt;
 
-import java.io.IOException;
-
 import lejos.nxt.Button;
-import lejos.nxt.LCD;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.navigator.ControlNavigator;
