@@ -83,48 +83,6 @@ public class MapSimulator {
 		
 	}
 
-	private List<Point> generatePointsAtLine(int x1, int y1, int x2, int y2,  int angle){
-		if(x1 != x2){
-			if(x1 > x2){
-				return this.computesPointsAtLineX(x2, y2, x1, y1, angle);
-			}else{
-				return this.computesPointsAtLineX(x1, y1, x2, y2, angle);
-			}
-		} else {
-			if(y1 > y2){
-				return this.computesPointsAtLineY(x2, y2, x1, y1, angle);
-			}else{
-				return this.computesPointsAtLineY(x1, y1, x2, y2, angle);
-			}
-		}
-	}
-	
-
-	private List<Point> computesPointsAtLineY(int xOrigin, int yOrigin, int xEnd, int yEnd, int angle){
-		// y2 - y1 = m(x2 -x1)
-		List<Point> points = new ArrayList<Point>();
-		int x;
-		for (int y = yOrigin; y < yEnd; y++) {
-			x = (int) (((yEnd - yOrigin) / (Math.tan(Math.toRadians(angle)))) + xOrigin);
-			points.add(new Point(x, y));
-		}
-		
-		return points;
-	}
-
-	
-	private List<Point> computesPointsAtLineX(int xOrigin, int yOrigin, int xEnd, int yEnd, int angle){
-		// y2 - y1 = m(x2 -x1)
-		List<Point> points = new ArrayList<Point>();
-		int y;
-		for (int x = xOrigin; x < xEnd; x++) {
-			y  = (int) ((Math.tan(Math.toRadians(angle)) * (x -xOrigin)) + yOrigin);
-			points.add(new Point(x, y));
-		}
-		
-		return points;
-	}
-	
 	/**
 	 * @return the lines
 	 */

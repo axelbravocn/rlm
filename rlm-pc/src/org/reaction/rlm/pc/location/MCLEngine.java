@@ -54,7 +54,8 @@ public class MCLEngine {
 
 	private static final int RADIUS_SONAR = 15;
 	private static final float DISTANCE_MAX = 15;
-
+	private static final int QUANTITY_PARTICLES = 800;
+	
 	private Map map;
 
 	private List<Particle> particles;
@@ -71,29 +72,32 @@ public class MCLEngine {
 	public MCLEngine(List<Line> lines, Map map) {
 		this.map = map;
 		this.environment = lines;
-		this.generatesParticles(500);
+		this.generatesParticles(QUANTITY_PARTICLES);
 	}
 
 	public void startMCL(double move, double distanceOrigin[]) {
 		Thread t;
 		int iterator = 10;
 
-		for (int i = 0; i < iterator; i++) {
-			t = new Thread() {
-				public void run() {
-					map.repaint();
-				}
-			};
+		for (int j = 0; j < iterator; j++) {
+			for (int i = 0; i < iterator; i++) {
+				t = new Thread() {
+					public void run() {
+						map.repaint();
+					}
+				};
 
-			this.compareDistanceParticle(distanceOrigin);
-			this.moveParticles(move);
-			t.start();
-			distanceOrigin = this.map.getDistancesOrigin();
+				this.compareDistanceParticle(distanceOrigin);
+				this.moveParticles(move);
+				t.start();
+				distanceOrigin = this.map.getDistancesOrigin();
+			}
+
+			this.normalizeWeights();
+			int qtdParticleRemove = this.removeTrashParticle();
+			this.generatesParticles(qtdParticleRemove);
 		}
-
-		this.normalizeWeights();
-		int qtdParticleRemove = this.removeTrashParticle();
-		this.generatesParticles(qtdParticleRemove);
+		
 	}
 
 	private void normalizeWeights() {
