@@ -84,7 +84,8 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	 * 
 	 */
 	private CommunicationChannelPC(Map map) {
-		dataListener = new DataListener(map);
+		this.mclListaner = new MCLListaner(map);
+		this.dataListener = new DataListener(map);
 	}
 	
 	/**
@@ -189,7 +190,7 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	 * @param dScanner
 	 */
 	private void addScanner(DistanceScanner dScanner) {
-		this.dataListener.actionPerformed(null);
+		this.mclListaner.actionPerformed(null);
 	}
 
 	/**

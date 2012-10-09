@@ -47,9 +47,6 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -64,11 +61,8 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 
 import org.reaction.rlm.pc.comm.CommunicationChannelPC;
-import org.reaction.rlm.pc.util.AppConstants;
 import org.reaction.rlm.pc.util.IconsUtil;
 import org.reaction.rlm.pc.view.map.Map;
 import org.reaction.rlm.pc.view.map.MapScreen;
@@ -77,7 +71,7 @@ import org.reaction.rlm.pc.view.map.MapScreen;
  * @author Flavio Souza
  * 
  */
-public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runnable, WindowListener, ActionListener, ChangeListener{
+public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionListener{
 	
 	private static final long serialVersionUID = -8034828485199716108L;
 	
@@ -85,14 +79,9 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 	private final static int LOGO_MARGIN_BOTTOM = 15;
 	
 	private final static Color DEFAULT_PANEL_BACKGROUND_COLOR = new Color(197, 210, 220);
-	private final static Color VIEW_PANEL_BACKGROUND_COLOR = DEFAULT_PANEL_BACKGROUND_COLOR;
 	private final static Color LEFT_PANEL_BACKGROUND_COLOR = DEFAULT_PANEL_BACKGROUND_COLOR;
 	private final static Color BOTTOM_PANEL_BACKGROUND_COLOR = DEFAULT_PANEL_BACKGROUND_COLOR;
 
-	private final static Color MAP_PANEL_BACKGROUND_COLOR = Color.GRAY;
-	private final static Color MAP_PANEL_BORDER_COLOR = Color.BLACK;
-	private final static int MAP_PANEL_BORDER_WIDTH = 2;
-	
 	private CommunicationChannelPC comm;
 	
 	private Panel controlPanel;
@@ -126,7 +115,6 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		
 		ViewControl viewControl = new ViewControl(mainFrame);
 		
-		mainFrame.addWindowListener(viewControl);
 		mainFrame.add(viewControl);
 
 		mainFrame.setJMenuBar(viewControl.createMenu());
@@ -155,7 +143,6 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		
 		// Menus
 		JMenu fileMenu = new JMenu("File");
-		//mnuFileMenu.setIcon(APPLICATION_LOGO);
 		exitButton = new JMenuItem("Exit");
 		exitButton.addActionListener(this);
 		fileMenu.add(exitButton);
@@ -381,19 +368,6 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		JOptionPane.showMessageDialog(null, text, title,JOptionPane.INFORMATION_MESSAGE);
 	}
 	
-	/* (non-Javadoc)
-	 * @see javax.swing.event.ChangeListener#stateChanged(javax.swing.event.ChangeEvent)
-	 */
-	@Override
-	public void stateChanged(ChangeEvent event) {
-		if (event.getSource() == sldMapScale) {
-			if (map != null) {
-				//map.setMapScale(sldMapScale.getValue(), false);
-			}
-		}
-		
-	}
-	
 	@Override
 	public void run() {
 		/*
@@ -405,32 +379,4 @@ public class ViewControl extends JPanel implements AppConstants, IconsUtil, Runn
 		*/
 	}
 
-	@Override
-	public void windowActivated(WindowEvent e) {
-	}
-
-	@Override
-	public void windowClosed(WindowEvent e) {
-	}
-
-	@Override
-	public void windowClosing(WindowEvent e) {
-	}
-
-	@Override
-	public void windowDeactivated(WindowEvent e) {
-	}
-
-	@Override
-	public void windowDeiconified(WindowEvent e) {
-	}
-
-	@Override
-	public void windowIconified(WindowEvent e) {
-	}
-
-	@Override
-	public void windowOpened(WindowEvent e) {
-	}
-	
 }
