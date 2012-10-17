@@ -47,6 +47,7 @@ import java.awt.Label;
 import java.awt.Panel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -92,12 +93,19 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 	private JTextField txtDistance;
 	private JTextField txtHeading;
 	private JButton btnSimuleMCL;
+	private JButton btnConnectNXT;
 	
 	//MENU
 	private JMenuItem exitButton;
 	private JMenuItem contactButton;
 	private JMenuItem workButton;
 	private JMenuItem licenseButton;
+	
+	//Labels Returns
+	private Label lblAboveAverageReturn;
+	private Label lblTotalTimeReturn;
+	private Label lblCycleTimeReturn;
+	private Label lblamountCyclesReturn;
 	
 	private JSlider sldMapScale;
 	private JSlider sldMapRotate;
@@ -213,7 +221,7 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 		logoPanel.add(lblLogo, BorderLayout.CENTER);
 		
 		// Connect
-		Label lblConnectionHeader = new Label("Dados de conexão");
+		Label lblConnectionHeader = new Label("Dados de simulação");
 		lblConnectionHeader.setFont(fontSectionHeader);
 
 		Label lblX = new Label("X:");
@@ -228,6 +236,18 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 		Label lblHeading = new Label("Heading:");
 		lblHeading.setFont(fontLabelHeader);
 		
+		Label lblAboveAverage = new Label("Above average:");
+		lblAboveAverage.setFont(fontLabelHeader);
+		
+		Label lblTotalTime = new Label("Total time:");
+		lblTotalTime.setFont(fontLabelHeader);
+		
+		Label lblCycleTime = new Label("Cycle time:");
+		lblCycleTime.setFont(fontLabelHeader);
+		
+		Label lblamountCycles = new Label("Amount of cycles:");
+		lblamountCycles.setFont(fontLabelHeader);
+		
 		Panel pnlConnection = new Panel(new GridBagLayout());
 
 		txtX = new JTextField(3);
@@ -237,6 +257,10 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 		btnSimuleMCL = new JButton("Start Simule Monte Carlo Localization");
 		btnSimuleMCL.addActionListener(this);
 		btnSimuleMCL.setEnabled(true);
+		
+		btnConnectNXT = new JButton("Connect NXT");
+		btnConnectNXT.addActionListener(this);
+		btnConnectNXT.setEnabled(true);
 
 		GridBagConstraints CBC = new GridBagConstraints();
 		CBC.fill = GridBagConstraints.HORIZONTAL;
@@ -271,7 +295,37 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 		CBC.gridy = 4;		
 		CBC.gridwidth = 2;
 		pnlConnection.add(btnSimuleMCL, CBC);
-
+		CBC.gridx = 0;
+		CBC.gridy = 5;		
+		CBC.gridwidth = 2;
+		pnlConnection.add(btnConnectNXT, CBC);
+		
+		/*
+		CBC.gridx = 0;
+		CBC.gridy = 5;
+		pnlConnection.add(lblAboveAverage, CBC);
+		CBC.gridx = 1;
+		CBC.gridy = 5;
+		pnlConnection.add(lblAboveAverageReturn, CBC);
+		CBC.gridx = 0;
+		CBC.gridy = 6;
+		pnlConnection.add(lblTotalTime, CBC);
+		CBC.gridx = 1;
+		CBC.gridy = 6;
+		pnlConnection.add(lblTotalTimeReturn, CBC);
+		CBC.gridx = 0;
+		CBC.gridy = 7;
+		pnlConnection.add(lblCycleTime, CBC);
+		CBC.gridx = 1;
+		CBC.gridy = 7;
+		pnlConnection.add(lblCycleTimeReturn, CBC);
+		CBC.gridx = 0;
+		CBC.gridy = 8;
+		pnlConnection.add(lblamountCycles, CBC);
+		CBC.gridx = 1;
+		CBC.gridy = 8;
+		pnlConnection.add(lblamountCyclesReturn, CBC);
+		*/
 		sldMapScale = new JSlider(SwingConstants.HORIZONTAL, 1, 150, 35);
 		sldMapScale.setMajorTickSpacing(10);
 		sldMapScale.setMinorTickSpacing(5);
@@ -309,10 +363,11 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 		JPanel mapPanel = new JPanel();
 		
 		map = new MapScreen();
+		map.setExcuteSimulator(true);
 		
 		mapPanel.setLayout(new BorderLayout());
 		mapPanel.add(map , BorderLayout.CENTER);
-		
+
 		return mapPanel;
 	}
 	
@@ -352,13 +407,20 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 			this.showPane("title work","title text");
 		}else if(event.getSource() == licenseButton){
 			this.showPane("text license","title license");
-		}else if(event.getSource() == btnSimuleMCL){
+		}else if(event.getSource() == this.btnConnectNXT){
+			this.map.setExcuteSimulator(false);
+			Thread t = new Thread(this);
+			t.start();
+			this.map.repaint();
+		}else if(event.getSource() == this.btnSimuleMCL){
 
+			this.map.setExcuteSimulator(true);
+			
 			if(!this.map.getIsPoint()){
 				this.map.setPointSimulate(Float.valueOf(this.txtX.getText()), Float.valueOf(this.txtY.getText()), Float.valueOf(this.txtHeading.getText()));
 			}
 			
-			double distances[] = this.map.getDistancesOrigin();
+			Double distances[] = this.map.getDistancesOrigin();
 			this.map.getSimulator().getM().startMCL(Double.valueOf(txtDistance.getText()), distances);
 		}
 			
@@ -370,13 +432,12 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 	
 	@Override
 	public void run() {
-		/*
 		try {
-			this.comm.connectNXT();
+			if(!this.map.getExcuteSimulator())
+				this.comm.connectNXT();
 		} catch (IOException e) {
-			e.printStackTrace();
+			this.showPane("Error","Failed to connect to any NXT");
 		}
-		*/
 	}
 
 }

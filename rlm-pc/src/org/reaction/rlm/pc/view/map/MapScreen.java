@@ -41,11 +41,16 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.TextField;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.reaction.rlm.comm.data.DataShared;
+import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.comm.data.Line;
 import org.reaction.rlm.comm.data.Particle;
+import org.reaction.rlm.comm.data.Point;
 import org.reaction.rlm.comm.data.TypeData;
+import org.reaction.rlm.pc.location.MCLMath;
 
 /**
  * @author Flavio Souza
@@ -59,6 +64,7 @@ public class MapScreen extends Map {
 	private static final long serialVersionUID = -677687524288703181L;
 
 	private static final int REDUCTION = 30;
+	
 	/**
 	 * The robot path is drawn and updated on this object. <br>
 	 * created by makeImage which is called by paint(); guarantees image always
@@ -144,7 +150,8 @@ public class MapScreen extends Map {
 	 * @see org.reaction.rlm.pc.view.map.Map#getDistancesOrigin()
 	 */
 	@Override
-	public double[] getDistancesOrigin() {
+	public Double[] getDistancesOrigin() {
+		
 		return this.getSimulator().getM().getDistancePointOrig(this.xOrigSimulate, this.yOrigSimulate, this.hOrigSimulate);
 	}
 	
@@ -154,12 +161,14 @@ public class MapScreen extends Map {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		if(g != null){
+		if(excuteSimulator == true && g != null){
 			g.fillOval(xpixel((int)this.xOrigSimulate), ypixel((int)this.yOrigSimulate, false), 10, 10);
-			
-			if(this.getSimulator().getM().getParticles() != null && this.getSimulator().getM().getParticles().size() > 0){
-				this.printParticles(g);
-			}
+		}else{
+			g.fillOval(xpixel(-5), ypixel(6, false), 10, 10);
+		}
+		
+		if(this.getSimulator().getM().getParticles() != null && this.getSimulator().getM().getParticles().size() > 0){
+			this.printParticles(g);
 		}
 	}
 	
@@ -234,7 +243,8 @@ public class MapScreen extends Map {
 		int xmax = orig + 32 * gridSpacing;// pixels
 		System.out.println("x0 " + x0 + " " + xOrig + " " + xmax);
 
-		this.mapSimulator();
+		if(excuteSimulator)
+			this.mapSimulator();
 
 		this.repaint();
 	}
@@ -331,8 +341,47 @@ public class MapScreen extends Map {
 				y = (float) (Math.sin(angle) * ds.getData()) + ds.getPose().getY();
 				this.drawObstacle(x / REDUCTION, y / REDUCTION);
 			}
-
 		}
+		
+		this.simulator.setLines(this.teste());
+		this.setSimulator(new MapSimulator(this));
+
+		osGraphics.setColor(Color.black);
+		for (Line p : this.teste()) {
+			osGraphics.drawLine(xpixel(p.getStartPoint().getX()),ypixel(p.getStartPoint().getY(), false), xpixel(p.getEndPoint().getX()),ypixel(p.getEndPoint().getY(), false));
+		}
+		this.repaint();
+		
+	}
+	
+	private List<Line> teste(){
+		float degree;
+		Point startPoint, endPoint;
+		double distance, xStart, yStart, xEnd, yEnd;
+		
+		List<Line> lines = new ArrayList<Line>();
+		
+		for (DistanceScanner scanner : this.getCommunicationChannel().getSharedsScanner()) {
+			for (int i = 0; i < scanner.getDistances().size(); i++) {
+				if(scanner.getDistances().get(i) != null){
+					degree = scanner.getHeading() + (DistanceScanner.RESOLUTION_SCANNER * i);
+					distance = scanner.getDistances().get(i);
+					
+					xStart = scanner.getX() + (Math.cos(MCLMath.slopeDegree(degree)) * distance);
+					yStart = scanner.getY() + (Math.sin(MCLMath.slopeDegree(degree)) * distance);
+					
+					xEnd = scanner.getX() + (Math.cos(MCLMath.slopeDegree(degree + DistanceScanner.RESOLUTION_SCANNER)) * distance);
+					yEnd = scanner.getY() + (Math.sin(MCLMath.slopeDegree(degree + DistanceScanner.RESOLUTION_SCANNER)) * distance);
+					
+					startPoint = new Point((float) xStart, (float) yStart);
+					endPoint = new Point((float) xEnd, (float) yEnd);
+					
+					lines.add(new Line(startPoint, endPoint));
+				}
+			}
+		}
+		
+		return lines;
 	}
 
 	/* (non-Javadoc)
