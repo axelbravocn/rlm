@@ -72,7 +72,7 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 	private NXTConnection connection;
 
 	private List<DataShared> shareds;
-	private List<DataShared> historyShared;
+	private List<DistanceScanner> scanners;
 
 	public static CommunicationChannelRobot getInstance() {
 		if (channel == null) {
@@ -89,7 +89,7 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 		this.setConnected(false);
 		this.setSendingPermission(false);
 		this.shareds = new ArrayList<DataShared>();
-		this.historyShared = new ArrayList<DataShared>();
+		this.scanners = new ArrayList<DistanceScanner>();
 	}
 	
 	/**
@@ -131,6 +131,11 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 					this.shareds.remove(this.shareds.get(0));
 					haveSend = false;
 				}
+				if(this.scanners.size() > 0){
+					writeData(this.scanners.get(0));
+					this.scanners.remove(this.scanners.get(0));
+					haveSend = false;
+				}
 			}
 			
 		} catch (IOException e) {
@@ -149,9 +154,31 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 				this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getY()));
 				this.getDataOut().writeFloat(Float.valueOf(dShared.getPose().getHeading()));
 				this.getDataOut().writeFloat(Float.valueOf(dShared.getData()));
-			}else if(TypeData.MCL.ordinal() == dShared.getTypeData()){
-				this.getDataOut().writeFloat(Float.valueOf(dShared.getOrientation()));
-				this.getDataOut().writeFloat(Float.valueOf(dShared.getData()));
+			}
+			
+			this.getDataOut().flush();
+		} catch (IOException e) {
+		}
+	}
+	
+	public void writeData(DistanceScanner scanner){
+		try {
+			
+			this.getDataOut().writeInt(scanner.getType().ordinal());
+
+			if(TypeData.MCL.equals(scanner.getType())){
+				this.getDataOut().writeDouble(scanner.getDistance());
+			} else if(TypeData.SCANNER.equals(scanner.getType())){
+				
+			}
+			
+			this.getDataOut().writeFloat(Float.valueOf(scanner.getX()));
+			this.getDataOut().writeFloat(Float.valueOf(scanner.getY()));
+			this.getDataOut().writeFloat(Float.valueOf(scanner.getHeading()));
+			this.getDataOut().writeInt(scanner.getDistances().size());
+			
+			for (Double distance : scanner.getDistances()) {
+				this.getDataOut().writeDouble(distance);
 			}
 			
 			this.getDataOut().flush();
@@ -159,12 +186,12 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 		}
 	}
 
+
 	/**
 	 * @param dScanner
 	 */
 	public void addScanner(DistanceScanner dScanner) {
-		// TODO Auto-generated method stub
-		
+		this.scanners.add(dScanner);
 	}
 	
 	/**

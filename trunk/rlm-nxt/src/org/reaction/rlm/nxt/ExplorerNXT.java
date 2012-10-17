@@ -37,6 +37,8 @@
 
 package org.reaction.rlm.nxt;
 
+import java.io.IOException;
+
 import lejos.nxt.Button;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
@@ -69,7 +71,11 @@ public class ExplorerNXT implements Runnable {
 	public void run() {
 
 			// create communication with server
-			//this.comm.connectServer();
+			try {
+				this.comm.connectServer();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			this.controlNavigator.start();
 
 			while(true){
@@ -77,9 +83,6 @@ public class ExplorerNXT implements Runnable {
 					System.exit(0);
 				}
 			}
-			// emitir som
-
-
 	}
 
 }

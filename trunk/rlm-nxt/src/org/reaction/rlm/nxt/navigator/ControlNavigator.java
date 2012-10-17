@@ -46,6 +46,7 @@ import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
 import org.reaction.rlm.nxt.navigator.behavior.CollisionBehavior;
+import org.reaction.rlm.nxt.navigator.behavior.MCLBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.NearbyObstacleBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.ScannerBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
@@ -89,7 +90,9 @@ public class ControlNavigator extends Thread {
 		Behavior behaviors[] = {b1, b2, b3};
 		*/
 		
-		Behavior b1 = new ScannerBehavior(this.comm, this.observerMotor, this.ultrasonicSensor);
+		//Behavior b1 = new ScannerBehavior(this.comm, this.observerMotor, this.ultrasonicSensor);
+		//Behavior b1 = new MCLBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
+		Behavior b1 = new ScannerBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
 		
 		Behavior behaviors[] = {b1};
 		
