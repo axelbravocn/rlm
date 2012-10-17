@@ -55,6 +55,8 @@ public abstract class Map extends JPanel {
 
 	protected MapSimulator simulator;
 	
+	protected boolean excuteSimulator = false;
+	
 	public abstract void builder();
 	
 	/**
@@ -72,7 +74,7 @@ public abstract class Map extends JPanel {
 	/**
 	 * @return
 	 */
-	public abstract double[] getDistancesOrigin();
+	public abstract Double[] getDistancesOrigin();
 
 	public abstract float getHOrig();
 	
@@ -107,6 +109,20 @@ public abstract class Map extends JPanel {
 	 */
 	public void setSimulator(MapSimulator simulator) {
 		this.simulator = simulator;
+	}
+
+	/**
+	 * @param excuteSimulator
+	 */
+	public void setExcuteSimulator(boolean excuteSimulator) {
+		this.excuteSimulator = excuteSimulator;
+	}
+
+	/**
+	 * @return
+	 */
+	public boolean getExcuteSimulator() {
+		return this.excuteSimulator;
 	}
 
 

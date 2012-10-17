@@ -39,6 +39,9 @@ package org.reaction.rlm.pc.listener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import org.reaction.rlm.comm.CommunicationChannel;
+import org.reaction.rlm.comm.CommunicationChannelGeneric;
+import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.pc.view.map.Map;
 
 /**
@@ -48,11 +51,13 @@ import org.reaction.rlm.pc.view.map.Map;
 public class MCLListaner implements ActionListener{
 	
 	private Map map;
+	private CommunicationChannelGeneric comm;
 	/**
 	 * 
 	 */
-	public MCLListaner(Map map) {
+	public MCLListaner(Map map, CommunicationChannel comm) {
 		this.map = map;
+		this.comm = (CommunicationChannelGeneric) comm;
 	}
 
 	/* (non-Javadoc)
@@ -60,7 +65,13 @@ public class MCLListaner implements ActionListener{
 	 */
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		map.repaint();
+		DistanceScanner scanner = this.comm.getSharedsMCL().get(0);
+		
+		this.map.setPointSimulate(scanner.getX(), scanner.getY(), scanner.getHeading());
+		
+		Double distances[] = scanner.getDistances().toArray(new Double[scanner.getDistances().size()]);
+		this.map.getSimulator().getM().startMCL(scanner.getDistance(), distances);
+		this.map.repaint();
 	}
 
 }

@@ -60,8 +60,8 @@ public class DataListener implements ActionListener {
 	 */
 	@Override
 	public void actionPerformed(ActionEvent arg0) {
-		map.builder();
-		map.repaint();
+		this.map.builder();
+		//map.repaint();
 	}
 
 }

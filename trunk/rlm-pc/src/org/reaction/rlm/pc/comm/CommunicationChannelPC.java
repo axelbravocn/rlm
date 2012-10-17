@@ -39,6 +39,7 @@ package org.reaction.rlm.pc.comm;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import lejos.pc.comm.NXTCommFactory;
 import lejos.pc.comm.NXTCommLogListener;
@@ -84,9 +85,10 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	 * 
 	 */
 	private CommunicationChannelPC(Map map) {
-		this.mclListaner = new MCLListaner(map);
+		this.mclListaner = new MCLListaner(map, this);
 		this.dataListener = new DataListener(map);
 	}
+	
 	
 	/**
 	 * @throws IOException
@@ -143,6 +145,7 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 		
 		int t = -1;
 		int o = 0;
+		int q = 0;
 		float x = 0;
 		float y = 0;
 		float h = 0;
@@ -158,18 +161,33 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 				h = this.getDataIn().readFloat();
 				d = this.getDataIn().readFloat();
 				this.addDataShared(t, x, y, h, d);
-			}else if(TypeData.SCANNER.ordinal() == t){
+				
+			}else if(TypeData.MCL.ordinal() == t || TypeData.SCANNER.ordinal() == t){
 				dScanner = new DistanceScanner();
 				
-				dScanner.setDegreeScanner(this.getDataIn().readInt());
-				dScanner.setX(this.getDataIn().readFloat());
-				dScanner.setY(this.getDataIn().readFloat());
+				if(TypeData.MCL.ordinal() == t){
+					
+					dScanner.setType(TypeData.MCL); //this.getDataOut().writeInt(scanner.getType().ordinal());
+					dScanner.setDistance(this.getDataIn().readDouble()); //this.getDataOut().writeFloat(Float.valueOf(scanner.getY()));
+				}else{
+					dScanner.setType(TypeData.SCANNER); //this.getDataOut().writeInt(scanner.getType().ordinal());
+				}
+				dScanner.setX(this.getDataIn().readFloat()); //this.getDataOut().writeFloat(Float.valueOf(scanner.getX()));
+				dScanner.setY(this.getDataIn().readFloat()); //this.getDataOut().writeFloat(Float.valueOf(scanner.getY()));
+				dScanner.setHeading(this.getDataIn().readFloat()); //this.getDataOut().writeDouble(Double.valueOf(scanner.getHeading()));
+
+				q = this.getDataIn().readInt();//this.getDataOut().writeInt(scanner.getDistances().size());
 				
-				for (int i = 0; i < 360/dScanner.getDegreeScanner(); i++) {
-					dScanner.getDistances().add(this.getDataIn().readInt());
+				if(q > 0){
+					Double[] distances = new Double[q];
+					
+					for (int i = 0; i < q; i++) {
+						distances[i] = this.getDataIn().readDouble();
+					}
+					dScanner.setDistances(Arrays.asList(distances));
+					this.addScanner(dScanner);
 				}
 				
-				this.addScanner(dScanner);
 			}else{
 				o = this.getDataIn().readInt();
 				d = this.getDataIn().readFloat();
@@ -190,7 +208,13 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	 * @param dScanner
 	 */
 	private void addScanner(DistanceScanner dScanner) {
-		this.mclListaner.actionPerformed(null);
+		if(dScanner.getType().equals(TypeData.SCANNER)){
+			this.getSharedsScanner().add(dScanner);
+			this.dataListener.actionPerformed(null);
+		}else{
+			this.getSharedsMCL().add(dScanner);
+			this.mclListaner.actionPerformed(null);
+		}
 	}
 
 	/**
@@ -227,14 +251,8 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 	}
 
 	private void addDataShared(DataShared dShared){
-		
 		System.out.println(dShared);
-		
-		if(TypeData.MCL.equals(dShared.getTypeData()))
-			this.getSharedsMCL().add(dShared);
-		else 
-			this.getShareds().add(dShared);
-		
+		this.getShareds().add(dShared);
 		this.dataListener.actionPerformed(null);
 	}
 	

@@ -41,6 +41,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.comm.data.Line;
 import org.reaction.rlm.comm.data.Particle;
 import org.reaction.rlm.comm.data.Point;
@@ -52,7 +53,6 @@ import org.reaction.rlm.pc.view.map.Map;
  */
 public class MCLEngine {
 
-	private static final int RADIUS_SONAR = 15;
 	private static final float DISTANCE_MAX = 15;
 	private static final int QUANTITY_PARTICLES = 800;
 	
@@ -75,21 +75,15 @@ public class MCLEngine {
 		this.generatesParticles(QUANTITY_PARTICLES);
 	}
 
-	public void startMCL(double move, double distanceOrigin[]) {
-		Thread t;
-		int iterator = 10;
+	public void startMCL(double move, Double distanceOrigin[]) {
+		int iterator2 = 10;
+		int iterator1 = 10;
 
-		for (int j = 0; j < iterator; j++) {
-			for (int i = 0; i < iterator; i++) {
-				t = new Thread() {
-					public void run() {
-						map.repaint();
-					}
-				};
+		for (int j = 0; j < iterator1; j++) {
+			for (int i = 0; i < iterator2; i++) {
 
 				this.compareDistanceParticle(distanceOrigin);
 				this.moveParticles(move);
-				t.start();
 				distanceOrigin = this.map.getDistancesOrigin();
 			}
 
@@ -107,7 +101,7 @@ public class MCLEngine {
 		}
 
 		for (Particle p : this.particles) {
-			p.setPont(p.getPont() / totalWeight);
+			p.setPont((float) (p.getPont() / totalWeight));
 		}
 	}
 
@@ -153,19 +147,19 @@ public class MCLEngine {
 		}
 
 		for (Particle p : this.particles) {
-			p.setPont(0.0);
+			p.setPont(0.0F);
 		}
 
 		return qtdParticleRemove;
 	}
 
-	private void compareDistanceParticle(double[] distanceOrigin) {
+	private void compareDistanceParticle(Double[] distanceOrigin) {
 		double degree;
 		float valueRef;
 		double angleCount = 0;
 		Point pointEnd = null;
-		double percentageCloseness;
-		double angleScanner = 360 / RADIUS_SONAR; // radius of aperture sonar
+		float percentageCloseness;
+		double angleScanner = 360 / DistanceScanner.RESOLUTION_SCANNER; // radius of aperture sonar
 
 		for (Particle particle : this.particles) {
 			angleCount = 0;
@@ -185,12 +179,13 @@ public class MCLEngine {
 				Double distanceParticleAtObstacle = this.getDistanceParticleAtObstacle(particle, pointEnd,degree);
 
 				if (distanceParticleAtObstacle != null) {
-					double qtdRotate = angleCount / RADIUS_SONAR;
-					percentageCloseness += this.computesScoresDistance(distanceOrigin[(int) (qtdRotate)], distanceParticleAtObstacle);
+					double qtdRotate = angleCount / DistanceScanner.RESOLUTION_SCANNER;
+					Double dOrigin = distanceOrigin[(int) (qtdRotate)];
+					percentageCloseness += this.computesScoresDistance(dOrigin, distanceParticleAtObstacle);
 				}
 
-				degree += RADIUS_SONAR;
-				angleCount += RADIUS_SONAR;
+				degree += DistanceScanner.RESOLUTION_SCANNER;
+				angleCount += DistanceScanner.RESOLUTION_SCANNER;
 
 				if (degree > 360)
 					degree -= 360;
@@ -201,15 +196,15 @@ public class MCLEngine {
 		}
 	}
 
-	public double[] getDistancePointOrig(float xOrigSimulate, float yOrigSimulate, float hOrigSimulate) {
+	public Double[] getDistancePointOrig(float xOrigSimulate, float yOrigSimulate, float hOrigSimulate) {
 		float valueRef;
 		Point pointEnd;
 		double degree = hOrigSimulate;
-		double angleScanner = 360 / RADIUS_SONAR;
+		double angleScanner = 360 / DistanceScanner.RESOLUTION_SCANNER;
 
-		double distances[] = new double[(int) angleScanner];
+		Double distances[] = new Double[(int) angleScanner];
 
-		Particle p = new Particle(xOrigSimulate, yOrigSimulate, 0.0, hOrigSimulate);
+		Particle p = new Particle(xOrigSimulate, yOrigSimulate, 0.0F, hOrigSimulate);
 
 		for (int i = 0; i < angleScanner; i++) {
 			if (degree <= 45 || (degree >= 135 && degree <= 225) || degree >= 315) {
@@ -222,7 +217,7 @@ public class MCLEngine {
 
 			distances[i] = this.getDistanceParticleAtObstacle(p, pointEnd, degree);
 
-			degree += RADIUS_SONAR;
+			degree += DistanceScanner.RESOLUTION_SCANNER;
 
 			if (degree > 360)
 				degree -= 360;
@@ -281,8 +276,12 @@ public class MCLEngine {
 	}
 
 
-	private double computesScoresDistance(double expectedDistance, double realDistance) {
+	private double computesScoresDistance(Double expectedDistance, double realDistance) {
 
+		
+		if(expectedDistance == null)
+			return 0;
+					
 		double constant = 1;
 		double exponent = (-1 * (expectedDistance - realDistance) * (expectedDistance - realDistance)) / 2 ;
 		
@@ -363,4 +362,20 @@ public class MCLEngine {
 		this.particles = particles;
 	}
 
+	/**
+	 * @return the environment
+	 */
+	public List<Line> getEnvironment() {
+		return environment;
+	}
+
+	/**
+	 * @param environment the environment to set
+	 */
+	public void setEnvironment(List<Line> environment) {
+		this.environment = environment;
+	}
+
+	
+	
 }
