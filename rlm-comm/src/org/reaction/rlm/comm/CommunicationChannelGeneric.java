@@ -43,6 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.reaction.rlm.comm.data.DataShared;
+import org.reaction.rlm.comm.data.DistanceScanner;
 
 /**
  * @author Flavio Souza
@@ -61,14 +62,16 @@ public abstract class CommunicationChannelGeneric extends Thread implements
 	private DataOutputStream dataOut;
 
 	private List<DataShared> shareds;
-	private List<DataShared> sharedsMCL;
+	private List<DistanceScanner> sharedsMCL;
+	private List<DistanceScanner> sharedsScanner;
 
 	/**
 	 * 
 	 */
 	public CommunicationChannelGeneric() {
 		this.shareds = new ArrayList<DataShared>();
-		this.sharedsMCL = new ArrayList<DataShared>();
+		this.sharedsMCL = new ArrayList<DistanceScanner>();
+		this.sharedsScanner = new ArrayList<DistanceScanner>();
 	}
 
 	/*
@@ -142,7 +145,7 @@ public abstract class CommunicationChannelGeneric extends Thread implements
 	/**
 	 * @return the sharedsMCL
 	 */
-	public List<DataShared> getSharedsMCL() {
+	public List<DistanceScanner> getSharedsMCL() {
 		return sharedsMCL;
 	}
 
@@ -150,8 +153,23 @@ public abstract class CommunicationChannelGeneric extends Thread implements
 	 * @param sharedsMCL
 	 *            the sharedsMCL to set
 	 */
-	public void setSharedsMCL(List<DataShared> sharedsMCL) {
+	public void setSharedsMCL(List<DistanceScanner> sharedsMCL) {
 		this.sharedsMCL = sharedsMCL;
+	}
+
+	/**
+	 * @return the sharedsScanner
+	 */
+	public List<DistanceScanner> getSharedsScanner() {
+		return sharedsScanner;
+	}
+
+	/**
+	 * @param sharedsScanner
+	 *            the sharedsScanner to set
+	 */
+	public void setSharedsScanner(List<DistanceScanner> sharedsScanner) {
+		this.sharedsScanner = sharedsScanner;
 	}
 
 }

@@ -43,16 +43,19 @@ import java.util.List;
  * @author Flavio Souza
  * 
  */
-public class DistanceScanner extends Point{
+public class DistanceScanner extends Particle {
 
-	private List<Integer> distances;
+	public static final int RESOLUTION_SCANNER = 90;
+	
+	private List<Double> distances;
 	private int degreeScanner;
+	private double distance;
 
 	/**
 	 * 
 	 */
 	public DistanceScanner() {
-		this.distances = new ArrayList<Integer>();
+		this.distances = new ArrayList<Double>();
 	}
 
 	public DistanceScanner(int degreeScanner) {
@@ -78,7 +81,7 @@ public class DistanceScanner extends Point{
 	/**
 	 * @return the distances
 	 */
-	public List<Integer> getDistances() {
+	public List<Double> getDistances() {
 		return distances;
 	}
 
@@ -86,8 +89,23 @@ public class DistanceScanner extends Point{
 	 * @param distances
 	 *            the distances to set
 	 */
-	public void setDistances(List<Integer> distances) {
+	public void setDistances(List<Double> distances) {
 		this.distances = distances;
+	}
+
+	/**
+	 * @return the distance
+	 */
+	public double getDistance() {
+		return distance;
+	}
+
+	/**
+	 * @param distance
+	 *            the distance to set
+	 */
+	public void setDistance(double distance) {
+		this.distance = distance;
 	}
 
 	/*

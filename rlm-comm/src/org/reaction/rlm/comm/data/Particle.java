@@ -42,13 +42,20 @@ package org.reaction.rlm.comm.data;
  */
 public class Particle extends Point {
 
-	private double pont;
-	private double heading;
+	private float pont;
+	private float heading;
 
 	/**
 	 * 
 	 */
-	public Particle(float x, float y, double pont, double heading) {
+	protected Particle() {
+		// TODO Auto-generated constructor stub
+	}
+	
+	/**
+	 * 
+	 */
+	public Particle(float x, float y, float pont, float heading) {
 		super(x, y);
 		this.pont = pont;
 		this.heading = heading;
@@ -57,7 +64,7 @@ public class Particle extends Point {
 	/**
 	 * @return the pont
 	 */
-	public double getPont() {
+	public float getPont() {
 		return pont;
 	}
 
@@ -65,14 +72,14 @@ public class Particle extends Point {
 	 * @param pont
 	 *            the pont to set
 	 */
-	public void setPont(double pont) {
+	public void setPont(float pont) {
 		this.pont = pont;
 	}
 
 	/**
 	 * @return the heading
 	 */
-	public double getHeading() {
+	public float getHeading() {
 		return heading;
 	}
 
@@ -80,7 +87,7 @@ public class Particle extends Point {
 	 * @param heading
 	 *            the heading to set
 	 */
-	public void setHeading(double heading) {
+	public void setHeading(float heading) {
 		this.heading = heading;
 	}
 	

@@ -1,9 +1,9 @@
 package org.reaction.rlm.comm.data;
 
-
 public class Point {
 	private float x;
 	private float y;
+	private TypeData type;
 
 	public Point() {
 		x = 0;
@@ -31,24 +31,43 @@ public class Point {
 		y = newY;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#toString()
 	 */
 	@Override
 	public String toString() {
-		return "X="+this.x+" Y="+this.y;
+		return "X=" + this.x + " Y=" + this.y;
 	}
-	
-	/* (non-Javadoc)
+
+	/**
+	 * @return the type
+	 */
+	public TypeData getType() {
+		return type;
+	}
+
+	/**
+	 * @param type
+	 *            the type to set
+	 */
+	public void setType(TypeData type) {
+		this.type = type;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override
 	public boolean equals(Object obj) {
-		if(!(obj instanceof Point))
+		if (!(obj instanceof Point))
 			return false;
-		else if(((Point)obj).getX() == this.x && ((Point)obj).getY() == this.y)
+		else if (((Point) obj).getX() == this.x && ((Point) obj).getY() == this.y)
 			return true;
-		else 
+		else
 			return false;
 	}
 }
