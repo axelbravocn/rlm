@@ -40,7 +40,9 @@ import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.comm.data.DistanceScanner;
+import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
+import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
 import org.reaction.rlm.nxt.util.SensorUtil;
 
@@ -51,6 +53,7 @@ import org.reaction.rlm.nxt.util.SensorUtil;
 public class ScannerBehavior implements Behavior {
 
 	private boolean isExecute;
+	private MotorNxt motorNxt;
 	private ObserverMotor observerMotor;
 	private CommunicationChannelRobot comm;
 	private UltrasonicSensor ultrasonicSensor;
@@ -59,11 +62,12 @@ public class ScannerBehavior implements Behavior {
 	 * @param ultrasonicSensor 
 	 * 
 	 */
-	public ScannerBehavior(CommunicationChannelRobot comm, ObserverMotor observerMotor, UltrasonicSensor ultrasonicSensor) {
+	public ScannerBehavior(CommunicationChannelRobot comm, ObserverMotor observerMotor, UltrasonicSensor ultrasonicSensor, MotorNxt motorNxt) {
 		this.isExecute = true;
 		this.comm = comm;
 		this.observerMotor = observerMotor;
 		this.ultrasonicSensor = ultrasonicSensor;
+		this.motorNxt = motorNxt;
 	}
 	
 	/* (non-Javadoc)
@@ -80,14 +84,21 @@ public class ScannerBehavior implements Behavior {
 	@Override
 	public void action() {
 		
+		this.motorNxt.stop();
+		
 		DistanceScanner dScanner = new DistanceScanner();
 		
-		for (int i = 0; i < 360/SensorUtil.DEGREE_SCANNER; i++) {
-			this.observerMotor.rotate(SensorUtil.DEGREE_SCANNER);
-			dScanner.getDistances().add(this.ultrasonicSensor.getDistance());
+		dScanner.setType(TypeData.SCANNER);
+		dScanner.setX(1);
+		dScanner.setY(4);
+		
+		for (int i = 0; i < 360/DistanceScanner.RESOLUTION_SCANNER; i++) {
+			this.observerMotor.rotate(DistanceScanner.RESOLUTION_SCANNER);
+			dScanner.getDistances().add((double) this.ultrasonicSensor.getDistance());
 			System.out.println(this.ultrasonicSensor.getDistance());
 		}
 		
+		System.out.println(dScanner.getDistances().size());
 		this.comm.addScanner(dScanner);
 		
 		this.observerMotor.rotate(-360);

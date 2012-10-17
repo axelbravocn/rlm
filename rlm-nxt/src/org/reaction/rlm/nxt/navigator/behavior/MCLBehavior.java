@@ -39,12 +39,11 @@ package org.reaction.rlm.nxt.navigator.behavior;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
+import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
-import org.reaction.rlm.nxt.motor.observer.TypeGearMotor;
-import org.reaction.rlm.nxt.util.SensorUtil;
 
 /**
  * @author Flavio Souza
@@ -52,22 +51,23 @@ import org.reaction.rlm.nxt.util.SensorUtil;
  */
 public class MCLBehavior implements Behavior {
 	
+	private boolean isExecute;
 	private MotorNxt motorNxt;
-	private CommunicationChannelRobot comm;
 	private ObserverMotor observerMotor;
+	private CommunicationChannelRobot comm;
 	private UltrasonicSensor ultrasonicSensor;
 	
 	/**
-	 * @param observerMotor 
-	 * @param motorNxt
-	 * @param ultrasonicSensor
-	 * @param comm
+	 * @param ultrasonicSensor 
+	 * @param motorNxt 
+	 * 
 	 */
-	public MCLBehavior(CommunicationChannelRobot comm, MotorNxt motorNxt, ObserverMotor observerMotor, UltrasonicSensor ultrasonicSensor) {
+	public MCLBehavior(CommunicationChannelRobot comm, ObserverMotor observerMotor, UltrasonicSensor ultrasonicSensor, MotorNxt motorNxt) {
+		this.isExecute = true;
 		this.comm = comm;
-		this.motorNxt = motorNxt;
 		this.observerMotor = observerMotor;
 		this.ultrasonicSensor = ultrasonicSensor;
+		this.motorNxt = motorNxt;
 	}
 	
 	/* (non-Javadoc)
@@ -75,7 +75,7 @@ public class MCLBehavior implements Behavior {
 	 */
 	@Override
 	public boolean takeControl() {
-		return this.ultrasonicSensor.getDistance() > SensorUtil.ULTRA_DIST_MIN && this.ultrasonicSensor.getDistance() < SensorUtil.ULTRA_DIST_MAX;
+		return this.isExecute;
 	}
 
 	/* (non-Javadoc)
@@ -83,29 +83,35 @@ public class MCLBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
+		
 		this.motorNxt.stop();
 		
-		this.observerMotor.rotate(TypeGearMotor.ROTATE_LEFT);
-		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_LEFT);
+		DistanceScanner dScanner = new DistanceScanner();
 		
-		this.observerMotor.rotate(TypeGearMotor.ROTATE_RIGHT);
-		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_RIGHT);
+		dScanner.setType(TypeData.MCL);
 		
-		this.observerMotor.rotate(TypeGearMotor.ROTATE_BACK);
-		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_BACK);
+		dScanner.setDistance(0.01);
 		
-		this.observerMotor.rotate(TypeGearMotor.ROTATE_FRONT);
-		this.comm.addPoint(TypeData.MCL.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance(), TypeGearMotor.ROTATE_FRONT);
+		for (int i = 0; i < 360/DistanceScanner.RESOLUTION_SCANNER; i++) {
+			this.observerMotor.rotate(DistanceScanner.RESOLUTION_SCANNER);
+			dScanner.getDistances().add((double) this.ultrasonicSensor.getDistance());
+			System.out.println(this.ultrasonicSensor.getDistance());
+		}
 		
-		this.motorNxt.moveForward();
+		System.out.println(dScanner.getDistances().size());
+		this.comm.addScanner(dScanner);
+		
+		this.observerMotor.rotate(-360);
+		this.isExecute = false;
+		
+		//this.motorNxt.moveForward(1);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see lejos.robotics.subsumption.Behavior#suppress()
 	 */
 	@Override
 	public void suppress() {
-		this.motorNxt.stop();		
 	}
 
 }
