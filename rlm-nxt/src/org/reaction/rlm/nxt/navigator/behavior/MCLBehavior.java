@@ -36,6 +36,8 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
+import java.io.Serializable;
+
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
@@ -44,18 +46,25 @@ import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
+import org.reaction.rlm.nxt.navigator.ControlNavigator;
 
 /**
  * @author Flavio Souza
  *
  */
-public class MCLBehavior implements Behavior {
+public class MCLBehavior implements Behavior, Serializable {
+	
+	/**
+	 * 
+	 */
+	public static final long serialVersionUID = -424471659354326995L;
 	
 	private boolean isExecute;
 	private MotorNxt motorNxt;
 	private ObserverMotor observerMotor;
 	private CommunicationChannelRobot comm;
 	private UltrasonicSensor ultrasonicSensor;
+	
 	
 	/**
 	 * @param ultrasonicSensor 
@@ -75,7 +84,7 @@ public class MCLBehavior implements Behavior {
 	 */
 	@Override
 	public boolean takeControl() {
-		return this.isExecute;
+		return ControlNavigator.begaviorIndex == MCLBehavior.serialVersionUID;
 	}
 
 	/* (non-Javadoc)
@@ -90,10 +99,12 @@ public class MCLBehavior implements Behavior {
 		
 		dScanner.setType(TypeData.MCL);
 		
-		dScanner.setDistance(0.01);
+		//the distance is 10 times smaller than the real distance traveled
+		dScanner.setDistance(ControlNavigator.TRAVEL_DISTANCE / 10 );
+		dScanner.setHeading(this.motorNxt.getPosition().getHeading());
 		
 		for (int i = 0; i < 360/DistanceScanner.RESOLUTION_SCANNER; i++) {
-			this.observerMotor.rotate(DistanceScanner.RESOLUTION_SCANNER);
+			this.observerMotor.rotate(-DistanceScanner.RESOLUTION_SCANNER);
 			dScanner.getDistances().add((double) this.ultrasonicSensor.getDistance());
 			System.out.println(this.ultrasonicSensor.getDistance());
 		}
@@ -101,9 +112,10 @@ public class MCLBehavior implements Behavior {
 		System.out.println(dScanner.getDistances().size());
 		this.comm.addScanner(dScanner);
 		
-		this.observerMotor.rotate(-360);
+		this.observerMotor.rotate(360);
 		this.isExecute = false;
 		
+		ControlNavigator.begaviorIndex = NearbyObstacleBehavior.serialVersionUID;
 		//this.motorNxt.moveForward(1);
 	}
 	

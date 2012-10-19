@@ -37,6 +37,7 @@
 package org.reaction.rlm.nxt.navigator.behavior.realtime;
 
 import org.reaction.rlm.nxt.motor.MotorNxt;
+import org.reaction.rlm.nxt.navigator.ControlNavigator;
 
 /**
  * @author Flavio Souza
@@ -58,7 +59,8 @@ public class WalkRealTime extends Thread{
 	 */
 	@Override
 	public void run() {
-		this.motorNxt.moveForward();
+		//this.motorNxt.moveForward();
+		this.motorNxt.moveForward(ControlNavigator.TRAVEL_DISTANCE);
 	}
 	
 	
