@@ -81,6 +81,26 @@ public class MCLMath {
 	public static Point equationLineY(float x0, float y0, double slope, float y) {
 		return equationLineY(new Point(x0, y0), slope, y);
 	}
+	
+	public static int logicalOperatorSin(double degree){
+		int operator = 1;
+		
+		if(degree > 180 && degree < 360){
+			operator *= -1;
+		}
+		
+		return operator;
+	}
+	
+	public static int logicalOperatorCos(double degree){
+		int operator = 1;
+		
+		if(degree < 90 && degree < 240){
+			operator *= -1;
+		}
+		
+		return operator;
+	}
 
 	public static Point equationLineY(Point p, double slope, float y) {
 		Point pointLine = new Point();

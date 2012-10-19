@@ -41,16 +41,11 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.TextField;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.reaction.rlm.comm.data.DataShared;
-import org.reaction.rlm.comm.data.DistanceScanner;
 import org.reaction.rlm.comm.data.Line;
 import org.reaction.rlm.comm.data.Particle;
-import org.reaction.rlm.comm.data.Point;
 import org.reaction.rlm.comm.data.TypeData;
-import org.reaction.rlm.pc.location.MCLMath;
 
 /**
  * @author Flavio Souza
@@ -164,7 +159,8 @@ public class MapScreen extends Map {
 		if(excuteSimulator == true && g != null){
 			g.fillOval(xpixel((int)this.xOrigSimulate), ypixel((int)this.yOrigSimulate, false), 10, 10);
 		}else{
-			g.fillOval(xpixel(-5), ypixel(6, false), 10, 10);
+			//g.fillOval(xpixel(-5), ypixel(6, false), 10, 10);
+			g.fillOval(xpixel((int)this.xOrigSimulate), ypixel((int)this.yOrigSimulate, false), 10, 10);
 		}
 		
 		if(this.getSimulator().getM().getParticles() != null && this.getSimulator().getM().getParticles().size() > 0){
@@ -343,46 +339,28 @@ public class MapScreen extends Map {
 			}
 		}
 		
-		this.simulator.setLines(this.teste());
-		this.setSimulator(new MapSimulator(this));
-
-		osGraphics.setColor(Color.black);
-		for (Line p : this.teste()) {
-			osGraphics.drawLine(xpixel(p.getStartPoint().getX()),ypixel(p.getStartPoint().getY(), false), xpixel(p.getEndPoint().getX()),ypixel(p.getEndPoint().getY(), false));
-		}
+		this.updateEnvironment();
 		this.repaint();
 		
 	}
 	
-	private List<Line> teste(){
-		float degree;
-		Point startPoint, endPoint;
-		double distance, xStart, yStart, xEnd, yEnd;
+	private void updateEnvironment(){
+		float xStart, yStart, xEnd, yEnd;
 		
-		List<Line> lines = new ArrayList<Line>();
-		
-		for (DistanceScanner scanner : this.getCommunicationChannel().getSharedsScanner()) {
-			for (int i = 0; i < scanner.getDistances().size(); i++) {
-				if(scanner.getDistances().get(i) != null){
-					degree = scanner.getHeading() + (DistanceScanner.RESOLUTION_SCANNER * i);
-					distance = scanner.getDistances().get(i);
-					
-					xStart = scanner.getX() + (Math.cos(MCLMath.slopeDegree(degree)) * distance);
-					yStart = scanner.getY() + (Math.sin(MCLMath.slopeDegree(degree)) * distance);
-					
-					xEnd = scanner.getX() + (Math.cos(MCLMath.slopeDegree(degree + DistanceScanner.RESOLUTION_SCANNER)) * distance);
-					yEnd = scanner.getY() + (Math.sin(MCLMath.slopeDegree(degree + DistanceScanner.RESOLUTION_SCANNER)) * distance);
-					
-					startPoint = new Point((float) xStart, (float) yStart);
-					endPoint = new Point((float) xEnd, (float) yEnd);
-					
-					lines.add(new Line(startPoint, endPoint));
-				}
-			}
+		this.simulator.setLines(this.simulator.getM().readDataEnvironment(this.getCommunicationChannel().getSharedsScanner()));
+		this.setSimulator(new MapSimulator(this));
+
+		osGraphics.setColor(Color.black);
+		for (Line p : this.simulator.getM().readDataEnvironment(this.getCommunicationChannel().getSharedsScanner())) {
+			xStart = p.getStartPoint().getX() / REDUCTION;
+			yStart = p.getStartPoint().getY() / REDUCTION;
+			xEnd = p.getEndPoint().getX() / REDUCTION;
+			yEnd = p.getEndPoint().getY() / REDUCTION;
+			
+			osGraphics.drawLine(xpixel(xStart), ypixel(yStart, false), xpixel(xEnd), ypixel(yEnd, false));
 		}
-		
-		return lines;
 	}
+	
 
 	/* (non-Javadoc)
 	 * @see org.reaction.rlm.pc.view.map.Map#getHOrig()

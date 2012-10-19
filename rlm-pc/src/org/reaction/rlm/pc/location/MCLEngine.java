@@ -343,6 +343,41 @@ public class MCLEngine {
 		}
 	}
 
+	public List<Line> readDataEnvironment(List<DistanceScanner> scanners){
+		float degree;
+		Point startPoint, endPoint;
+		double distance, xStart, yStart, xEnd, yEnd;
+		
+		List<Line> lines = new ArrayList<Line>();
+		
+		for (DistanceScanner scanner : scanners) {
+			for (int i = 0; i < scanner.getDistances().size(); i++) {
+				if(scanner.getDistances().get(i) != null){
+					degree = scanner.getHeading() + (DistanceScanner.RESOLUTION_SCANNER * i);
+					distance = scanner.getDistances().get(i);
+					
+					xStart = scanner.getX() + (Math.cos(MCLMath.slopeDegree(degree)) * distance);
+					yStart = scanner.getY() + (Math.sin(MCLMath.slopeDegree(degree)) * distance) + 6;
+					
+					xEnd = scanner.getX() + (Math.cos(MCLMath.slopeDegree(degree + DistanceScanner.RESOLUTION_SCANNER)) * distance);
+					yEnd = scanner.getY() + (Math.sin(MCLMath.slopeDegree(degree + DistanceScanner.RESOLUTION_SCANNER)) * distance) + 6;
+					
+					xStart *= MCLMath.logicalOperatorCos(degree);
+					yStart *= MCLMath.logicalOperatorSin(degree);
+					xEnd *= MCLMath.logicalOperatorCos(degree + DistanceScanner.RESOLUTION_SCANNER);
+					yEnd *= MCLMath.logicalOperatorSin(degree + DistanceScanner.RESOLUTION_SCANNER);
+					
+					startPoint = new Point((float) xStart, (float) yStart);
+					endPoint = new Point((float) xEnd, (float) yEnd);
+					
+					lines.add(new Line(startPoint, endPoint));
+				}
+			}
+		}
+		
+		return lines;
+	}
+	
 	private int randInRangeInc(float min, float max) {
 		return (int) (min + (Math.random() * (max - min)));
 	}
