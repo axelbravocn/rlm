@@ -36,6 +36,8 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
+import java.io.Serializable;
+
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
@@ -44,14 +46,19 @@ import org.reaction.rlm.comm.data.TypeData;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
-import org.reaction.rlm.nxt.util.SensorUtil;
+import org.reaction.rlm.nxt.navigator.ControlNavigator;
 
 /**
  * @author Flavio Souza
  *
  */
-public class ScannerBehavior implements Behavior {
+public class ScannerBehavior implements Behavior, Serializable {
 
+	/**
+	 * 
+	 */
+	public static final long serialVersionUID = -2558177920569311007L;
+	
 	private boolean isExecute;
 	private MotorNxt motorNxt;
 	private ObserverMotor observerMotor;
@@ -89,11 +96,12 @@ public class ScannerBehavior implements Behavior {
 		DistanceScanner dScanner = new DistanceScanner();
 		
 		dScanner.setType(TypeData.SCANNER);
-		dScanner.setX(1);
-		dScanner.setY(4);
+		dScanner.setX(this.motorNxt.getPosition().getX());
+		dScanner.setY(this.motorNxt.getPosition().getY());
+		dScanner.setHeading(this.motorNxt.getPosition().getHeading());
 		
 		for (int i = 0; i < 360/DistanceScanner.RESOLUTION_SCANNER; i++) {
-			this.observerMotor.rotate(DistanceScanner.RESOLUTION_SCANNER);
+			this.observerMotor.rotate(-DistanceScanner.RESOLUTION_SCANNER);
 			dScanner.getDistances().add((double) this.ultrasonicSensor.getDistance());
 			System.out.println(this.ultrasonicSensor.getDistance());
 		}
@@ -101,8 +109,9 @@ public class ScannerBehavior implements Behavior {
 		System.out.println(dScanner.getDistances().size());
 		this.comm.addScanner(dScanner);
 		
-		this.observerMotor.rotate(-360);
-		this.isExecute = false;
+		this.observerMotor.rotate(360);
+		//this.isExecute = false;
+		ControlNavigator.begaviorIndex = NearbyObstacleBehavior.serialVersionUID;
 	}
 	
 	/* (non-Javadoc)
@@ -110,6 +119,7 @@ public class ScannerBehavior implements Behavior {
 	 */
 	@Override
 	public void suppress() {
+		this.motorNxt.stop();
 	}
 
 }

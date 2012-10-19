@@ -36,6 +36,8 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
+import java.io.Serializable;
+
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
@@ -44,6 +46,7 @@ import org.reaction.rlm.comm.data.TypeOrientation;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
+import org.reaction.rlm.nxt.navigator.ControlNavigator;
 import org.reaction.rlm.nxt.navigator.behavior.realtime.ObserverMotorRealTime;
 import org.reaction.rlm.nxt.navigator.behavior.realtime.SonarCollectorRealTime;
 import org.reaction.rlm.nxt.util.SensorUtil;
@@ -52,8 +55,13 @@ import org.reaction.rlm.nxt.util.SensorUtil;
  * @author Flavio Souza
  *
  */
-public class NearbyObstacleBehavior implements Behavior{
+public class NearbyObstacleBehavior implements Behavior, Serializable{
 
+	/**
+	 * 
+	 */
+	public static final long serialVersionUID = -1070527051270063062L;
+	
 	private boolean mclCollectior;
 	private MotorNxt motorNxt;
 	private ObserverMotor observerMotor;
@@ -79,7 +87,8 @@ public class NearbyObstacleBehavior implements Behavior{
 	 */
 	@Override
 	public boolean takeControl() {
-		return this.ultrasonicSensor.getDistance() <= SensorUtil.ULTRA_DIST_MIN;
+		//return this.ultrasonicSensor.getDistance() <= SensorUtil.ULTRA_DIST_MIN;
+		return ControlNavigator.begaviorIndex == NearbyObstacleBehavior.serialVersionUID;
 	}
 
 	/* (non-Javadoc)
@@ -88,16 +97,16 @@ public class NearbyObstacleBehavior implements Behavior{
 	@Override
 	public void action() {
 		this.motorNxt.stop();
-		this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance());
+		//this.comm.addPoint(TypeData.OBSTACLE.ordinal(), this.motorNxt.getPosition(), this.ultrasonicSensor.getDistance());
 		
 		ObserverMotorRealTime observerMotorMoving = new ObserverMotorRealTime(observerMotor);
 		SonarCollectorRealTime sonarCollector = new SonarCollectorRealTime(observerMotor, ultrasonicSensor);
 		
-		this.collectorDistanceToMCL(TypeOrientation.FRONT);
+		//this.collectorDistanceToMCL(TypeOrientation.FRONT);
 		
 		observerMotorMoving.zeroDegree();
 		
-		this.collectorDistanceToMCL(TypeOrientation.RIGHT);
+		//this.collectorDistanceToMCL(TypeOrientation.RIGHT);
 		
 		observerMotorMoving.start();
 		sonarCollector.start();
@@ -108,10 +117,10 @@ public class NearbyObstacleBehavior implements Behavior{
 			
 		}
 
-		this.collectorDistanceToMCL(TypeOrientation.LEFT);
+		//this.collectorDistanceToMCL(TypeOrientation.LEFT);
 		
 		observerMotorMoving.zeroDegree();
-		this.motorNxt.backward();
+		//this.motorNxt.backward();
 		
 		try {
 			Thread.sleep(450);
@@ -125,6 +134,7 @@ public class NearbyObstacleBehavior implements Behavior{
 		
 		this.motorNxt.rotate(-1 * sonarCollector.getMaxAngle());
 		
+		 ControlNavigator.begaviorIndex = WalkBehavior.serialVersionUID;
 	}
 
 	/* (non-Javadoc)

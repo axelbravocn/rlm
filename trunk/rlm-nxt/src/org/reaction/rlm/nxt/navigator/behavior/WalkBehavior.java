@@ -36,10 +36,13 @@
  */
 package org.reaction.rlm.nxt.navigator.behavior;
 
+import java.io.Serializable;
+
 import lejos.robotics.subsumption.Behavior;
 
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
+import org.reaction.rlm.nxt.navigator.ControlNavigator;
 import org.reaction.rlm.nxt.navigator.behavior.realtime.SendDataRealTime;
 import org.reaction.rlm.nxt.navigator.behavior.realtime.WalkRealTime;
 
@@ -47,8 +50,13 @@ import org.reaction.rlm.nxt.navigator.behavior.realtime.WalkRealTime;
  * @author Flavio Souza
  *
  */
-public class WalkBehavior implements Behavior {
+public class WalkBehavior implements Behavior, Serializable {
 
+	/**
+	 * 
+	 */
+	public static final long serialVersionUID = -6459445800786937318L;
+	
 	private MotorNxt motorNxt;
 	private CommunicationChannelRobot comm;
 	private WalkRealTime walking;
@@ -69,7 +77,8 @@ public class WalkBehavior implements Behavior {
 	 */
 	@Override
 	public boolean takeControl() {
-		return true;
+		//return true;
+		return ControlNavigator.begaviorIndex == WalkBehavior.serialVersionUID;
 	}
 
 	/* (non-Javadoc)
@@ -77,11 +86,14 @@ public class WalkBehavior implements Behavior {
 	 */
 	@Override
 	public void action() {
-		this.walking = new WalkRealTime(this.motorNxt);
+		//this.walking = new WalkRealTime(this.motorNxt);
 		//this.sendData = new SendDataRealTime(this.comm, this.motorNxt);
 		
-		this.walking.start();
+		//this.walking.start();
 		//this.sendData.start();
+		
+		this.motorNxt.moveForward(ControlNavigator.TRAVEL_DISTANCE);
+		ControlNavigator.begaviorIndex = MCLBehavior.serialVersionUID;
 	}
 
 	/* (non-Javadoc)

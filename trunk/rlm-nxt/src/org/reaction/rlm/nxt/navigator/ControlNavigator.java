@@ -45,10 +45,8 @@ import lejos.robotics.subsumption.Behavior;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
-import org.reaction.rlm.nxt.navigator.behavior.CollisionBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.MCLBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.NearbyObstacleBehavior;
-import org.reaction.rlm.nxt.navigator.behavior.ScannerBehavior;
 import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
 
 /**
@@ -56,6 +54,10 @@ import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
  *
  */
 public class ControlNavigator extends Thread {
+	
+	public static final int TRAVEL_DISTANCE = 10; //CM
+	
+	public static long begaviorIndex = MCLBehavior.serialVersionUID;
 	
 	private MotorNxt motorNxt;
 	private TouchSensor touchSensor;
@@ -92,9 +94,11 @@ public class ControlNavigator extends Thread {
 		
 		//Behavior b1 = new ScannerBehavior(this.comm, this.observerMotor, this.ultrasonicSensor);
 		//Behavior b1 = new MCLBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
-		Behavior b1 = new ScannerBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
+		Behavior b1 = new MCLBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
+		Behavior b2 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm, this.observerMotor);
+		Behavior b3 = new WalkBehavior(this.motorNxt, this.comm);
 		
-		Behavior behaviors[] = {b1};
+		Behavior behaviors[] = {b1, b2, b3};
 		
 		Arbitrator arbitrator = new Arbitrator(behaviors);
 		arbitrator.start();
