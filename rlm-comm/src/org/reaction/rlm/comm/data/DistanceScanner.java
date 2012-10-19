@@ -45,7 +45,7 @@ import java.util.List;
  */
 public class DistanceScanner extends Particle {
 
-	public static final int RESOLUTION_SCANNER = 90;
+	public static final int RESOLUTION_SCANNER = 15;
 	
 	private List<Double> distances;
 	private int degreeScanner;
