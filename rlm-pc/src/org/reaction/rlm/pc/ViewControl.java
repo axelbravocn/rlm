@@ -409,6 +409,7 @@ public class ViewControl extends JPanel implements Runnable, IconsUtil, ActionLi
 			this.showPane("text license","title license");
 		}else if(event.getSource() == this.btnConnectNXT){
 			this.map.setExcuteSimulator(false);
+			this.map.setPointSimulate(0, 6, 0);
 			Thread t = new Thread(this);
 			t.start();
 			this.map.repaint();

@@ -82,6 +82,8 @@ public abstract class Map extends JPanel {
 	
 	public abstract double getXOrig();
 	
+	public abstract void setHOrig(float heading);
+	
 	/**
 	 * @return the communicationChannel
 	 */
@@ -124,6 +126,7 @@ public abstract class Map extends JPanel {
 	public boolean getExcuteSimulator() {
 		return this.excuteSimulator;
 	}
+
 
 
 }
