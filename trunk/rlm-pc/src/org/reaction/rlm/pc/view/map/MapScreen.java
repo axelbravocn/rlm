@@ -156,7 +156,7 @@ public class MapScreen extends Map {
 	@Override
 	public void paint(Graphics g) {
 		super.paint(g);
-		if(excuteSimulator == true && g != null){
+		if(this.excuteSimulator == true && g != null){
 			g.fillOval(xpixel((int)this.xOrigSimulate), ypixel((int)this.yOrigSimulate, false), 10, 10);
 		}else{
 			//g.fillOval(xpixel(-5), ypixel(6, false), 10, 10);
@@ -371,6 +371,15 @@ public class MapScreen extends Map {
 	}
 
 	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#setHeading(float)
+	 */
+	@Override
+	public void setHOrig(float heading) {
+		this.hOrigSimulate = heading;
+	}
+	
+	
+	/* (non-Javadoc)
 	 * @see org.reaction.rlm.pc.view.map.Map#getYOrig()
 	 */
 	@Override
@@ -385,5 +394,8 @@ public class MapScreen extends Map {
 	public double getXOrig() {
 		return this.xOrigSimulate;
 	}
+
+	
+	
 
 }

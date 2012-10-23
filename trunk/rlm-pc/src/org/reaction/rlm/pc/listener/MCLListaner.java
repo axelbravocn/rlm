@@ -67,7 +67,8 @@ public class MCLListaner implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		DistanceScanner scanner = this.comm.getSharedsMCL().get(0);
 		
-		this.map.setPointSimulate(scanner.getX(), scanner.getY(), scanner.getHeading());
+		//this.map.setPointSimulate(scanner.getX(), scanner.getY(), scanner.getHeading());
+		this.map.setHOrig(scanner.getHeading());
 		
 		Double distances[] = scanner.getDistances().toArray(new Double[scanner.getDistances().size()]);
 		this.map.getSimulator().getM().startMCL(scanner.getDistance(), distances);
