@@ -60,7 +60,7 @@ public class WalkRealTime extends Thread{
 	@Override
 	public void run() {
 		//this.motorNxt.moveForward();
-		this.motorNxt.moveForward(ControlNavigator.TRAVEL_DISTANCE);
+		this.motorNxt.moveForward((int) ControlNavigator.TRAVEL_DISTANCE);
 	}
 	
 	

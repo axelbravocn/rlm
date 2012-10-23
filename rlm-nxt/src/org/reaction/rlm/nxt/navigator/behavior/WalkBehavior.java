@@ -92,8 +92,8 @@ public class WalkBehavior implements Behavior, Serializable {
 		//this.walking.start();
 		//this.sendData.start();
 		
-		this.motorNxt.moveForward(ControlNavigator.TRAVEL_DISTANCE);
-		ControlNavigator.begaviorIndex = MCLBehavior.serialVersionUID;
+		this.motorNxt.moveForward((int) ControlNavigator.TRAVEL_DISTANCE);
+		ControlNavigator.begaviorIndex = NearbyObstacleBehavior.serialVersionUID;
 	}
 
 	/* (non-Javadoc)
