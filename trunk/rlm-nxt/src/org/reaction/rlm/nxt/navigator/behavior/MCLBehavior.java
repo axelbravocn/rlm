@@ -100,8 +100,8 @@ public class MCLBehavior implements Behavior, Serializable {
 		dScanner.setType(TypeData.MCL);
 		
 		//the distance is 10 times smaller than the real distance traveled
-		dScanner.setDistance(ControlNavigator.TRAVEL_DISTANCE / 10 );
-		dScanner.setHeading(this.motorNxt.getPosition().getHeading());
+		dScanner.setDistance(ControlNavigator.TRAVEL_DISTANCE / 100);
+		dScanner.setHeading(Float.valueOf(ControlNavigator.angleScannerMCL));
 		
 		for (int i = 0; i < 360/DistanceScanner.RESOLUTION_SCANNER; i++) {
 			this.observerMotor.rotate(-DistanceScanner.RESOLUTION_SCANNER);
@@ -115,7 +115,7 @@ public class MCLBehavior implements Behavior, Serializable {
 		this.observerMotor.rotate(360);
 		this.isExecute = false;
 		
-		ControlNavigator.begaviorIndex = NearbyObstacleBehavior.serialVersionUID;
+		ControlNavigator.begaviorIndex = WalkBehavior.serialVersionUID;
 		//this.motorNxt.moveForward(1);
 	}
 	

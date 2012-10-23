@@ -55,9 +55,10 @@ import org.reaction.rlm.nxt.navigator.behavior.WalkBehavior;
  */
 public class ControlNavigator extends Thread {
 	
-	public static final int TRAVEL_DISTANCE = 10; //CM
+	public static final double TRAVEL_DISTANCE = 1.0; //CM
 	
-	public static long begaviorIndex = MCLBehavior.serialVersionUID;
+	public static long begaviorIndex = NearbyObstacleBehavior.serialVersionUID;
+	public static int angleScannerMCL = 0;
 	
 	private MotorNxt motorNxt;
 	private TouchSensor touchSensor;
@@ -94,8 +95,8 @@ public class ControlNavigator extends Thread {
 		
 		//Behavior b1 = new ScannerBehavior(this.comm, this.observerMotor, this.ultrasonicSensor);
 		//Behavior b1 = new MCLBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
-		Behavior b1 = new MCLBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
-		Behavior b2 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm, this.observerMotor);
+		Behavior b1 = new NearbyObstacleBehavior(this.motorNxt, this.ultrasonicSensor, this.comm, this.observerMotor);
+		Behavior b2 = new MCLBehavior(this.comm, this.observerMotor, this.ultrasonicSensor, this.motorNxt);
 		Behavior b3 = new WalkBehavior(this.motorNxt, this.comm);
 		
 		Behavior behaviors[] = {b1, b2, b3};

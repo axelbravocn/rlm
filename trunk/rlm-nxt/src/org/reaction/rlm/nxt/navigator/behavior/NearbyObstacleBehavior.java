@@ -41,15 +41,12 @@ import java.io.Serializable;
 import lejos.nxt.UltrasonicSensor;
 import lejos.robotics.subsumption.Behavior;
 
-import org.reaction.rlm.comm.data.TypeData;
-import org.reaction.rlm.comm.data.TypeOrientation;
 import org.reaction.rlm.nxt.comm.CommunicationChannelRobot;
 import org.reaction.rlm.nxt.motor.MotorNxt;
 import org.reaction.rlm.nxt.motor.observer.ObserverMotor;
 import org.reaction.rlm.nxt.navigator.ControlNavigator;
 import org.reaction.rlm.nxt.navigator.behavior.realtime.ObserverMotorRealTime;
 import org.reaction.rlm.nxt.navigator.behavior.realtime.SonarCollectorRealTime;
-import org.reaction.rlm.nxt.util.SensorUtil;
 
 /**
  * @author Flavio Souza
@@ -134,7 +131,8 @@ public class NearbyObstacleBehavior implements Behavior, Serializable{
 		
 		this.motorNxt.rotate(-1 * sonarCollector.getMaxAngle());
 		
-		 ControlNavigator.begaviorIndex = WalkBehavior.serialVersionUID;
+		ControlNavigator.angleScannerMCL = sonarCollector.getMaxAngle(); 
+		ControlNavigator.begaviorIndex = MCLBehavior.serialVersionUID;
 	}
 
 	/* (non-Javadoc)
@@ -145,10 +143,5 @@ public class NearbyObstacleBehavior implements Behavior, Serializable{
 		this.motorNxt.stop();		
 	}
 	
-	private void collectorDistanceToMCL(TypeOrientation orientation){
-		if(this.mclCollectior){
-			this.comm.addPoint(TypeData.MCL.ordinal(), this.ultrasonicSensor.getDistance(), orientation.ordinal());
-		}
-	}
 
 }
