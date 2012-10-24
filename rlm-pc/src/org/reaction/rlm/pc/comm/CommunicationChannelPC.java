@@ -168,6 +168,8 @@ public class CommunicationChannelPC extends CommunicationChannelGeneric {
 				if(TypeData.MCL.ordinal() == t){
 					dScanner.setType(TypeData.MCL); //this.getDataOut().writeInt(scanner.getType().ordinal());
 					dScanner.setDistance(this.getDataIn().readDouble()); //this.getDataOut().writeFloat(Float.valueOf(scanner.getY()));
+					dScanner.setX(this.getDataIn().readFloat()); //this.getDataOut().writeFloat(Float.valueOf(scanner.getX()));
+					dScanner.setY(this.getDataIn().readFloat()); //this.getDataOut().writeFloat(Float.valueOf(scanner.getY()));
 				}else{
 					dScanner.setType(TypeData.SCANNER); //this.getDataOut().writeInt(scanner.getType().ordinal());
 					dScanner.setX(this.getDataIn().readFloat()); //this.getDataOut().writeFloat(Float.valueOf(scanner.getX()));
