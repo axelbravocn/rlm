@@ -168,6 +168,8 @@ public class CommunicationChannelRobot extends CommunicationChannelGeneric{
 
 			if(TypeData.MCL.equals(scanner.getType())){
 				this.getDataOut().writeDouble(scanner.getDistance());
+				this.getDataOut().writeFloat(Float.valueOf(scanner.getX()));
+				this.getDataOut().writeFloat(Float.valueOf(scanner.getY()));
 			} else if(TypeData.SCANNER.equals(scanner.getType())){
 				this.getDataOut().writeFloat(Float.valueOf(scanner.getX()));
 				this.getDataOut().writeFloat(Float.valueOf(scanner.getY()));

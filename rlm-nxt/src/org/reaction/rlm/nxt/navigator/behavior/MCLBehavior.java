@@ -102,12 +102,17 @@ public class MCLBehavior implements Behavior, Serializable {
 		//the distance is 10 times smaller than the real distance traveled
 		dScanner.setDistance(ControlNavigator.TRAVEL_DISTANCE / 100);
 		dScanner.setHeading(Float.valueOf(ControlNavigator.angleScannerMCL));
+		dScanner.setX(this.motorNxt.getPosition().getX());
+		dScanner.setY(this.motorNxt.getPosition().getY());
 		
 		for (int i = 0; i < 360/DistanceScanner.RESOLUTION_SCANNER; i++) {
 			this.observerMotor.rotate(-DistanceScanner.RESOLUTION_SCANNER);
 			dScanner.getDistances().add((double) this.ultrasonicSensor.getDistance());
 			System.out.println(this.ultrasonicSensor.getDistance());
 		}
+		
+		System.out.println("X=" + dScanner.getX());
+		System.out.println("Y=" + dScanner.getY());
 		
 		System.out.println(dScanner.getDistances().size());
 		this.comm.addScanner(dScanner);
