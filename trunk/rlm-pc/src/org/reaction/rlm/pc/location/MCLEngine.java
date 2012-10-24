@@ -77,7 +77,7 @@ public class MCLEngine {
 
 	public void startMCL(double move, Double distanceOrigin[]) {
 		int iterator2 = 10;
-		int iterator1 = 10;
+		int iterator1 = 30;
 
 		for (int j = 0; j < iterator1; j++) {
 			for (int i = 0; i < iterator2; i++) {
@@ -86,10 +86,10 @@ public class MCLEngine {
 				this.moveParticles(move);
 				distanceOrigin = this.map.getDistancesOrigin();
 			}
-
 			this.normalizeWeights();
 			int qtdParticleRemove = this.removeTrashParticle();
 			this.generatesParticles(qtdParticleRemove);
+			this.map.repaint();
 		}
 		
 	}

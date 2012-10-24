@@ -65,6 +65,13 @@ public abstract class Map extends JPanel {
 	 * @param d 
 	 */
 	public abstract void setPointSimulate(float x, float y, float h); 
+	
+	
+	/**
+	 * @param x
+	 * @param y
+	 */
+	public abstract void setPointReal(float x, float y);
 
 	/**
 	 * @return
@@ -126,7 +133,6 @@ public abstract class Map extends JPanel {
 	public boolean getExcuteSimulator() {
 		return this.excuteSimulator;
 	}
-
 
 
 }

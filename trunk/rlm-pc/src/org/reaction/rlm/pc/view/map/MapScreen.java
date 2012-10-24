@@ -96,9 +96,8 @@ public class MapScreen extends Map {
 	int orig = 75;
 	int xOrig;
 	boolean isSetPoint;
-	float xOrigSimulate;
-	float yOrigSimulate;
-	float hOrigSimulate;
+	float xOrigSimulate,  yOrigSimulate, hOrigSimulate;
+	float xOrigReal,  yOrigReal;
 	
 	/**
 	 * y origin in pixels
@@ -134,6 +133,15 @@ public class MapScreen extends Map {
 	}
 	
 	/* (non-Javadoc)
+	 * @see org.reaction.rlm.pc.view.map.Map#setPointReal(float, float)
+	 */
+	@Override
+	public void setPointReal(float x, float y) {
+		this.xOrigReal = x;
+		this.yOrigReal = y;
+	}
+	
+	/* (non-Javadoc)
 	 * @see org.reaction.rlm.pc.view.map.Map#getIsPoint()
 	 */
 	@Override
@@ -166,6 +174,13 @@ public class MapScreen extends Map {
 		if(this.getSimulator().getM().getParticles() != null && this.getSimulator().getM().getParticles().size() > 0){
 			this.printParticles(g);
 		}
+		
+		/*
+		if(!excuteSimulator){
+			g.setColor(Color.blue);
+			g.drawOval(xpixel(this.xOrigReal), ypixel(this.yOrigReal + 6, false), 12, 12);
+		}
+		*/
 	}
 	
 	/**
@@ -393,6 +408,20 @@ public class MapScreen extends Map {
 	@Override
 	public double getXOrig() {
 		return this.xOrigSimulate;
+	}
+
+	/**
+	 * @return the xOrigReal
+	 */
+	public float getXOrigReal() {
+		return this.xOrigReal;
+	}
+
+	/**
+	 * @return the yOrigReal
+	 */
+	public float getYOrigReal() {
+		return this.yOrigReal;
 	}
 
 	
